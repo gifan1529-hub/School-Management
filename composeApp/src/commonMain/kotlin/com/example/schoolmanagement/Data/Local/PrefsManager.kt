@@ -35,9 +35,9 @@ class PrefsManager (
         token: String,
         name: String,
         role: String,
-//        nisn: String,
-//        kelas: String,
-//        phone: String
+        nisn: String?,
+        kelas: String?,
+        phone: String?
     ) {
         dataStore.edit { prefs ->
             prefs[IS_LOGGED_IN] = true
@@ -47,10 +47,11 @@ class PrefsManager (
             prefs[KEY_TOKEN] = token
             prefs[KEY_ROLE] = role
             prefs[KEY_PASSWORD] = password
-//            prefs[NISN] = nisn
-//            prefs[CLASS] = kelas
-//            prefs[PHONE] = phone
+            prefs[NISN] = nisn?: ""
+            prefs[CLASS] = kelas?: ""
+            prefs[PHONE] = phone?: ""
         }
+        println("DEBUG PREFS: Saving NISN: $nisn, Kelas: $kelas, Phone: $phone")
     }
 
     // untuk ngmbil token
