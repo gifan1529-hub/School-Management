@@ -3,6 +3,7 @@ package com.example.schoolmanagement.UI.Screen.Student
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,6 +59,7 @@ fun ProfileScreen (
 
 
     val primaryBlue = Color(0xFF0066FF)
+    val red = Color(0xFFFF0000)
     val lightBlue = Color(0xFFE3F2FD)
     val lightGreen = Color(0xFFE8F5E9)
     val lightRed = Color(0xFFFFEBEE)
@@ -96,7 +98,7 @@ fun ProfileScreen (
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
                     .offset(y = (-20).dp), // ngebuat card agak naik nimpa header
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
@@ -153,6 +155,35 @@ fun ProfileScreen (
                         Icons.Default.AccountCircle,
                         "Role", "${userRole}",
                         Color.Magenta
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Surface(
+                color = red,
+                shape = RoundedCornerShape(12.dp),
+                shadowElevation = 4.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .height(50.dp),
+                onClick = {
+                    viewModel.logout()
+                    navController.navigate("signin")
+                }
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Logout",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .padding(horizontal = 12.dp, vertical = 4.dp)
                     )
                 }
             }
