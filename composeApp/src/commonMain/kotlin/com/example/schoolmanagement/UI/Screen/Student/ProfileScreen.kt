@@ -31,6 +31,8 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,13 +42,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.schoolmanagement.ViewModel.ProfileViewModel
 import com.example.schoolmanagement.getTodayDate
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ProfileScreen (
     navController: NavHostController,
-//    viewModel: ProfileVM = koinViewModel()
+    viewModel: ProfileViewModel = koinViewModel()
 ) {
+    val userPhone by viewModel.userPhone.collectAsState()
+    val userEmail by viewModel.userEmail.collectAsState()
+    val userName by viewModel.userName.collectAsState()
+    val userRole by viewModel.userRole.collectAsState()
+
+
     val primaryBlue = Color(0xFF0066FF)
     val lightBlue = Color(0xFFE3F2FD)
     val lightGreen = Color(0xFFE8F5E9)
@@ -111,12 +121,12 @@ fun ProfileScreen (
                         }
                         Column (modifier = Modifier.padding(start = 16.dp)) {
                             Text(
-                                "UserName",
+                                "${userName}",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp,
                             )
                             Text(
-                                "Role",
+                                "${userRole}",
                                 fontSize = 14.sp,
                                 color = Color.Gray
                             )
@@ -130,18 +140,18 @@ fun ProfileScreen (
                     ProfileInfoRow(
                         Icons.Default.Email,
                         "Email",
-                        "rajesh.kumar@school.edu",
+                        "${userEmail}",
                         Color.Blue
                     )
                     ProfileInfoRow(
                         Icons.Default.Call,
                         "Phone",
-                        "+91 98765 43210",
+                        "$userPhone",
                         Color.Green
                     )
                     ProfileInfoRow(
                         Icons.Default.AccountCircle,
-                        "Role", "Teacher",
+                        "Role", "${userRole}",
                         Color.Magenta
                     )
                 }

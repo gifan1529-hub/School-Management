@@ -19,5 +19,15 @@ data class UserApiResponse (
 //    val password: String,
 
     @SerialName("role")
-    val role: String
+    val role: String,
+
+    @SerialName("class")
+    val kelas: String?,
+
+    @SerialName("nisn")
+    val nisn: String?,
+
+    @SerialName("phone")
+    val phone: String?
+
 )

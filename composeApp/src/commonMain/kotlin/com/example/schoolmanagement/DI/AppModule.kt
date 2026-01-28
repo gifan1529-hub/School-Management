@@ -11,6 +11,7 @@ import com.example.schoolmanagement.Domain.UseCase.getDetailUserUC
 import com.example.schoolmanagement.Domain.UseCase.LogoutUseCase
 import com.example.schoolmanagement.ViewModel.AuthViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
+import com.example.schoolmanagement.ViewModel.ProfileViewModel
 import com.example.schoolmanagement.ViewModel.SignIn
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
@@ -45,4 +46,5 @@ val appModule = module {
     viewModel { SignIn(get(), get(), get())  }
     viewModel { HomeViewModel(get(), get(), get(), get()) }
     viewModel { AuthViewModel(get()) }
+    viewModel { ProfileViewModel(get()) }
 }

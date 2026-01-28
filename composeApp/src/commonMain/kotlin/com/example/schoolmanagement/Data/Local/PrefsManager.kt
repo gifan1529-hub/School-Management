@@ -23,11 +23,22 @@ class PrefsManager (
         private val KEY_ROLE = stringPreferencesKey("user_role")
         private val IS_ALREADY_ABSEN = booleanPreferencesKey("is_absen")
         private val LAST_ABSEN_DATE = stringPreferencesKey("last_absen")
-
-
+        private val NISN = stringPreferencesKey("nisn")
+        private val CLASS = stringPreferencesKey("class")
+        private val PHONE = stringPreferencesKey("phone")
     }
 
-    suspend fun createLoginSession(id: Int, email: String, password: String, token: String, name: String, role: String) {
+    suspend fun createLoginSession(
+        id: Int,
+        email: String,
+        password: String,
+        token: String,
+        name: String,
+        role: String,
+//        nisn: String,
+//        kelas: String,
+//        phone: String
+    ) {
         dataStore.edit { prefs ->
             prefs[IS_LOGGED_IN] = true
             prefs[KEY_USER_ID] = id
@@ -36,6 +47,9 @@ class PrefsManager (
             prefs[KEY_TOKEN] = token
             prefs[KEY_ROLE] = role
             prefs[KEY_PASSWORD] = password
+//            prefs[NISN] = nisn
+//            prefs[CLASS] = kelas
+//            prefs[PHONE] = phone
         }
     }
 
@@ -55,6 +69,18 @@ class PrefsManager (
 
     val getUserEmail: Flow<String> = dataStore.data.map { prefs ->
         prefs[KEY_EMAIL] ?: "User"
+    }
+
+    val getClass: Flow<String> = dataStore.data.map { prefs ->
+        prefs[CLASS] ?: "User"
+    }
+
+    val getNis: Flow<String> = dataStore.data.map { prefs ->
+        prefs[NISN] ?: "User"
+    }
+
+    val getUserPhone: Flow<String> = dataStore.data.map { prefs ->
+        prefs[PHONE] ?: "User"
     }
 
     val getUserRole: Flow<String> = dataStore.data.map { prefs ->
