@@ -13,52 +13,146 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.schoolmanagement.ViewModel.HomeViewModel
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.compose.BindEffect
+import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
+import qrscanner.CameraLens
+import qrscanner.QrCodeScanner
+import qrscanner.QrScanner
 
 @Composable
 fun ScannerScreen (
     navController: NavHostController,
     viewModel: HomeViewModel = koinViewModel()
 ) {
+    // permission untuk camera
+    val factory = rememberPermissionsControllerFactory()
+    val controller = remember(factory) { factory.createPermissionsController() }
+    val scope = rememberCoroutineScope()
+
+    BindEffect(controller)
+
+    var hasCameraPermission by remember { mutableStateOf(false) }
+    var isScanningActive by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        try {
+            controller.providePermission(Permission.CAMERA)
+            hasCameraPermission = true
+        } catch (e: Exception) {
+            hasCameraPermission = false
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
+
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Arahkan Kamera ke QR Code Guru",
-                color = androidx.compose.ui.graphics.Color.White,
-                modifier = Modifier
-                    .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.5f))
-                    .padding(8.dp)
-            )
+        if (hasCameraPermission) {
+            if (isScanningActive) {
 
-            Spacer(modifier = Modifier.height(20.dp))
+            // nampilin scanner kalo udah di izinin
 
-            Box(
-                modifier = Modifier
-                    .size(250.dp)
-                    .border(
-                        2.dp,
-                        Color.Cyan,
-                        RoundedCornerShape(12.dp)
-                    )
+            QrScanner(
+                modifier = Modifier.fillMaxSize(),
+                cameraLens = CameraLens.Back,
+                onCompletion = { qrCode ->
+                    if (qrCode.isNotEmpty()) {
+                        isScanningActive = false
+                        scope.launch {
+                            try {
+                                viewModel.submitAbsen(qrCode)
+                                delay(300)
+                                navController.navigate("scanner")
+                                println("Scanner Result: $qrCode")
+                            } catch (e: Exception) {
+//                                isScanningActive = true
+                                println("Scanner Error: $e")
+                            }
+                        }
+                    }
+                },
+                flashlightOn = false,
+                openImagePicker = false,
+                onFailure = { error ->
+                    println("Scanner Error: $error")
+                },
+                imagePickerHandler = { _ -> }
             )
+        }
+//            Box(
+//                modifier = Modifier
+//                    .padding(top = 155.dp)
+//                    .fillMaxSize(),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Column(
+//                    modifier = Modifier.fillMaxSize(),
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) {
+//                    Text(
+//                        text = "Arahkan Kamera ke QR Code Guru",
+//                        color = Color.White,
+//                        modifier = Modifier
+//                            .background(Color.Black.copy(alpha = 0.5f))
+//                            .padding(8.dp)
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(20.dp))
+//
+//                    Box(
+//                        modifier = Modifier
+//                            .size(260.dp)
+//                            .border(
+//                                2.dp,
+//                                Color.Cyan,
+//                                RoundedCornerShape(12.dp)
+//                            )
+//                    )
+//                }
+//            }
+        } else {
+            // nampilin pesan jika ga diksi izin
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Izin Kamera Diperlukan", color = Color.White)
+                Button(onClick = {
+                    // minta izin lagi jika user klik tombol
+                    scope.launch {
+                        try {
+                            controller.providePermission(Permission.CAMERA)
+                            hasCameraPermission = true
+                        } catch (e: Exception) {
+                        }
+                    }
+                }) {
+                    Text("Berikan Izin")
+                }
+            }
         }
 
         IconButton(

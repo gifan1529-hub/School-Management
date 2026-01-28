@@ -32,10 +32,10 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation("io.insert-koin:koin-android:4.0.0")
-            implementation("io.ktor:ktor-client-okhttp:2.3.12")
+            implementation("io.ktor:ktor-client-okhttp:3.0.0")
         }
         commonMain.dependencies {
-            val ktorVersion = "3.0.1"
+            val ktorVersion = "3.0.0"
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -56,10 +56,11 @@ kotlin {
             implementation("androidx.sqlite:sqlite-bundled:2.5.0-alpha01")
 
             // KTOR
-            implementation("io.ktor:ktor-client-core:3.0.1")
-            implementation("io.ktor:ktor-client-content-negotiation:3.0.1")
-            implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.1")
-            implementation("io.ktor:ktor-client-logging:3.0.1")
+            implementation("io.ktor:ktor-client-core:${ktorVersion}")
+            implementation("io.ktor:ktor-client-content-negotiation:${ktorVersion}")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
+            implementation("io.ktor:ktor-client-logging:${ktorVersion}")
+            implementation("io.ktor:ktor-client-encoding:${ktorVersion}")
 
             implementation("io.ktor:ktor-client-serialization:${ktorVersion}")
 
@@ -80,8 +81,6 @@ kotlin {
             implementation("io.insert-koin:koin-compose:4.0.0")
             implementation("io.insert-koin:koin-compose-viewmodel:4.0.0")
 
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
-
             implementation(compose.materialIconsExtended)
 
             implementation("io.github.aakira:napier:2.7.1")
@@ -93,9 +92,15 @@ kotlin {
 
             // scan
             implementation(libs.qr.kit)
+
+            // permission
+            implementation(libs.moko.permissions)
+
+            // location
+            implementation("com.google.android.gms:play-services-location:21.3.0")
         }
         iosMain.dependencies{
-            implementation("io.ktor:ktor-client-darwin:2.3.12")
+            implementation("io.ktor:ktor-client-darwin:3.0.0")
         }
 
         commonTest.dependencies {

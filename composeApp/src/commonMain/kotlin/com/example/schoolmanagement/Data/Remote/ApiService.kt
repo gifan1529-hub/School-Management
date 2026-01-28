@@ -29,9 +29,13 @@ class ApiService(private val client: HttpClient) {
         }.body()
     }
 
-    suspend fun postAttendance(lat: Double, lon: Double): AttendanceResponse {
-        return client.post("api/attendance") {
-            setBody(mapOf("latitude" to lat, "longitude" to lon))
+    suspend fun postAttendance(qrCode: String, token: String): AttendanceResponse {
+        return client.post(ApiClient.getUrl("attendance")) {
+            contentType(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            setBody(mapOf("qr_code" to qrCode))
         }.body()
     }
 }

@@ -53,9 +53,14 @@ fun HomeScreen(
 
     val userName by viewModel.userName.collectAsState()
     val userRole by viewModel.userRole.collectAsState()
+    val userNis by viewModel.userNIS.collectAsState()
+    val userKelas by viewModel.userClass.collectAsState()
+    val userPhone by viewModel.userPhone.collectAsState()
+
 
     LaunchedEffect(userName) {
         println("DEBUG: Nama : $userName")
+        println("DEBUG: absen : $isAlreadyAbsen")
     }
 
     val primaryBlue = Color(0xFF0066FF)
@@ -63,13 +68,6 @@ fun HomeScreen(
     val lightGreen = Color(0xFFE8F5E9)
     val lightRed = Color(0xFFFFEBEE)
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ){
-
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -94,7 +92,7 @@ fun HomeScreen(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Kelas 10-A • NISN: 12345678",
+                        text = "Kelas ${userKelas} • NISN: ${userNis}",
                         color = Color.White.copy(alpha = 0.8f),
                         fontSize = 14.sp
                     )
@@ -111,7 +109,7 @@ fun HomeScreen(
             modifier = Modifier
                 .padding(horizontal = 20.dp)
                 .offset(y = (-20).dp), // ngebuat card agak naik nimpa header
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
@@ -174,7 +172,7 @@ fun HomeScreen(
                     Text("Persentase Kehadiran", fontSize = 14.sp, color = Color.Gray)
                     Surface(
                         color = if (isAlreadyAbsen) Color(0xFFE8F5E9) else Color.Transparent,
-                        border = BorderStroke(1.dp, Color.Red),
+                        border = BorderStroke(1.dp, if (isAlreadyAbsen) Color(0xFF4CAF50) else Color.Red),
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
                             .padding(end = 5.dp),
@@ -187,7 +185,7 @@ fun HomeScreen(
                         Text(
                             fontSize = 12.sp,
                             color = Color.Black,
-                            text = "Belum Absen",
+                            text = if (isAlreadyAbsen) "Sudah Absen" else "Absen Sekarang",
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                         )
                     }
@@ -231,12 +229,14 @@ fun HomeScreen(
                     "Nilai",
                     Icons.Default.Star,
                     Modifier.weight(1f),
-                    onClick = {navController.navigate("profile")}
+                    onClick = { }
                 )
                 MenuCard(
                     "Izin",
                     Icons.Default.Email,
-                    Modifier.weight(1f))
+                    Modifier.weight(1f),
+                    onClick = { }
+                )
             }
         }
 

@@ -33,6 +33,29 @@ class HomeViewModel (
     private val _logoutEvent = MutableStateFlow(false)
     val logoutEvent: StateFlow<Boolean> = _logoutEvent
 
+    init {
+        loadUserDetail()
+        viewModelScope.launch {
+            // cek dan reset absen setiap hari
+            val today = getTodayDate()
+            val lastAbsenDate = prefsManager.getLastAbsenDate.first()
+
+            if (lastAbsenDate != null && today != lastAbsenDate) {
+                // Jika tanggal berbeda, reset status absen
+                prefsManager.saveAbsenStatus(false, today)
+            } else if (lastAbsenDate == null) {
+                prefsManager.saveAbsenStatus(false, today)
+            }
+
+            prefsManager.getAbsenStatus.collect { status ->
+                _isAlreadyAbsen.value = status
+                println("DEBUG: Status Absen Terbaru: $status")
+            }
+        }
+
+
+    }
+
     fun loadUserDetail() {
         viewModelScope.launch {
             val details = getDetailUserUC.invoke()
@@ -54,6 +77,27 @@ class HomeViewModel (
             initialValue = "Role"
         )
 
+    val userNIS: StateFlow<String> = prefsManager.getNis
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = "NISN"
+        )
+
+    val userPhone: StateFlow<String> = prefsManager.getUserPhone
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = "234"
+        )
+
+    val userClass: StateFlow<String> = prefsManager.getClass
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = "rpl"
+        )
+
     fun logout() {
         viewModelScope.launch {
             logoutUC.invoke()
@@ -61,33 +105,42 @@ class HomeViewModel (
         }
     }
 
-    private fun checkAndResetDailyAbsen() {
-        viewModelScope.launch {
-            val today = getTodayDate()
-            val lastAbsenDate = prefsManager.getLastAbsenDate.first()
+//    private fun checkAndResetDailyAbsen() {
+//        viewModelScope.launch {
+//            val today = getTodayDate()
+//            val lastAbsenDate = prefsManager.getLastAbsenDate.first()
+//
+//            if (today != lastAbsenDate) {
+//                // Jika tanggal berbeda, reset status absen di lokal
+//                prefsManager.saveAbsenStatus(false, today)
+//            } else {
+//                // Jika tanggal sama, ambil status dari prefs
+//                _isAlreadyAbsen.value = prefsManager.getAbsenStatus.first()
+//            }
+//        }
+//    }
 
-            if (today != lastAbsenDate) {
-                // Jika tanggal berbeda, reset status absen di lokal
-                prefsManager.saveAbsenStatus(false, today)
-                _isAlreadyAbsen.value = false
-            } else {
-                // Jika tanggal sama, ambil status dari prefs
-                _isAlreadyAbsen.value = prefsManager.getAbsenStatus.first()
-            }
-        }
-    }
-
-    fun submitAbsen(lat: Double, lon: Double) {
+    fun submitAbsen(qrCode : String) {
         viewModelScope.launch {
             _isLoadingAbsen.value = true
-            val result = submitAttendanceUC.invoke(lat, lon)
 
-            result.onSuccess {
-                _isAlreadyAbsen.value = true
-            }.onFailure {
+            try {
+                val token = prefsManager.getAuthToken.first() ?: ""
+                val result = submitAttendanceUC.invoke(qrCode, token)
 
+                result.onSuccess {
+                    val today = getTodayDate()
+                    prefsManager.saveAbsenStatus(true, today)
+                    _isAlreadyAbsen.value = true
+                    println("DEBUG: Absen Berhasil Disimpan ke Prefs")
+                }.onFailure { e ->
+                    println("DEBUG: Gagal Menyimpan Absen: ${e.message}")
+                }
+            } catch (e: Exception) {
+                println("DEBUG: Crash woii: ${e.message}")
+            } finally {
+                _isLoadingAbsen.value = false
             }
-            _isLoadingAbsen.value = false
         }
     }
 }
