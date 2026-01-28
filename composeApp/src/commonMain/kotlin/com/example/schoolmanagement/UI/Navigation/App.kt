@@ -1,7 +1,10 @@
 package com.example.schoolmanagement.UI.Navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -11,11 +14,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.schoolmanagement.UI.Component.NavButton
 import com.example.schoolmanagement.UI.Screen.ScannerScreen
 import com.example.schoolmanagement.UI.Screen.SignIn
+import com.example.schoolmanagement.UI.Screen.Student.AlertScreen
 import com.example.schoolmanagement.UI.Screen.Student.HomeScreen
 import com.example.schoolmanagement.UI.Screen.Student.ProfileScreen
 import com.example.schoolmanagement.ViewModel.AuthViewModel
+import com.example.schoolmanagement.ViewModel.HomeViewModel
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -38,20 +45,63 @@ fun App(
                 LaunchedEffect(Unit) {
                     if (authViewModel.isLoggedIn()) {
                         navController.navigate("home") {
-                            popUpTo("login") { inclusive = true }
+                            popUpTo("signin") { inclusive = true }
                         }
                     }
                 }
                 SignIn(navController)
             }
             composable("home") {
-                HomeScreen(navController)
+                MainPagerScreen(navController)
             }
             composable("profile") {
                 ProfileScreen(navController)
             }
             composable("scanner") {
                 ScannerScreen(navController)
+            }
+            composable("alert") {
+                AlertScreen(navController)
+            }
+
+        }
+    }
+}
+
+@Composable
+fun MainPagerScreen (
+    navController: NavHostController,
+    homeViewModel: HomeViewModel = koinViewModel()
+) {
+    val pagerState = rememberPagerState(
+        initialPage = 1,
+        pageCount = { 3 })
+    val scope = rememberCoroutineScope()
+    val userRole by homeViewModel.userRole.collectAsState()
+
+    Scaffold (
+        bottomBar = {
+            NavButton(
+                selectedIndex = pagerState.currentPage,
+                onTabSelected = { index ->
+                    scope.launch { pagerState.animateScrollToPage(index) }
+                }
+            )
+        }
+    ) { _ ->
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize(),
+            userScrollEnabled = true
+        ) { page ->
+            when (page) {
+                1 -> when (userRole) {
+                    "student" -> HomeScreen(navController)
+                    "teacher" -> HomeScreen(navController)
+                    "admin" -> HomeScreen(navController)
+                }
+                0 -> AlertScreen(navController)
+                2 -> ProfileScreen(navController)
             }
         }
     }
