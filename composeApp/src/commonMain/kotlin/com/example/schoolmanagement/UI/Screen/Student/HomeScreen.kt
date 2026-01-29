@@ -248,7 +248,13 @@ fun HomeScreen(
                         .weight(1f),
                     onClick = { navController.navigate("jadwal") }
                 )
-                MenuCard("Tugas", Icons.Default.List, Modifier.weight(1f))
+                MenuCard(
+                    "Tugas",
+                    Icons.Default.List,
+                    Modifier
+                        .weight(1f),
+                    onClick = { navController.navigate("tugas") }
+                    )
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(

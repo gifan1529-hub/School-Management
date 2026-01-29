@@ -21,6 +21,7 @@ import com.example.schoolmanagement.UI.Screen.Student.AlertScreen
 import com.example.schoolmanagement.UI.Screen.Student.HomeScreen
 import com.example.schoolmanagement.UI.Screen.Student.JadwalScreen
 import com.example.schoolmanagement.UI.Screen.Student.ProfileScreen
+import com.example.schoolmanagement.UI.Screen.Student.TugasScreen
 import com.example.schoolmanagement.ViewModel.AuthViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import kotlinx.coroutines.launch
@@ -67,7 +68,9 @@ fun App(
             composable("jadwal"){
                 JadwalScreen(navController)
             }
-
+            composable ("tugas"){
+                TugasScreen(navController)
+            }
 
         }
     }
