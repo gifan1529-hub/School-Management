@@ -20,6 +20,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -27,9 +29,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.schoolmanagement.UI.Component.AlertCard
+import com.example.schoolmanagement.ViewModel.HomeViewModel
 import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.Clock
+import org.koin.compose.viewmodel.koinViewModel
 
 data class AlertData(
     val title: String,
@@ -39,13 +43,16 @@ data class AlertData(
 )
 @Composable
 fun AlertScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: HomeViewModel = koinViewModel()
 ) {
     val currentMoment = Clock.System.now()
     val now = currentMoment.toLocalDateTime(currentSystemDefault())
     val isMorningTime = now.hour in 6..16
 
-    // cuman dummy aja. nni kalo udah ada api nnya bakal ngambil dari api
+    val isAlreadyAbsen by viewModel.isAlreadyAbsen.collectAsState()
+
+    // cuman dummy aja. ntni kalo udah ada api nnya bakal ngambil dari api
     val alertsFromGuru = listOf(
         AlertData("Info Rapat", "Kumpul di aula jam 8", "07:00", "info"),
         AlertData("Tugas Baru", "Cek menu tugas untuk Matematika", "Kemarin", "warning"),
@@ -94,7 +101,7 @@ fun AlertScreen(
                     contentPadding = PaddingValues(bottom = 20.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    if (isMorningTime) {
+                    if (isMorningTime && !isAlreadyAbsen) {
                         item {
                             AlertCard(
                                 title = "Peringatan Absensi",
@@ -102,6 +109,7 @@ fun AlertScreen(
                                 time = "07:15",
                                 type = "danger",
                                 onClick = {
+                                    navController.navigate("scanner")
                                 }
                             )
                         }
