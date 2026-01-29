@@ -19,6 +19,7 @@ import com.example.schoolmanagement.UI.Screen.ScannerScreen
 import com.example.schoolmanagement.UI.Screen.SignIn
 import com.example.schoolmanagement.UI.Screen.Student.AlertScreen
 import com.example.schoolmanagement.UI.Screen.Student.HomeScreen
+import com.example.schoolmanagement.UI.Screen.Student.JadwalScreen
 import com.example.schoolmanagement.UI.Screen.Student.ProfileScreen
 import com.example.schoolmanagement.ViewModel.AuthViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
@@ -63,6 +64,10 @@ fun App(
             composable("alert") {
                 AlertScreen(navController)
             }
+            composable("jadwal"){
+                JadwalScreen(navController)
+            }
+
 
         }
     }

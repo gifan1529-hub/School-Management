@@ -25,3 +25,14 @@ fun getTodayDate(): String {
 
     return "$month $day"
 }
+
+fun getTodayTime(): String {
+    val currentMoment = Clock.System.now()
+    val dateTime = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
+
+    // nambahin angka 0 jika jam atau menit di bawah 10
+    val hour = dateTime.hour.toString().padStart(2, '0')
+    val minute = dateTime.minute.toString().padStart(2, '0')
+
+    return "$hour:$minute"
+}
