@@ -36,3 +36,19 @@ fun getTodayTime(): String {
 
     return "$hour:$minute"
 }
+
+fun getTodaDayName(): String {
+    val currentMoment = Clock.System.now()
+    val dateTime = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
+
+    return when (dateTime.dayOfWeek.name) {
+        "MONDAY" -> "Senin"
+        "TUESDAY" -> "Selasa"
+        "WEDNESDAY" -> "Rabu"
+        "THURSDAY" -> "Kamis"
+        "FRIDAY" -> "Jumat"
+        "SATURDAY" -> "Sabtu"
+        "SUNDAY" -> "Minggu"
+        else -> ""
+    }
+}

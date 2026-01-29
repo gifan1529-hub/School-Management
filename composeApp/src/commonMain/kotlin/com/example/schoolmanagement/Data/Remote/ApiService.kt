@@ -38,4 +38,15 @@ class ApiService(private val client: HttpClient) {
             setBody(mapOf("qr_code" to qrCode))
         }.body()
     }
+
+    suspend fun getSchedules(token: String, `class`: String): ScheduleResponse {
+        return client.get(ApiClient.getUrl("schedules")) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            url {
+                parameters.append("class", `class`)
+            }
+        }.body()
+    }
 }
