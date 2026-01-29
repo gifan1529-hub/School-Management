@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.schoolmanagement.DI.Location
 import com.example.schoolmanagement.DI.ToastHelper
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import com.example.schoolmanagement.getTodayTime
@@ -38,7 +39,9 @@ import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import qrgenerator.qrkitpainter.location
 import qrscanner.CameraLens
 import qrscanner.QrCodeScanner
 import qrscanner.QrScanner
@@ -48,6 +51,8 @@ fun ScannerScreen (
     navController: NavHostController,
     viewModel: HomeViewModel = koinViewModel()
 ) {
+    val locationHelper : Location = koinInject ()
+
     // permission untuk camera
     val factory = rememberPermissionsControllerFactory()
     val controller = remember(factory) { factory.createPermissionsController() }
@@ -92,17 +97,27 @@ fun ScannerScreen (
                                     delay(1000)
                                     isScanningActive = true
                                 } else {
-                                viewModel.submitAbsen(qrCode)
-                                delay(300)
-                                navController.popBackStack()
-                                val pesan = if (telat) {
-                                    "Kamu Telat Absen jam $timeNow"
-                                } else {
-                                    "Kamu Absen jam $timeNow"
+                                    val cord = locationHelper.getCurrentLocation()
+                                    if (cord != null ) {
+                                        viewModel.submitAbsen(
+                                            qrCode,
+                                            lat = cord.first,
+                                            long = cord.second
+                                        )
+                                        delay(800)
+                                        navController.popBackStack()
+                                        val pesan = if (telat) {
+                                            "Kamu Telat Absen jam $timeNow"
+                                        } else {
+                                            "Kamu Absen jam $timeNow"
+                                        }
+                                        ToastHelper().Toast(pesan)
+                                        println("Scanner Result: $qrCode | Loc: ${cord.first}, ${cord.second}")
+                                    } else {
+                                        ToastHelper().Toast("Gagal mendapatkan lokasi. Pastikan GPS aktif!")
+                                        isScanningActive = true
+                                    }
                                 }
-                                ToastHelper().Toast(pesan)
-                                println("Scanner Result: $qrCode")
-                            }
                             } catch (e: Exception) {
                                 isScanningActive = true
                                 println("Scanner Error: $e")

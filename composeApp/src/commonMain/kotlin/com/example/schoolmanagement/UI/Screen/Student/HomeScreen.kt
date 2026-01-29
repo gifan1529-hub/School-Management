@@ -272,7 +272,7 @@ fun HomeScreen(
                     "Izin",
                     Icons.Default.Email,
                     Modifier.weight(1f),
-                    onClick = { }
+                    onClick = {navController.navigate("izin") }
                 )
             }
         }

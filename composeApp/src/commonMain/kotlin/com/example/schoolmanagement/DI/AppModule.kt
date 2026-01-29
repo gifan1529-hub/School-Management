@@ -20,6 +20,7 @@ import com.example.schoolmanagement.ViewModel.SignIn
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
+import qrgenerator.qrkitpainter.location
 
 expect val platformModule: org.koin.core.module.Module
 

@@ -6,4 +6,5 @@ import org.koin.dsl.module
 
 actual val  platformModule = module {
     single <HttpClientEngine> { OkHttp.create() }
+    single { Location(get()) }
 }

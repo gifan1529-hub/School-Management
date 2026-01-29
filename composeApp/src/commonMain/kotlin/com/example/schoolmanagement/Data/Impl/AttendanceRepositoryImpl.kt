@@ -8,10 +8,10 @@ class AttendanceRepositoryImpl(
     private val apiService: ApiService
 ) : AttendanceRepository {
 
-    override suspend fun submitAttendance(qrCode: String, token: String): Result<Boolean> {
+    override suspend fun submitAttendance(qrCode: String, token: String, lat: Double, long: Double): Result<Boolean> {
         return try {
             println("DEBUG API: Requesting API")
-            val response = apiService.postAttendance(qrCode, token)
+            val response = apiService.postAttendance(qrCode, token, lat, long)
             println("DEBUG API: Response Message -> ${response.message}")
             if (response.message == "Absensi berhasil!") {
                 Result.success(true)

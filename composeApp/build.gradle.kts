@@ -98,6 +98,8 @@ kotlin {
 
             // location
             implementation("com.google.android.gms:play-services-location:21.3.0")
+
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
         }
         iosMain.dependencies{
             implementation("io.ktor:ktor-client-darwin:3.0.0")

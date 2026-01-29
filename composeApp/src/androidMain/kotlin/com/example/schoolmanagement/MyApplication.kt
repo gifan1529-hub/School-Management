@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.example.schoolmanagement.DI.appModule
+import com.example.schoolmanagement.DI.platformModule
 import com.example.schoolmanagement.Data.Local.createDataStore
 import com.example.schoolmanagement.UI.Navigation.App
 import org.koin.android.ext.koin.androidContext
@@ -24,7 +25,7 @@ class MyApplication : Application()  {
         appContext = this
         startKoin {
             androidContext(this@MyApplication)
-            modules(appModule,
+            modules(appModule, platformModule,
                 module {
                     single<DataStore<Preferences>> { createDataStore(this@MyApplication) }
                 }

@@ -120,13 +120,13 @@ class HomeViewModel (
 //        }
 //    }
 
-    fun submitAbsen(qrCode : String) {
+    fun submitAbsen(qrCode : String, lat: Double, long: Double) {
         viewModelScope.launch {
             _isLoadingAbsen.value = true
 
             try {
                 val token = prefsManager.getAuthToken.first() ?: ""
-                val result = submitAttendanceUC.invoke(qrCode, token)
+                val result = submitAttendanceUC.invoke(qrCode, token, lat, long)
 
                 result.onSuccess {
                     val today = getTodayDate()
@@ -134,6 +134,12 @@ class HomeViewModel (
                     _isAlreadyAbsen.value = true
                     println("DEBUG: Absen Berhasil Disimpan ke Prefs")
                 }.onFailure { e ->
+                    if (e.message?.contains("Kamu sudah absen hari ini", ignoreCase = true) == true) {
+                        val today = getTodayDate()
+                        prefsManager.saveAbsenStatus(true, today)
+                        _isAlreadyAbsen.value = true
+                        println("DEBUG: Sinkronisasi Status: Server bilang sudah absen.")
+                    }
                     println("DEBUG: Gagal Menyimpan Absen: ${e.message}")
                 }
             } catch (e: Exception) {
