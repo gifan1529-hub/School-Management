@@ -32,6 +32,7 @@ import androidx.navigation.NavHostController
 import com.example.schoolmanagement.DI.ToastHelper
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import com.example.schoolmanagement.getTodayTime
+import com.example.schoolmanagement.isLate
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
@@ -82,12 +83,18 @@ fun ScannerScreen (
                     if (qrCode.isNotEmpty()) {
                         isScanningActive = false
                         val timeNow = getTodayTime()
+                        val telat = isLate()
                         scope.launch {
                             try {
                                 viewModel.submitAbsen(qrCode)
                                 delay(300)
                                 navController.popBackStack()
-                                ToastHelper().Toast("Kamu Absen jam $timeNow")
+                                val pesan = if (telat) {
+                                    "Kamu Telat Absen jam $timeNow"
+                                } else {
+                                    "Kamu Absen jam $timeNow"
+                                }
+                                ToastHelper().Toast(pesan)
                                 println("Scanner Result: $qrCode")
                             } catch (e: Exception) {
                                 isScanningActive = true

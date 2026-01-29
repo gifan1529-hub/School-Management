@@ -7,6 +7,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 fun getTodayDate(): String {
@@ -51,4 +52,11 @@ fun getTodaDayName(): String {
         "SUNDAY" -> "Minggu"
         else -> ""
     }
+}
+
+fun isLate():Boolean {
+    val currentMoment = Clock.System.now()
+    val now = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
+
+    return now.hour >= 8 && now.minute > 0
 }

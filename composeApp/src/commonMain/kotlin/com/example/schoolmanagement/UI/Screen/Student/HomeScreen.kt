@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import com.example.schoolmanagement.getTodayDate
+import com.example.schoolmanagement.isLate
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -57,6 +59,7 @@ fun HomeScreen(
     val userKelas by viewModel.userClass.collectAsState()
     val userPhone by viewModel.userPhone.collectAsState()
 
+    val telat = isLate()
 
     LaunchedEffect(userName) {
         println("DEBUG: Nama : $userName")
@@ -170,9 +173,24 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text("Persentase Kehadiran", fontSize = 14.sp, color = Color.Gray)
+
                     Surface(
-                        color = if (isAlreadyAbsen) Color(0xFFE8F5E9) else Color.Transparent,
-                        border = BorderStroke(1.dp, if (isAlreadyAbsen) Color(0xFF4CAF50) else Color.Red),
+                        color = when {
+                            isAlreadyAbsen -> {
+                                if (telat) Color(0xFFFFF3E0) else Color(0xFFE8F5E9)
+                            }
+
+                            else -> Color(0xFFFFEBEE)
+                        },
+                        border = BorderStroke(
+                            1.dp,
+                            when {
+                                isAlreadyAbsen -> {
+                                    if (telat) Color(0xFFFFA500) else Color(0xFF4CAF50)
+                                }
+                                else -> Color.Red
+                            }
+                        ),
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
                             .padding(end = 5.dp),
@@ -185,7 +203,14 @@ fun HomeScreen(
                         Text(
                             fontSize = 12.sp,
                             color = Color.Black,
-                            text = if (isAlreadyAbsen) "Sudah Absen" else "Absen Sekarang",
+                            text = when {
+                                // kalo udah absen, bakal ngecek si user absenya talat atau ngga
+                                isAlreadyAbsen -> {
+                                    if (telat) "Telat Absen" else "Sudah Absen"
+                                }
+                                // kalo belom absen by default nya absen sekaragn
+                                else -> "Absen Sekarang"
+                            },
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                         )
                     }
@@ -196,7 +221,7 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth().height(8.dp),
                     color = primaryBlue,
                     trackColor = Color(0xFFE0E0E0),
-                    strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
+                    strokeCap = StrokeCap.Round
                 )
             }
         }
@@ -216,7 +241,13 @@ fun HomeScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                MenuCard("Jadwal", Icons.Default.DateRange, Modifier.weight(1f))
+                MenuCard(
+                    "Jadwal",
+                    Icons.Default.DateRange,
+                    Modifier
+                        .weight(1f),
+                    onClick = { navController.navigate("jadwal") }
+                )
                 MenuCard("Tugas", Icons.Default.List, Modifier.weight(1f))
             }
             Spacer(modifier = Modifier.height(16.dp))
