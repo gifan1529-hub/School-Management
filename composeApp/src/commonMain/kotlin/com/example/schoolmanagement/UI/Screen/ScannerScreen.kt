@@ -86,6 +86,12 @@ fun ScannerScreen (
                         val telat = isLate()
                         scope.launch {
                             try {
+                                val secretKey = "HADIR-QR-2026"
+                                if (qrCode != secretKey) {
+                                    ToastHelper().Toast("QR Code Tidak Valid! Gunakan QR Guru.")
+                                    delay(1000)
+                                    isScanningActive = true
+                                } else {
                                 viewModel.submitAbsen(qrCode)
                                 delay(300)
                                 navController.popBackStack()
@@ -96,6 +102,7 @@ fun ScannerScreen (
                                 }
                                 ToastHelper().Toast(pesan)
                                 println("Scanner Result: $qrCode")
+                            }
                             } catch (e: Exception) {
                                 isScanningActive = true
                                 println("Scanner Error: $e")
