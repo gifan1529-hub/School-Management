@@ -60,3 +60,9 @@ fun isLate():Boolean {
 
     return now.hour >= 8 && now.minute > 0
 }
+
+fun getTodayDateS(): String {
+    val currentMoment = Clock.System.now()
+    return currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
+        .date.toString()
+}

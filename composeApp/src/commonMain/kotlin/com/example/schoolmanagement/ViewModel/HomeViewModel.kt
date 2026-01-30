@@ -3,23 +3,28 @@ package com.example.schoolmanagement.ViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.schoolmanagement.Data.Local.PrefsManager
+import com.example.schoolmanagement.Data.Remote.ApiService
 import com.example.schoolmanagement.Domain.UseCase.SubmitAttendanceUC
 import com.example.schoolmanagement.Domain.UseCase.UserDetails
 import com.example.schoolmanagement.Domain.UseCase.getDetailUserUC
 import com.example.schoolmanagement.Domain.UseCase.LogoutUseCase
 import com.example.schoolmanagement.getTodayDate
+import com.example.schoolmanagement.getTodayDateS
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
 
 class HomeViewModel (
     private val prefsManager: PrefsManager,
     private val logoutUC: LogoutUseCase,
     private val getDetailUserUC: getDetailUserUC,
-    private val submitAttendanceUC: SubmitAttendanceUC
+    private val submitAttendanceUC: SubmitAttendanceUC,
+    private val apiService: ApiService
 ): ViewModel() {
     private val _userDetails = MutableStateFlow<UserDetails?>(null)
     val userDetails: StateFlow<UserDetails?> = _userDetails
@@ -35,25 +40,7 @@ class HomeViewModel (
 
     init {
         loadUserDetail()
-        viewModelScope.launch {
-            // cek dan reset absen setiap hari
-            val today = getTodayDate()
-            val lastAbsenDate = prefsManager.getLastAbsenDate.first()
-
-            if (lastAbsenDate != null && today != lastAbsenDate) {
-                // Jika tanggal berbeda, reset status absen
-                prefsManager.saveAbsenStatus(false, today)
-            } else if (lastAbsenDate == null) {
-                prefsManager.saveAbsenStatus(false, today)
-            }
-
-            prefsManager.getAbsenStatus.collect { status ->
-                _isAlreadyAbsen.value = status
-                println("DEBUG: Status Absen Terbaru: $status")
-            }
-        }
-
-
+        syncAttendanceStatus()
     }
 
     fun loadUserDetail() {
@@ -105,20 +92,35 @@ class HomeViewModel (
         }
     }
 
-//    private fun checkAndResetDailyAbsen() {
-//        viewModelScope.launch {
-//            val today = getTodayDate()
-//            val lastAbsenDate = prefsManager.getLastAbsenDate.first()
-//
-//            if (today != lastAbsenDate) {
-//                // Jika tanggal berbeda, reset status absen di lokal
-//                prefsManager.saveAbsenStatus(false, today)
-//            } else {
-//                // Jika tanggal sama, ambil status dari prefs
-//                _isAlreadyAbsen.value = prefsManager.getAbsenStatus.first()
-//            }
-//        }
-//    }
+    private fun syncAttendanceStatus() {
+        viewModelScope.launch {
+            _isLoadingAbsen.value = true
+            try {
+                val token = prefsManager.getAuthToken.first() ?: ""
+                if (token.isNotEmpty()) {
+                    // ngambil history absen dari api
+                    val response = apiService.getAttendanceHistory(token)
+
+                    val todayDate = getTodayDateS()
+
+                    // cek apakah ada absen hari ini
+                    val hasAttendedToday = response.data.any { it.date == todayDate }
+
+                    // update ke data store
+                    _isAlreadyAbsen.value = hasAttendedToday
+                    prefsManager.saveAbsenStatus(hasAttendedToday, todayDate)
+
+                    println("DEBUG: Sync Success. Sudah absen: $hasAttendedToday")
+                }
+            } catch (e: Exception) {
+                println("DEBUG: Sync Gagal: ${e.message}")
+                // kalo api off, ambil dari data sotre
+                _isAlreadyAbsen.value = prefsManager.getAbsenStatus.first()
+            } finally {
+                _isLoadingAbsen.value = false
+            }
+        }
+    }
 
     fun submitAbsen(qrCode : String, lat: Double, long: Double) {
         viewModelScope.launch {

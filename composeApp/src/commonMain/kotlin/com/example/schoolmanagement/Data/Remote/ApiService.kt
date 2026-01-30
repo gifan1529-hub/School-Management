@@ -43,6 +43,14 @@ class ApiService(private val client: HttpClient) {
         }.body()
     }
 
+    suspend fun getAttendanceHistory(token: String): AttendanceHistoryResponse {
+        return client.get(ApiClient.getUrl("attendance/history")) {
+                headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+        }.body()
+    }
+
     suspend fun getSchedules(token: String, `class`: String): ScheduleResponse {
         return client.get(ApiClient.getUrl("schedules")) {
             headers {
