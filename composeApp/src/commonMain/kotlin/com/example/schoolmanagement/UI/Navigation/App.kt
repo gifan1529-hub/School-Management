@@ -23,6 +23,7 @@ import com.example.schoolmanagement.UI.Screen.Student.HistoryAbsenScreen
 import com.example.schoolmanagement.UI.Screen.Student.HomeScreen
 import com.example.schoolmanagement.UI.Screen.Student.IzinScreen
 import com.example.schoolmanagement.UI.Screen.Student.JadwalScreen
+import com.example.schoolmanagement.UI.Screen.Student.NilaiScreen
 import com.example.schoolmanagement.UI.Screen.Student.ProfileScreen
 import com.example.schoolmanagement.UI.Screen.Student.TugasScreen
 import com.example.schoolmanagement.ViewModel.AuthViewModel
@@ -82,6 +83,9 @@ fun App(
             }
             composable("absenHistory"){
                 HistoryAbsenScreen(navController)
+            }
+            composable("nilai"){
+                NilaiScreen(navController)
             }
         }
     }
