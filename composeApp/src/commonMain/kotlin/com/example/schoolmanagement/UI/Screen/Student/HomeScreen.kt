@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.schoolmanagement.ViewModel.HomeViewModel
+import com.example.schoolmanagement.getAttendanceStatus
 import com.example.schoolmanagement.getTodayDate
 import com.example.schoolmanagement.isLate
 import org.koin.compose.viewmodel.koinViewModel
@@ -61,9 +62,13 @@ fun HomeScreen(
 
     val countHadir by viewModel.countHadir.collectAsState()
     val countTelat by viewModel.countTelat.collectAsState()
-//    val countAbsen by viewModel.countAbsen.collectAsState()
+    val countAbsen by viewModel.countAbsen.collectAsState()
+    val todayStatus by viewModel.todayStatus.collectAsState()
 
     val telat = isLate()
+
+    val total = (countHadir.toInt() + countTelat.toInt() + countAbsen.toInt())
+    val progressValue = if (total > 0) countHadir.toFloat() / total.toFloat() else 0f
 
     LaunchedEffect(userName) {
         println("DEBUG: Nama : $userName")
@@ -171,7 +176,7 @@ fun HomeScreen(
                     )
                     AttendanceBox(
                         label = "Absen",
-                        value = "0",
+                        value = countAbsen,
                         color = Color(0xFFF44336),
                         bgColor = lightRed,
                         modifier = Modifier.weight(1f)
@@ -189,18 +194,21 @@ fun HomeScreen(
 
                     Surface(
                         color = when {
+                            isAlreadyAbsen && todayStatus == "Absent" -> Color(0xFFFFEBEE)
                             isAlreadyAbsen -> {
-                                if (telat) Color(0xFFFFF3E0) else Color(0xFFE8F5E9)
+                                if (todayStatus == "Late") Color(0xFFFFF3E0) else Color(0xFFE8F5E9)
                             }
-
+                            telat -> Color(0xFFFFF3E0)
                             else -> Color(0xFFFFEBEE)
                         },
                         border = BorderStroke(
                             1.dp,
                             when {
+                                isAlreadyAbsen && todayStatus == "Absent" -> Color.Red
                                 isAlreadyAbsen -> {
-                                    if (telat) Color(0xFFFFA500) else Color(0xFF4CAF50)
+                                    if (todayStatus == "Late") Color(0xFFFFA500) else Color(0xFF4CAF50)
                                 }
+                                telat -> Color(0xFFFFA500)
                                 else -> Color.Red
                             }
                         ),
@@ -208,19 +216,28 @@ fun HomeScreen(
                         modifier = Modifier
                             .padding(end = 5.dp),
                         onClick = {
-                            if (!isAlreadyAbsen && !isLoadingAbsen) {
+                            if (!isAlreadyAbsen && todayStatus != "Absent" && !isLoadingAbsen) {
                                 navController.navigate("scanner")
                             }
                         }
                     ) {
                         Text(
                             fontSize = 12.sp,
-                            color = Color.Black,
+                            color = when {
+                                isAlreadyAbsen && todayStatus == "Absent" -> Color.Red
+                                isAlreadyAbsen -> {
+                                    if (todayStatus == "Late") Color(0xFFFFA500) else Color(0xFF4CAF50)
+                                }
+                                else -> Color.Red
+                            },
                             text = when {
+                                isAlreadyAbsen && todayStatus == "Absent" -> "Sudah Alpha"
+                                getAttendanceStatus() == "Absent" -> "Sudah Alpa"
                                 // kalo udah absen, bakal ngecek si user absenya talat atau ngga
                                 isAlreadyAbsen -> {
-                                    if (telat) "Telat Absen" else "Sudah Absen"
+                                    if (todayStatus == "Late") "Telat Absen" else "Sudah Absen"
                                 }
+                                telat -> "Telat Absen"
                                 // kalo belom absen by default nya absen sekaragn
                                 else -> "Absen Sekarang"
                             },
@@ -230,7 +247,7 @@ fun HomeScreen(
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 LinearProgressIndicator(
-                    progress = 0.9f,
+                    progress = progressValue,
                     modifier = Modifier.fillMaxWidth().height(8.dp),
                     color = primaryBlue,
                     trackColor = Color(0xFFE0E0E0),
@@ -279,7 +296,7 @@ fun HomeScreen(
                     "Nilai",
                     Icons.Default.Star,
                     Modifier.weight(1f),
-                    onClick = { }
+                    onClick = {navController.navigate("nilai") }
                 )
                 MenuCard(
                     "Izin",

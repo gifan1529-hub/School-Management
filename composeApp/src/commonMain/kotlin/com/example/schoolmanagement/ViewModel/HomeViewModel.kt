@@ -44,9 +44,11 @@ class HomeViewModel (
     private val _countTelat = MutableStateFlow("0")
     val countTelat: StateFlow<String> = _countTelat
 
-//    private val _countAbsen = MutableStateFlow("0")
-//    val countAbsen: StateFlow<String> = _countAbsen
+    private val _countAbsen = MutableStateFlow("0")
+    val countAbsen: StateFlow<String> = _countAbsen
 
+    private val _todayStatus = MutableStateFlow("")
+    val todayStatus: StateFlow<String> = _todayStatus
 
     init {
         loadUserDetail()
@@ -111,16 +113,19 @@ class HomeViewModel (
                     // ngambil history absen dari api
                     val response = apiService.getAttendanceHistory(token)
                     val history = response.data
+                    val todayDate = getTodayDateS()
 
                     val hadir = history.count { it.status == "Present" }
                     val telat = history.count { it.status == "Late" }
-//                    val absen = history.count { it.status == "Absent" || it.status == "Alpha" }
+                    val absen = history.count { it.status == "Absent" }
+                    val todayRecord = history.find { it.date == todayDate }
+                    val hasRecordToday = todayRecord != null
 
                     _countHadir.value = hadir.toString()
                     _countTelat.value = telat.toString()
-//                    _countAbsen.value = absen.toString()
-
-                    val todayDate = getTodayDateS()
+                    _countAbsen.value = absen.toString()
+                    _todayStatus.value = todayRecord?.status ?: ""
+                    _isAlreadyAbsen.value = hasRecordToday
 
                     // cek apakah ada absen hari ini
                     val hasAttendedToday = response.data.any { it.date == todayDate }

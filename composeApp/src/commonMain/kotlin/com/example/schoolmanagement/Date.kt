@@ -58,7 +58,18 @@ fun isLate():Boolean {
     val currentMoment = Clock.System.now()
     val now = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
 
-    return now.hour >= 8 && now.minute > 0
+    return now.hour in 8..10
+}
+
+fun getAttendanceStatus(): String {
+    val currentMoment = Clock.System.now()
+    val now = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
+
+    return when {
+        now.hour < 8 -> "Present"       // Sebelum jam 8
+        now.hour in 8..10 -> "Late"     // Jam 8 sampai 10:59
+        else -> "Absent"                // Jam 11 ke atas
+    }
 }
 
 fun getTodayDateS(): String {
