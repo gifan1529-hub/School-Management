@@ -29,9 +29,36 @@ class ApiService(private val client: HttpClient) {
         }.body()
     }
 
-    suspend fun postAttendance(lat: Double, lon: Double): AttendanceResponse {
-        return client.post("api/attendance") {
-            setBody(mapOf("latitude" to lat, "longitude" to lon))
+    suspend fun postAttendance(qrCode: String, token: String, lat: Double, long: Double): AttendanceResponse {
+        return client.post(ApiClient.getUrl("attendance")) {
+            contentType(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            setBody(AttendanceRequest(
+                qr_code = qrCode,
+                lat = lat,
+                long = long
+            ))
+        }.body()
+    }
+
+    suspend fun getAttendanceHistory(token: String): AttendanceHistoryResponse {
+        return client.get(ApiClient.getUrl("attendance/history")) {
+                headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+        }.body()
+    }
+
+    suspend fun getSchedules(token: String, `class`: String): ScheduleResponse {
+        return client.get(ApiClient.getUrl("schedules")) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            url {
+                parameters.append("class", `class`)
+            }
         }.body()
     }
 }

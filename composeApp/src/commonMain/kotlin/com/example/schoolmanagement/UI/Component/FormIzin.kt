@@ -1,0 +1,164 @@
+package com.example.schoolmanagement.UI.Component
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.schoolmanagement.getTodayDate
+
+@Composable
+fun FormIzin (
+    navController: NavController
+) {
+    val primaryBlue = Color(0xFF0066FF)
+
+    var alasan by remember { mutableStateOf("") }
+    var tipeIzin by remember { mutableStateOf("Sakit") } // Default Sakit
+    val tanggal = getTodayDate() // Menggunakan fungsi Date.kt kamu
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF5F7FA))
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = primaryBlue,
+                        shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
+                    )
+                    .padding(horizontal = 24.dp, vertical = 40.dp)
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    IconButton(
+                        onClick = { navController.popBackStack() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White
+                        )
+                    }
+
+                    Text(
+                        text = "Form Permohonan Izin",
+                        color = Color.White,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            Card(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .offset(y = (-30).dp)
+                    .fillMaxSize(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Text("Pilih Alasan", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        TipeIzinChip("Sakit", tipeIzin == "Sakit") { tipeIzin = "Sakit" }
+                        TipeIzinChip("Izin", tipeIzin == "Izin") { tipeIzin = "Izin" }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Text("Detail Alasan", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    OutlinedTextField(
+                        value = alasan,
+                        onValueChange = { alasan = it },
+                        modifier = Modifier.fillMaxWidth().height(120.dp),
+                        placeholder = { Text("Contoh: izin ga masuk ") },
+                        shape = RoundedCornerShape(12.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.DateRange, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(18.dp))
+                        Text(" Tanggal: $tanggal", fontSize = 14.sp, color = Color.Gray)
+                    }
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Button(
+                        onClick = {
+                            // api izin
+                        },
+                        modifier = Modifier.fillMaxWidth().height(50.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = primaryBlue)
+                    ) {
+                        Text("Kirim Pengajuan", fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TipeIzinChip(label: String, isSelected: Boolean, onSelect: () -> Unit) {
+    Surface(
+        modifier = Modifier.clickable { onSelect() },
+        color = if (isSelected) Color(0xFF0066FF).copy(alpha = 0.1f) else Color.Transparent,
+        border = BorderStroke(1.dp, if (isSelected) Color(0xFF0066FF) else Color.LightGray),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Text(
+            text = label,
+            fontSize = 14.sp,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+            color = if (isSelected) Color(0xFF0066FF) else Color.Gray,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+        )
+    }
+}

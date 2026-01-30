@@ -7,6 +7,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 fun getTodayDate(): String {
@@ -24,4 +25,55 @@ fun getTodayDate(): String {
     val day = date.dayOfMonth
 
     return "$month $day"
+}
+
+fun getTodayTime(): String {
+    val currentMoment = Clock.System.now()
+    val dateTime = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
+
+    // nambahin angka 0 jika jam atau menit di bawah 10
+    val hour = dateTime.hour.toString().padStart(2, '0')
+    val minute = dateTime.minute.toString().padStart(2, '0')
+
+    return "$hour:$minute"
+}
+
+fun getTodaDayName(): String {
+    val currentMoment = Clock.System.now()
+    val dateTime = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
+
+    return when (dateTime.dayOfWeek.name) {
+        "MONDAY" -> "Senin"
+        "TUESDAY" -> "Selasa"
+        "WEDNESDAY" -> "Rabu"
+        "THURSDAY" -> "Kamis"
+        "FRIDAY" -> "Jumat"
+        "SATURDAY" -> "Sabtu"
+        "SUNDAY" -> "Minggu"
+        else -> ""
+    }
+}
+
+fun isLate():Boolean {
+    val currentMoment = Clock.System.now()
+    val now = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
+
+    return now.hour in 8..10
+}
+
+fun getAttendanceStatus(): String {
+    val currentMoment = Clock.System.now()
+    val now = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
+
+    return when {
+        now.hour < 8 -> "Present"       // Sebelum jam 8
+        now.hour in 8..10 -> "Late"     // Jam 8 sampai 10:59
+        else -> "Absent"                // Jam 11 ke atas
+    }
+}
+
+fun getTodayDateS(): String {
+    val currentMoment = Clock.System.now()
+    return currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
+        .date.toString()
 }

@@ -12,11 +12,11 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 object ApiClient {
-    private const val BASE_URL = "http://10.20.0.93:8000/api/"
+    private const val BASE_URL = "https://jaquelyn-unrefreshed-miss.ngrok-free.dev/api/"
 
     val client = HttpClient {
         install(Logging) {
-            level = LogLevel.BODY
+            level = LogLevel.ALL
         }
 
         install(ContentNegotiation) {

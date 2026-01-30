@@ -3,6 +3,7 @@ package com.example.schoolmanagement.UI.Screen.Student
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,8 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,14 +43,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.schoolmanagement.ViewModel.ProfileViewModel
 import com.example.schoolmanagement.getTodayDate
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ProfileScreen (
     navController: NavHostController,
-//    viewModel: ProfileVM = koinViewModel()
+    viewModel: ProfileViewModel = koinViewModel()
 ) {
+    val userPhone by viewModel.userPhone.collectAsState()
+    val userEmail by viewModel.userEmail.collectAsState()
+    val userName by viewModel.userName.collectAsState()
+    val userRole by viewModel.userRole.collectAsState()
+
+
     val primaryBlue = Color(0xFF0066FF)
+    val red = Color(0xFFFF0000)
     val lightBlue = Color(0xFFE3F2FD)
     val lightGreen = Color(0xFFE8F5E9)
     val lightRed = Color(0xFFFFEBEE)
@@ -86,7 +98,7 @@ fun ProfileScreen (
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
                     .offset(y = (-20).dp), // ngebuat card agak naik nimpa header
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
@@ -111,12 +123,12 @@ fun ProfileScreen (
                         }
                         Column (modifier = Modifier.padding(start = 16.dp)) {
                             Text(
-                                "UserName",
+                                "${userName}",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp,
                             )
                             Text(
-                                "Role",
+                                "${userRole}",
                                 fontSize = 14.sp,
                                 color = Color.Gray
                             )
@@ -130,19 +142,48 @@ fun ProfileScreen (
                     ProfileInfoRow(
                         Icons.Default.Email,
                         "Email",
-                        "rajesh.kumar@school.edu",
+                        "${userEmail}",
                         Color.Blue
                     )
                     ProfileInfoRow(
                         Icons.Default.Call,
                         "Phone",
-                        "+91 98765 43210",
+                        "$userPhone",
                         Color.Green
                     )
                     ProfileInfoRow(
                         Icons.Default.AccountCircle,
-                        "Role", "Teacher",
+                        "Role", "${userRole}",
                         Color.Magenta
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Surface(
+                color = red,
+                shape = RoundedCornerShape(12.dp),
+                shadowElevation = 4.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .height(50.dp),
+                onClick = {
+                    viewModel.logout()
+                    navController.navigate("signin")
+                }
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Logout",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .padding(horizontal = 12.dp, vertical = 4.dp)
                     )
                 }
             }

@@ -62,7 +62,10 @@ class SignIn (
                             password = _uiState.value.passwordValue,
                             token = token,
                             name = userProfile.name,
-                            role = userProfile.role
+                            role = userProfile.role,
+                            nisn = userProfile.nisn,
+                            kelas = userProfile.kelas,
+                            phone = userProfile.phone
                         )
                         _eventFlow.emit(result)
                     } else {
