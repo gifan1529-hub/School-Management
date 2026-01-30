@@ -1,6 +1,7 @@
 package com.example.schoolmanagement.Data.Impl
 
 import com.example.schoolmanagement.Data.Remote.ApiService
+import com.example.schoolmanagement.Data.Remote.AttendanceRecord
 import com.example.schoolmanagement.Domain.Repository.AttendanceRepository
 import kotlin.math.ln
 
@@ -21,6 +22,15 @@ class AttendanceRepositoryImpl(
         } catch (e: Exception) {
             println("DEBUG API: CRASH di Repository -> ${e.message}")
             e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getHistoryAttendance(token: String): Result<List<AttendanceRecord>> {
+        return try {
+            val response = apiService.getAttendanceHistory(token)
+            Result.success(response.data)
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }

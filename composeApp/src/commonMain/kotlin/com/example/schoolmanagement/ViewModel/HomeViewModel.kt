@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Data.Remote.ApiService
+import com.example.schoolmanagement.Domain.Model.UserDetails
 import com.example.schoolmanagement.Domain.UseCase.SubmitAttendanceUC
-import com.example.schoolmanagement.Domain.UseCase.UserDetails
 import com.example.schoolmanagement.Domain.UseCase.getDetailUserUC
 import com.example.schoolmanagement.Domain.UseCase.LogoutUseCase
 import com.example.schoolmanagement.getTodayDate
@@ -37,6 +37,16 @@ class HomeViewModel (
 
     private val _logoutEvent = MutableStateFlow(false)
     val logoutEvent: StateFlow<Boolean> = _logoutEvent
+
+    private val _countHadir = MutableStateFlow("0")
+    val countHadir: StateFlow<String> = _countHadir
+
+    private val _countTelat = MutableStateFlow("0")
+    val countTelat: StateFlow<String> = _countTelat
+
+//    private val _countAbsen = MutableStateFlow("0")
+//    val countAbsen: StateFlow<String> = _countAbsen
+
 
     init {
         loadUserDetail()
@@ -100,6 +110,15 @@ class HomeViewModel (
                 if (token.isNotEmpty()) {
                     // ngambil history absen dari api
                     val response = apiService.getAttendanceHistory(token)
+                    val history = response.data
+
+                    val hadir = history.count { it.status == "Present" }
+                    val telat = history.count { it.status == "Late" }
+//                    val absen = history.count { it.status == "Absent" || it.status == "Alpha" }
+
+                    _countHadir.value = hadir.toString()
+                    _countTelat.value = telat.toString()
+//                    _countAbsen.value = absen.toString()
 
                     val todayDate = getTodayDateS()
 

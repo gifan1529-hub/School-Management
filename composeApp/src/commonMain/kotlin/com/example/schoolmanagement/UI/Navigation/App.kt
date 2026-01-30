@@ -19,6 +19,7 @@ import com.example.schoolmanagement.UI.Component.NavButton
 import com.example.schoolmanagement.UI.Screen.ScannerScreen
 import com.example.schoolmanagement.UI.Screen.SignIn
 import com.example.schoolmanagement.UI.Screen.Student.AlertScreen
+import com.example.schoolmanagement.UI.Screen.Student.HistoryAbsenScreen
 import com.example.schoolmanagement.UI.Screen.Student.HomeScreen
 import com.example.schoolmanagement.UI.Screen.Student.IzinScreen
 import com.example.schoolmanagement.UI.Screen.Student.JadwalScreen
@@ -78,6 +79,9 @@ fun App(
             }
             composable("formizin"){
                 FormIzin(navController)
+            }
+            composable("absenHistory"){
+                HistoryAbsenScreen(navController)
             }
         }
     }

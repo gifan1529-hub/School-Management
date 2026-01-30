@@ -13,5 +13,6 @@ data class AttendanceRecord (
     val id: Int,
     val date: String,
     val status: String,
-    val time_in: String
+    val time_in: String,
+    val note: String? = null
 )

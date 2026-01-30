@@ -59,6 +59,10 @@ fun HomeScreen(
     val userKelas by viewModel.userClass.collectAsState()
     val userPhone by viewModel.userPhone.collectAsState()
 
+    val countHadir by viewModel.countHadir.collectAsState()
+    val countTelat by viewModel.countTelat.collectAsState()
+//    val countAbsen by viewModel.countAbsen.collectAsState()
+
     val telat = isLate()
 
     LaunchedEffect(userName) {
@@ -70,6 +74,7 @@ fun HomeScreen(
     val lightBlue = Color(0xFFE3F2FD)
     val lightGreen = Color(0xFFE8F5E9)
     val lightRed = Color(0xFFFFEBEE)
+    val lightYellow = Color(0xFFFFF3E0)
 
     Column(
         modifier = Modifier
@@ -114,7 +119,8 @@ fun HomeScreen(
                 .offset(y = (-20).dp), // ngebuat card agak naik nimpa header
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            onClick = { navController.navigate("absenHistory") }
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
                 Row(
@@ -151,14 +157,21 @@ fun HomeScreen(
                 ) {
                     AttendanceBox(
                         label = "Hadir",
-                        value = "20",
+                        value = countHadir,
                         color = Color(0xFF4CAF50),
                         bgColor = lightGreen,
                         modifier = Modifier.weight(1f)
                     )
                     AttendanceBox(
+                        label = "Telat",
+                        value = countTelat,
+                        color = Color(0xFFFFA500),
+                        bgColor = lightYellow,
+                        modifier = Modifier.weight(1f)
+                    )
+                    AttendanceBox(
                         label = "Absen",
-                        value = "2",
+                        value = "0",
                         color = Color(0xFFF44336),
                         bgColor = lightRed,
                         modifier = Modifier.weight(1f)
