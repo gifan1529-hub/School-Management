@@ -1,0 +1,11 @@
+package com.example.schoolmanagement.Domain.Model
+
+data class UserDetails(
+    val email : String,
+    val name : String,
+    val role : String,
+    val isAlreadyAbsen : Boolean,
+    val phone : String,
+    val nisn : String,
+    val kelas : String
+)

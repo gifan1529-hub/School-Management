@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import com.example.schoolmanagement.Domain.Model.UserDetails
 
 class PrefsManager (
     private val dataStore: DataStore<Preferences>
@@ -47,9 +48,9 @@ class PrefsManager (
             prefs[KEY_TOKEN] = token
             prefs[KEY_ROLE] = role
             prefs[KEY_PASSWORD] = password
-            prefs[NISN] = nisn?: ""
-            prefs[CLASS] = kelas?: ""
-            prefs[PHONE] = phone?: ""
+            prefs[NISN] = nisn ?: ""
+            prefs[CLASS] = kelas ?: ""
+            prefs[PHONE] = phone ?: ""
         }
         println("DEBUG PREFS: Saving NISN: $nisn, Kelas: $kelas, Phone: $phone")
     }
@@ -105,5 +106,21 @@ class PrefsManager (
 
     val getLastAbsenDate: Flow<String?> = dataStore.data.map { prefs ->
         prefs[LAST_ABSEN_DATE]
+    }
+
+    suspend fun getUserData(): UserDetails? {
+        val email = getUserEmail.first()
+
+        if (email == "User" || email.isBlank()) return null
+
+        return UserDetails(
+            email = email,
+            name = getUserName.first(),
+            role = getUserRole.first(),
+            isAlreadyAbsen = getAbsenStatus.first(),
+            phone = getUserPhone.first(),
+            nisn = getNis.first(),
+            kelas = getClass.first()
+        )
     }
 }
