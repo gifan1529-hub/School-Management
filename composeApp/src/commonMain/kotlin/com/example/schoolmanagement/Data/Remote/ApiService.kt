@@ -61,4 +61,15 @@ class ApiService(private val client: HttpClient) {
             }
         }.body()
     }
+
+    suspend fun getClassAttendance(token: String, className: String): ClassAttendanceResponse {
+        return client.get(ApiClient.getUrl("attendance/by-class")){
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            url {
+                parameters.append("class", className)
+            }
+        }.body()
+    }
 }

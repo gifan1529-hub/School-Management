@@ -26,7 +26,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun AttendanceCard(name: String, primaryColor: Color) {
+fun AttendanceCard(
+    name: String,
+    primaryColor: Color,
+    timeIn: String,
+    staus: String
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -51,16 +56,17 @@ fun AttendanceCard(name: String, primaryColor: Color) {
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Text("Hadir jam 07:30", color = Color.Gray, fontSize = 12.sp)
+                val labelWaktu = if (timeIn == "-") "Belum melakukan absen" else "Hadir jam $timeIn"
+                Text(labelWaktu, color = Color.Gray, fontSize = 12.sp)
             }
 
             Surface(
-                color = Color(0xFFE8F5E9),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                color = primaryColor.copy(alpha = 0.1f),
+                shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    "Hadir",
-                    color = Color(0xFF4CAF50),
+                    text = staus,
+                    color = primaryColor,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold

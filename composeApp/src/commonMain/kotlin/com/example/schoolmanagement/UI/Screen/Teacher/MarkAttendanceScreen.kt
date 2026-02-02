@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.schoolmanagement.UI.Component.AttendanceCard
 import com.example.schoolmanagement.ViewModel.HomeViewModel
+import com.example.schoolmanagement.ViewModel.MarkAttendanceViewModel
 import com.example.schoolmanagement.getTodayDate
 import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
 import kotlinx.datetime.toLocalDateTime
@@ -55,7 +56,7 @@ import kotlinx.datetime.Instant
 @Composable
 fun MarkAttendanceScreen (
     navController: NavHostController,
-    viewModel: HomeViewModel = koinViewModel()
+    viewModel: MarkAttendanceViewModel = koinViewModel()
 ) {
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
@@ -64,7 +65,7 @@ fun MarkAttendanceScreen (
 //    var showDatePicker by remember { mutableStateOf(false) }
 //    val datePickerState = rememberDatePickerState()
 
-
+    val students by viewModel.studentList.collectAsState()
     val countHadir by viewModel.countHadir.collectAsState()
     val countAbsen by viewModel.countAbsen.collectAsState()
 
@@ -154,23 +155,6 @@ fun MarkAttendanceScreen (
             }
         }
 
-        OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            placeholder = { Text("Cari nama siswa...") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = Color.White,
-                focusedContainerColor = Color.White,
-                unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = primaryBlue
-            )
-        )
-
         Text(
             "Daftar Siswa Kelas",
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
@@ -183,10 +167,71 @@ fun MarkAttendanceScreen (
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            val dummyStudents = listOf("Dewi Lestari", "Budi Santoso", "Siti Rahmawati", "Ahmad Fauzi")
+            val hadirList = students.filter { it.status == "Present" || it.status == "Late" }
 
-            items(dummyStudents) { student ->
-                AttendanceCard(student, primaryBlue)
+            if (hadirList.isNotEmpty()) {
+                item {
+                    Text(
+                        "Sudah Hadir (${hadirList.size})",
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF4CAF50),
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                }
+                items(hadirList) { student ->
+                    AttendanceCard(
+                        name = student.name,
+                        primaryColor = if (student.status == "Present") Color(0xFF4CAF50) else Color(0xFFFFA500),
+                        timeIn = student.time_in,
+                        staus = student.status
+                    )
+                }
+            }
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+
+            val absent = students.filter { it.status == "Absent" }
+
+            if (absent.isNotEmpty()) {
+                item {
+                    Text(
+                        "Absent (${absent.size})",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                }
+                items(absent) { student ->
+                    AttendanceCard(
+                        name = student.name,
+                        primaryColor = Color.Red,
+                        timeIn = student.time_in,
+                        staus = student.status
+                    )
+                }
+            }
+
+            val belummHadir = students.filter { it.status == "Not Present Yet" }
+
+            if (belummHadir.isNotEmpty()) {
+                item {
+                    Text(
+                        "Belum Hadir (${belummHadir.size})",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                }
+                items(belummHadir) { student ->
+                    AttendanceCard(
+                        name = student.name,
+                        primaryColor = Color.Red,
+                        timeIn = student.time_in,
+                        staus = student.status
+                    )
+                }
             }
         }
     }
