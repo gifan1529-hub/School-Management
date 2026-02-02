@@ -47,6 +47,10 @@ class HomeTeacherViewModel (
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
+    init {
+        loadUserDetail()
+        syncAttendanceStatus()
+    }
     fun refreshData() {
         viewModelScope.launch {
             _isRefreshing.value = true

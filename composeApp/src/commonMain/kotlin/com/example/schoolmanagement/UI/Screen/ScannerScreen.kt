@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.navigation.NavHostController
 import com.example.schoolmanagement.DI.Location
 import com.example.schoolmanagement.DI.ToastHelper
 import com.example.schoolmanagement.ViewModel.HomeViewModel
+import com.example.schoolmanagement.getAttendanceStatus
 import com.example.schoolmanagement.getTodayTime
 import com.example.schoolmanagement.isLate
 import dev.icerock.moko.permissions.Permission
@@ -53,6 +55,8 @@ fun ScannerScreen (
 ) {
     val locationHelper : Location = koinInject ()
 
+    val userRole by viewModel.userRole.collectAsState()
+
     // permission untuk camera
     val factory = rememberPermissionsControllerFactory()
     val controller = remember(factory) { factory.createPermissionsController() }
@@ -66,6 +70,7 @@ fun ScannerScreen (
     LaunchedEffect(Unit) {
         try {
             controller.providePermission(Permission.CAMERA)
+            controller.providePermission(Permission.LOCATION)
             hasCameraPermission = true
         } catch (e: Exception) {
             hasCameraPermission = false
@@ -91,9 +96,14 @@ fun ScannerScreen (
                         val telat = isLate()
                         scope.launch {
                             try {
-                                val secretKey = "HADIR-QR-2026"
+                                val secretKey = if (userRole == "teacher" || userRole == "admin") {
+                                    "GURU-HADIR-2026"
+                                } else {
+                                    "HADIR-QR-2026"
+                                }
                                 if (qrCode != secretKey) {
-                                    ToastHelper().Toast("QR Code Tidak Valid! Gunakan QR Guru.")
+                                    val rolePesan = if (userRole == "Teacher") "QR untuk Guru" else "QR untuk Murid"
+                                    ToastHelper().Toast("QR Code Tidak Valid! Gunakan $rolePesan.")
                                     delay(1000)
                                     isScanningActive = true
                                 } else {
@@ -106,10 +116,11 @@ fun ScannerScreen (
                                         )
                                         delay(800)
                                         navController.popBackStack()
-                                        val pesan = if (telat) {
-                                            "Kamu Telat Absen jam $timeNow"
-                                        } else {
-                                            "Kamu Absen jam $timeNow"
+                                        val status = getAttendanceStatus()
+                                        val pesan = when(status) {
+                                            "Late" -> "Yah, kamu Telat Absen jam $timeNow"
+                                            "Absent" -> "Waduh, Kamu Alpa (Sudah lewat jam 11)!"
+                                            else -> "Mantap! Kamu Hadir jam $timeNow"
                                         }
                                         ToastHelper().Toast(pesan)
                                         println("Scanner Result: $qrCode | Loc: ${cord.first}, ${cord.second}")
