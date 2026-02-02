@@ -26,6 +26,8 @@ import com.example.schoolmanagement.UI.Screen.Student.JadwalScreen
 import com.example.schoolmanagement.UI.Screen.Student.NilaiScreen
 import com.example.schoolmanagement.UI.Screen.Student.ProfileScreen
 import com.example.schoolmanagement.UI.Screen.Student.TugasScreen
+import com.example.schoolmanagement.UI.Screen.Teacher.HomeScreenGuru
+import com.example.schoolmanagement.UI.Screen.Teacher.MarkAttendanceScreen
 import com.example.schoolmanagement.ViewModel.AuthViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import kotlinx.coroutines.launch
@@ -87,6 +89,9 @@ fun App(
             composable("nilai"){
                 NilaiScreen(navController)
             }
+            composable("siswahadir"){
+                MarkAttendanceScreen(navController)
+            }
         }
     }
 }
@@ -120,7 +125,7 @@ fun MainPagerScreen (
             when (page) {
                 1 -> when (userRole) {
                     "student" -> HomeScreen(navController)
-                    "teacher" -> HomeScreen(navController)
+                    "teacher" -> HomeScreenGuru(navController)
                     "admin" -> HomeScreen(navController)
                 }
                 0 -> AlertScreen(navController)
