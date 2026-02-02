@@ -34,13 +34,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.schoolmanagement.ViewModel.HomeViewModel
+import com.example.schoolmanagement.getAttendanceStatus
 import com.example.schoolmanagement.getTodayDate
+import com.example.schoolmanagement.isLate
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -53,23 +56,31 @@ fun HomeScreen(
 
     val userName by viewModel.userName.collectAsState()
     val userRole by viewModel.userRole.collectAsState()
+    val userNis by viewModel.userNIS.collectAsState()
+    val userKelas by viewModel.userClass.collectAsState()
+    val userPhone by viewModel.userPhone.collectAsState()
+
+    val countHadir by viewModel.countHadir.collectAsState()
+    val countTelat by viewModel.countTelat.collectAsState()
+    val countAbsen by viewModel.countAbsen.collectAsState()
+    val todayStatus by viewModel.todayStatus.collectAsState()
+
+    val telat = isLate()
+
+    val total = (countHadir.toInt() + countTelat.toInt() + countAbsen.toInt())
+    val progressValue = if (total > 0) countHadir.toFloat() / total.toFloat() else 0f
 
     LaunchedEffect(userName) {
         println("DEBUG: Nama : $userName")
+        println("DEBUG: absen : $isAlreadyAbsen")
     }
 
     val primaryBlue = Color(0xFF0066FF)
     val lightBlue = Color(0xFFE3F2FD)
     val lightGreen = Color(0xFFE8F5E9)
     val lightRed = Color(0xFFFFEBEE)
+    val lightYellow = Color(0xFFFFF3E0)
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ){
-
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -94,7 +105,7 @@ fun HomeScreen(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Kelas 10-A • NISN: 12345678",
+                        text = "Kelas ${userKelas} • NISN: ${userNis}",
                         color = Color.White.copy(alpha = 0.8f),
                         fontSize = 14.sp
                     )
@@ -111,9 +122,10 @@ fun HomeScreen(
             modifier = Modifier
                 .padding(horizontal = 20.dp)
                 .offset(y = (-20).dp), // ngebuat card agak naik nimpa header
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            onClick = { navController.navigate("absenHistory") }
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
                 Row(
@@ -150,14 +162,21 @@ fun HomeScreen(
                 ) {
                     AttendanceBox(
                         label = "Hadir",
-                        value = "20",
+                        value = countHadir,
                         color = Color(0xFF4CAF50),
                         bgColor = lightGreen,
                         modifier = Modifier.weight(1f)
                     )
                     AttendanceBox(
+                        label = "Telat",
+                        value = countTelat,
+                        color = Color(0xFFFFA500),
+                        bgColor = lightYellow,
+                        modifier = Modifier.weight(1f)
+                    )
+                    AttendanceBox(
                         label = "Absen",
-                        value = "2",
+                        value = countAbsen,
                         color = Color(0xFFF44336),
                         bgColor = lightRed,
                         modifier = Modifier.weight(1f)
@@ -172,33 +191,67 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text("Persentase Kehadiran", fontSize = 14.sp, color = Color.Gray)
+
                     Surface(
-                        color = if (isAlreadyAbsen) Color(0xFFE8F5E9) else Color.Transparent,
-                        border = BorderStroke(1.dp, Color.Red),
+                        color = when {
+                            isAlreadyAbsen && todayStatus == "Absent" -> Color(0xFFFFEBEE)
+                            isAlreadyAbsen -> {
+                                if (todayStatus == "Late") Color(0xFFFFF3E0) else Color(0xFFE8F5E9)
+                            }
+                            telat -> Color(0xFFFFF3E0)
+                            else -> Color(0xFFFFEBEE)
+                        },
+                        border = BorderStroke(
+                            1.dp,
+                            when {
+                                isAlreadyAbsen && todayStatus == "Absent" -> Color.Red
+                                isAlreadyAbsen -> {
+                                    if (todayStatus == "Late") Color(0xFFFFA500) else Color(0xFF4CAF50)
+                                }
+                                telat -> Color(0xFFFFA500)
+                                else -> Color.Red
+                            }
+                        ),
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
                             .padding(end = 5.dp),
                         onClick = {
-                            if (!isAlreadyAbsen && !isLoadingAbsen) {
+                            if (!isAlreadyAbsen && todayStatus != "Absent" && !isLoadingAbsen) {
                                 navController.navigate("scanner")
                             }
                         }
                     ) {
                         Text(
                             fontSize = 12.sp,
-                            color = Color.Black,
-                            text = "Belum Absen",
+                            color = when {
+                                isAlreadyAbsen && todayStatus == "Absent" -> Color.Red
+                                isAlreadyAbsen -> {
+                                    if (todayStatus == "Late") Color(0xFFFFA500) else Color(0xFF4CAF50)
+                                }
+                                else -> Color.Red
+                            },
+                            text = when {
+                                isAlreadyAbsen && todayStatus == "Absent" -> "Sudah Alpha"
+                                getAttendanceStatus() == "Absent" -> "Sudah Alpa"
+                                // kalo udah absen, bakal ngecek si user absenya talat atau ngga
+                                isAlreadyAbsen -> {
+                                    if (todayStatus == "Late") "Telat Absen" else "Sudah Absen"
+                                }
+                                telat -> "Telat Absen"
+                                // kalo belom absen by default nya absen sekaragn
+                                else -> "Absen Sekarang"
+                            },
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                         )
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 LinearProgressIndicator(
-                    progress = 0.9f,
+                    progress = progressValue,
                     modifier = Modifier.fillMaxWidth().height(8.dp),
                     color = primaryBlue,
                     trackColor = Color(0xFFE0E0E0),
-                    strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
+                    strokeCap = StrokeCap.Round
                 )
             }
         }
@@ -218,8 +271,20 @@ fun HomeScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                MenuCard("Jadwal", Icons.Default.DateRange, Modifier.weight(1f))
-                MenuCard("Tugas", Icons.Default.List, Modifier.weight(1f))
+                MenuCard(
+                    "Jadwal",
+                    Icons.Default.DateRange,
+                    Modifier
+                        .weight(1f),
+                    onClick = { navController.navigate("jadwal") }
+                )
+                MenuCard(
+                    "Tugas",
+                    Icons.Default.List,
+                    Modifier
+                        .weight(1f),
+                    onClick = { navController.navigate("tugas") }
+                    )
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(
@@ -231,12 +296,14 @@ fun HomeScreen(
                     "Nilai",
                     Icons.Default.Star,
                     Modifier.weight(1f),
-                    onClick = {navController.navigate("profile")}
+                    onClick = {navController.navigate("nilai") }
                 )
                 MenuCard(
                     "Izin",
                     Icons.Default.Email,
-                    Modifier.weight(1f))
+                    Modifier.weight(1f),
+                    onClick = {navController.navigate("izin") }
+                )
             }
         }
 

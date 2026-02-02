@@ -8,9 +8,9 @@ class SubmitAttendanceUC(
     private val repository: AttendanceRepository,
     private val prefsManager: PrefsManager
 ) {
-    suspend fun invoke(lat: Double, lon: Double): Result<Boolean> {
+    suspend fun invoke(qrCode: String, token: String, lat: Double, lon: Double): Result<Boolean> {
         return try {
-            val result = repository.submitAttendance(lat, lon)
+            val result = repository.submitAttendance(qrCode , token, lat, lon)
             if (result.isSuccess) {
                 val today = getTodayDate()
                 // Simpan status ke Prefs agar saat dibuka lagi tetap 'true'
