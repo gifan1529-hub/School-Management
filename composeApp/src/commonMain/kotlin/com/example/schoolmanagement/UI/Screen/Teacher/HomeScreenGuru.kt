@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.schoolmanagement.UI.Screen.Student.AttendanceBox
 import com.example.schoolmanagement.UI.Screen.Student.MenuCard
+import com.example.schoolmanagement.ViewModel.HomeTeacherViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import com.example.schoolmanagement.getAttendanceStatus
 import com.example.schoolmanagement.getTodayDate
@@ -48,7 +49,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun HomeScreenGuru (
     navController: NavHostController,
-    viewModel: HomeViewModel = koinViewModel ()
+    viewModel: HomeTeacherViewModel = koinViewModel ()
 ) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val isAlreadyAbsen by viewModel.isAlreadyAbsen.collectAsState()
@@ -56,9 +57,7 @@ fun HomeScreenGuru (
 
     val userName by viewModel.userName.collectAsState()
     val userRole by viewModel.userRole.collectAsState()
-    val userNis by viewModel.userNIS.collectAsState()
     val userKelas by viewModel.userClass.collectAsState()
-    val userPhone by viewModel.userPhone.collectAsState()
 
     val countHadir by viewModel.countHadir.collectAsState()
     val countTelat by viewModel.countTelat.collectAsState()
@@ -232,9 +231,7 @@ fun HomeScreenGuru (
                                 color = when {
                                     isAlreadyAbsen && todayStatus == "Absent" -> Color.Red
                                     isAlreadyAbsen -> {
-                                        if (todayStatus == "Late") Color(0xFFFFA500) else Color(
-                                            0xFFFFA500
-                                        )
+                                        if (todayStatus == "Late") Color(0xFFFFA500) else Color.Red
                                     }
                                     telat -> Color(0xFFFFA500)
                                     else -> Color.Red
@@ -311,7 +308,7 @@ fun HomeScreenGuru (
                         "Izin",
                         Icons.Default.Email,
                         Modifier.weight(1f),
-                        onClick = {  }
+                        onClick = {navController.navigate("izinguru") }
                     )
                 }
             }
