@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Data.Remote.ApiService
 import com.example.schoolmanagement.Domain.Model.UserDetails
+import com.example.schoolmanagement.Domain.UseCase.GetAttendanceStatusUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitAttendanceUC
 import com.example.schoolmanagement.Domain.UseCase.getDetailUserUC
 import com.example.schoolmanagement.Domain.UseCase.LogoutUseCase
@@ -22,6 +23,7 @@ import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
 class HomeViewModel (
     private val prefsManager: PrefsManager,
     private val logoutUC: LogoutUseCase,
+    private val getAttendanceStatusUseCase: GetAttendanceStatusUseCase,
     private val getDetailUserUC: getDetailUserUC,
     private val submitAttendanceUC: SubmitAttendanceUC,
     private val apiService: ApiService
@@ -54,6 +56,31 @@ class HomeViewModel (
         loadUserDetail()
         syncAttendanceStatus()
     }
+
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
+    fun refreshData() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            // Jalankan ulang fungsi sinkronisasi data
+            loadUserDetail()
+            syncAttendanceStatus()
+            // Beri sedikit delay agar animasi tidak terlalu cepat hilang
+            kotlinx.coroutines.delay(1000)
+            _isRefreshing.value = false
+        }
+    }
+
+//    private val _selectedDate = MutableStateFlow(getTodayDateS())
+//    val selectedDate: StateFlow<String> = _selectedDate
+//
+//    fun updateSelectedDate(newDate: String) {
+//        viewModelScope.launch {
+//            _selectedDate.value = newDate
+//            syncAttendanceStatus(newDate)
+//        }
+//    }
 
     fun loadUserDetail() {
         viewModelScope.launch {
@@ -108,38 +135,23 @@ class HomeViewModel (
         viewModelScope.launch {
             _isLoadingAbsen.value = true
             try {
-                val token = prefsManager.getAuthToken.first() ?: ""
-                if (token.isNotEmpty()) {
-                    // ngambil history absen dari api
-                    val response = apiService.getAttendanceHistory(token)
-                    val history = response.data
-                    val todayDate = getTodayDateS()
+                getAttendanceStatusUseCase.invoke()
+                    .onSuccess { stats ->
 
-                    val hadir = history.count { it.status == "Present" }
-                    val telat = history.count { it.status == "Late" }
-                    val absen = history.count { it.status == "Absent" }
-                    val todayRecord = history.find { it.date == todayDate }
-                    val hasRecordToday = todayRecord != null
+                        _countHadir.value = stats.hadir
+                        _countTelat.value = stats.telat
+                        _countAbsen.value = stats.absen
+                        _todayStatus.value = stats.todayStatus
+                        _isAlreadyAbsen.value = stats.isAlreadyAbsen
 
-                    _countHadir.value = hadir.toString()
-                    _countTelat.value = telat.toString()
-                    _countAbsen.value = absen.toString()
-                    _todayStatus.value = todayRecord?.status ?: ""
-                    _isAlreadyAbsen.value = hasRecordToday
+                        prefsManager.saveAbsenStatus(stats.isAlreadyAbsen, stats.todayDate)
 
-                    // cek apakah ada absen hari ini
-                    val hasAttendedToday = response.data.any { it.date == todayDate }
-
-                    // update ke data store
-                    _isAlreadyAbsen.value = hasAttendedToday
-                    prefsManager.saveAbsenStatus(hasAttendedToday, todayDate)
-
-                    println("DEBUG: Sync Success. Sudah absen: $hasAttendedToday")
-                }
-            } catch (e: Exception) {
-                println("DEBUG: Sync Gagal: ${e.message}")
-                // kalo api off, ambil dari data sotre
-                _isAlreadyAbsen.value = prefsManager.getAbsenStatus.first()
+                        println("DEBUG: Sync Success. Sudah absen: ${stats.isAlreadyAbsen}")
+                    }.onFailure { e ->
+                        println("DEBUG: Sync Gagal: ${e.message}")
+                        // Kalo api off, ambil dari data store
+                        _isAlreadyAbsen.value = prefsManager.getAbsenStatus.first()
+                    }
             } finally {
                 _isLoadingAbsen.value = false
             }
@@ -151,21 +163,12 @@ class HomeViewModel (
             _isLoadingAbsen.value = true
 
             try {
-                val token = prefsManager.getAuthToken.first() ?: ""
-                val result = submitAttendanceUC.invoke(qrCode, token, lat, long)
+                 val result = submitAttendanceUC.invoke(qrCode, lat, long)
 
                 result.onSuccess {
-                    val today = getTodayDate()
-                    prefsManager.saveAbsenStatus(true, today)
                     _isAlreadyAbsen.value = true
-                    println("DEBUG: Absen Berhasil Disimpan ke Prefs")
+                    println("DEBUG: Absen Berhasil (Logic by UseCase)")
                 }.onFailure { e ->
-                    if (e.message?.contains("Kamu sudah absen hari ini", ignoreCase = true) == true) {
-                        val today = getTodayDate()
-                        prefsManager.saveAbsenStatus(true, today)
-                        _isAlreadyAbsen.value = true
-                        println("DEBUG: Sinkronisasi Status: Server bilang sudah absen.")
-                    }
                     println("DEBUG: Gagal Menyimpan Absen: ${e.message}")
                 }
             } catch (e: Exception) {
@@ -173,6 +176,6 @@ class HomeViewModel (
             } finally {
                 _isLoadingAbsen.value = false
             }
+            }
         }
     }
-}

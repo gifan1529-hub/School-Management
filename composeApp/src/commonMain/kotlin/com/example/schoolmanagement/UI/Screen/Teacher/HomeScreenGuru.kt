@@ -289,7 +289,7 @@ fun HomeScreenGuru (
                         Icons.Default.List,
                         Modifier
                             .weight(1f),
-                        onClick = {  }
+                        onClick = { navController.navigate("homework") }
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -302,7 +302,7 @@ fun HomeScreenGuru (
                         "Jadwal Mengajar",
                         Icons.Default.Star,
                         Modifier.weight(1f),
-                        onClick = {  }
+                        onClick = {navController.navigate("jadwalngajar")  }
                     )
                     MenuCard(
                         "Izin",

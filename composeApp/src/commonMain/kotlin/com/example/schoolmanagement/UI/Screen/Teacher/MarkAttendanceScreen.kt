@@ -111,7 +111,7 @@ fun MarkAttendanceScreen (
                         Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.White)
                     }
                     Text(
-                        "Kelola Kehadiran",
+                        "Daftar Siswa Kelas",
                         color = Color.White,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
@@ -125,7 +125,7 @@ fun MarkAttendanceScreen (
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     AttendanceSummaryItem("Siswa Hadir", countHadir, Color.White)
-                    AttendanceSummaryItem("Belum Absen", countAbsen, Color.White.copy(alpha = 0.7f))
+                    AttendanceSummaryItem("Belum Absen / Absent", countAbsen, Color.White.copy(alpha = 0.7f))
                     AttendanceSummaryItem("Tanggal", getTodayDate(), Color.White)
                 }
 //                Surface(
@@ -154,13 +154,6 @@ fun MarkAttendanceScreen (
 //                }
             }
         }
-
-        Text(
-            "Daftar Siswa Kelas",
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
-            fontWeight = FontWeight.Bold,
-            color = Color.Black.copy(alpha = 0.6f)
-        )
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

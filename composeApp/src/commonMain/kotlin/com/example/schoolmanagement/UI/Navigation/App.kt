@@ -14,7 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.schoolmanagement.UI.Component.FormIzin
+import com.example.schoolmanagement.UI.Screen.FormIzin
 import com.example.schoolmanagement.UI.Component.NavButton
 import com.example.schoolmanagement.UI.Screen.ScannerScreen
 import com.example.schoolmanagement.UI.Screen.SignIn
@@ -27,6 +27,9 @@ import com.example.schoolmanagement.UI.Screen.Student.NilaiScreen
 import com.example.schoolmanagement.UI.Screen.Student.ProfileScreen
 import com.example.schoolmanagement.UI.Screen.Student.TugasScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.HomeScreenGuru
+import com.example.schoolmanagement.UI.Screen.Teacher.HomeWorkScreen
+import com.example.schoolmanagement.UI.Screen.Teacher.IzinScreenGuru
+import com.example.schoolmanagement.UI.Screen.Teacher.JadwalMengajarScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.MarkAttendanceScreen
 import com.example.schoolmanagement.ViewModel.AuthViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
@@ -91,6 +94,15 @@ fun App(
             }
             composable("siswahadir"){
                 MarkAttendanceScreen(navController)
+            }
+            composable ("izinguru"){
+                IzinScreenGuru(navController)
+            }
+            composable ("jadwalngajar"){
+                JadwalMengajarScreen(navController)
+            }
+            composable("homework") {
+                HomeWorkScreen(navController)
             }
         }
     }

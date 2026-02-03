@@ -4,11 +4,12 @@ import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Data.Remote.ApiService
 import com.example.schoolmanagement.Domain.Model.AttendanceStats
 import com.example.schoolmanagement.Domain.Model.ClassAttendanceStats
+import com.example.schoolmanagement.Domain.Repository.AttendanceRepository
 
 import kotlinx.coroutines.flow.first
 
 class GetTeacherDasboardUseCase (
-    private val apiService: ApiService,
+    private val repository: AttendanceRepository,
     private val prefsManager: PrefsManager
 ) {
     suspend operator fun invoke(): Result<ClassAttendanceStats> {
@@ -20,24 +21,28 @@ class GetTeacherDasboardUseCase (
                 return Result.failure(Exception("Session tidak valid atau kelas kosong"))
             }
 
-            val response = apiService.getClassAttendance(token, myClass)
-            val students = response.data
+            val result = repository.getClassAttendance(token, myClass)
 
-            val hadir = students.count { it.status == "Present" }.toString()
-            val telat = students.count { it.status == "Late" }.toString()
-            val absen = students.count {
-                it.status == "Not Present Yet" || it.status == "Absent"
-            }.toString()
+            if (result.isSuccess) {
+                val students = result.getOrThrow()
 
-            Result.success(
-                ClassAttendanceStats(
-                    hadir = hadir,
-                    telat = telat,
-                    absen = absen,
-                    studentList = students
+                val hadir = students.count { it.status == "Present" }.toString()
+                val telat = students.count { it.status == "Late" }.toString()
+                val absen = students.count {
+                    it.status == "Not Present Yet" || it.status == "Absent"
+                }.toString()
+
+                Result.success(
+                    ClassAttendanceStats(
+                        hadir = hadir,
+                        telat = telat,
+                        absen = absen,
+                        studentList = students
+                    )
                 )
-            )
-
+            } else {
+                Result.failure(result.exceptionOrNull() ?: Exception("Gagal mendapatkan data kelas"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }

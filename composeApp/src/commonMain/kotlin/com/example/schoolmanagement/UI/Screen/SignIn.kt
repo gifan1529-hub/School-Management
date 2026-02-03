@@ -91,8 +91,8 @@ fun SignIn(
                         .background(Color.White, RoundedCornerShape(20.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-//                Icon(
-//                    painter = painterResource(Res.drawable.sc\),
+//                Image(
+//                    painter = painterResource(Res.drawable.school),
 //                    contentDescription = "Logo",
 //                    modifier = Modifier.size(40.dp)
 //                )

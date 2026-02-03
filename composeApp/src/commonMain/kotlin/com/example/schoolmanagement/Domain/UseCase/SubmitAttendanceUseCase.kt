@@ -1,25 +1,32 @@
 package com.example.schoolmanagement.Domain.UseCase
 
 import com.example.schoolmanagement.Data.Local.PrefsManager
+import com.example.schoolmanagement.Data.Remote.ApiService
 import com.example.schoolmanagement.Domain.Repository.AttendanceRepository
 import com.example.schoolmanagement.getTodayDate
+import kotlinx.coroutines.flow.first
 
 class SubmitAttendanceUC(
+    private val apiService: ApiService,
     private val repository: AttendanceRepository,
     private val prefsManager: PrefsManager
 ) {
-    suspend fun invoke(qrCode: String, token: String, lat: Double, lon: Double): Result<Boolean> {
+    suspend fun invoke(qrCode: String, lat: Double, long: Double): Result<Boolean> {
         return try {
-            val result = repository.submitAttendance(qrCode , token, lat, lon)
-            if (result.isSuccess) {
-                val today = getTodayDate()
-                // Simpan status ke Prefs agar saat dibuka lagi tetap 'true'
-                prefsManager.saveAbsenStatus(true, date = today)
-                Result.success(true)
-            } else {
-                Result.failure(Exception("Gagal Absen"))
-            }
+            val token = prefsManager.getAuthToken.first() ?: ""
+
+            apiService.postAttendance(qrCode, token, lat, long)
+
+            val today = getTodayDate()
+            prefsManager.saveAbsenStatus(true, today)
+
+            Result.success(true)
         } catch (e: Exception) {
+            if (e.message?.contains("Kamu sudah absen hari ini", ignoreCase = true) == true) {
+                val today = getTodayDate()
+                prefsManager.saveAbsenStatus(true, today)
+                return Result.success(true)
+            }
             Result.failure(e)
         }
     }

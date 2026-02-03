@@ -17,29 +17,34 @@ class GetAttendanceStatusUseCase (
         return try {
             val token = prefsManager.getAuthToken.first() ?: ""
             if (token.isNotEmpty()) {
-                val response = apiService.getAttendanceHistory(token)
-                val history = response.data
-                val todayDate = getTodayDateS()
+                val result = repository.getAttendanceStats(token)
 
-                val hadir = history.count { it.status == "Present" }
-                val telat = history.count { it.status == "Late" }
-                val absen = history.count { it.status == "Absent" }
-                val todayRecord = history.find { it.date == todayDate }
-                val hasRecordToday = todayRecord != null
+                if (result.isSuccess) {
+                    val history = result.getOrThrow()
+                    val todayDate = getTodayDateS()
 
-                // Cek apakah ada absen hari ini
-                val hasAttendedToday = response.data.any { it.date == todayDate }
+                    val hadir = history.count { it.status == "Present" }
+                    val telat = history.count { it.status == "Late" }
+                    val absen = history.count { it.status == "Absent" }
+                    val todayRecord = history.find { it.date == todayDate }
+                    val hasRecordToday = todayRecord != null
 
-                Result.success(
-                    AttendanceStats(
-                        hadir = hadir.toString(),
-                        telat = telat.toString(),
-                        absen = absen.toString(),
-                        todayStatus = todayRecord?.status ?: "",
-                        isAlreadyAbsen = hasAttendedToday,
-                        todayDate = todayDate
+                    // Cek apakah ada absen hari ini
+                    val hasAttendedToday = history.any { it.date == todayDate }
+
+                    Result.success(
+                        AttendanceStats(
+                            hadir = hadir.toString(),
+                            telat = telat.toString(),
+                            absen = absen.toString(),
+                            todayStatus = todayRecord?.status ?: "",
+                            isAlreadyAbsen = hasAttendedToday,
+                            todayDate = todayDate
+                        )
                     )
-                )
+                } else {
+                    Result.failure(result.exceptionOrNull() ?: Exception("Gagal mendapatkan data absensi"))
+                }
             } else {
                 Result.failure(Exception("Token empty"))
             }

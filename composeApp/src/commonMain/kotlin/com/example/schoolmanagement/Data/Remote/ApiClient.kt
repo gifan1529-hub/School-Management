@@ -31,7 +31,5 @@ object ApiClient {
             header(HttpHeaders.Accept, "application/json")
         }
     }
-
-
     fun getUrl(endpoint: String) = "$BASE_URL$endpoint"
 }

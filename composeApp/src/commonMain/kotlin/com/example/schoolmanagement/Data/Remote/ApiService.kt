@@ -72,4 +72,14 @@ class ApiService(private val client: HttpClient) {
             }
         }.body()
     }
+
+    suspend fun postPermit(token: String, request: PermitRequest): PermitResponse {
+         return client.post(ApiClient.getUrl("permits")) {
+             contentType(ContentType.Application.Json)
+             headers {
+                 append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+             }
+             setBody(request)
+         }.body()
+    }
 }

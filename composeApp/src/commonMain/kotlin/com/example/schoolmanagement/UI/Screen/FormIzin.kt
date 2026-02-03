@@ -1,4 +1,4 @@
-package com.example.schoolmanagement.UI.Component
+package com.example.schoolmanagement.UI.Screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -16,18 +16,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,17 +43,56 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.schoolmanagement.UI.Component.TimePickerDialog
 import com.example.schoolmanagement.getTodayDate
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormIzin (
     navController: NavController
 ) {
     val primaryBlue = Color(0xFF0066FF)
 
+    var showTimePickerMulai by remember { mutableStateOf(false) }
+    var showTimePickerSelesai by remember { mutableStateOf(false) }
+
+    val timePickerStateMulai = rememberTimePickerState(initialHour = 8, initialMinute = 0, is24Hour = true)
+    val timePickerStateSelesai = rememberTimePickerState(initialHour = 10, initialMinute = 0, is24Hour = true)
+
+    var jamMulai by remember { mutableStateOf("") }
+    var jamSelesai by remember { mutableStateOf("") }
+
     var alasan by remember { mutableStateOf("") }
     var tipeIzin by remember { mutableStateOf("Sakit") } // Default Sakit
-    val tanggal = getTodayDate() // Menggunakan fungsi Date.kt kamu
+    val tanggal = getTodayDate()
+
+    if (showTimePickerMulai) {
+        TimePickerDialog(
+            onDismissRequest = { showTimePickerMulai = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    jamMulai = "${timePickerStateMulai.hour.toString().padStart(2, '0')}:${timePickerStateMulai.minute.toString().padStart(2, '0')}"
+                    showTimePickerMulai = false
+                }) { Text("Pilih") }
+            }
+        ) {
+            TimePicker(state = timePickerStateMulai)
+        }
+    }
+
+    if (showTimePickerSelesai) {
+        TimePickerDialog(
+            onDismissRequest = { showTimePickerSelesai = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    jamSelesai = "${timePickerStateSelesai.hour.toString().padStart(2, '0')}:${timePickerStateSelesai.minute.toString().padStart(2, '0')}"
+                    showTimePickerSelesai = false
+                }) { Text("Pilih") }
+            }
+        ) {
+            TimePicker(state = timePickerStateSelesai)
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -108,7 +150,40 @@ fun FormIzin (
                         TipeIzinChip("Sakit", tipeIzin == "Sakit") { tipeIzin = "Sakit" }
                         TipeIzinChip("Izin", tipeIzin == "Izin") { tipeIzin = "Izin" }
                     }
+                    Spacer(modifier = Modifier.height(20.dp))
 
+                    Text("Waktu Izin", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Box(modifier = Modifier.weight(1f)) {
+                            OutlinedTextField(
+                                value = jamMulai,
+                                onValueChange = { },
+                                readOnly = true,
+                                enabled = false,
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = { Text("Mulai") },
+                                shape = RoundedCornerShape(12.dp),
+                                singleLine = true
+                            )
+                            Box(modifier = Modifier.matchParentSize().clickable { showTimePickerMulai = true })
+                        }
+                        Box(modifier = Modifier.weight(1f)) {
+                            OutlinedTextField(
+                                value = jamSelesai,
+                                onValueChange = { },
+                                readOnly = true,
+                                enabled = false,
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = { Text("Selesai") },
+                                shape = RoundedCornerShape(12.dp),
+                                singleLine = true
+                            )
+                            Box(modifier = Modifier.matchParentSize().clickable { showTimePickerSelesai = true })
+                        }
+                    }
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text("Detail Alasan", fontWeight = FontWeight.Bold, fontSize = 14.sp)
@@ -117,6 +192,7 @@ fun FormIzin (
                         onValueChange = { alasan = it },
                         modifier = Modifier.fillMaxWidth().height(120.dp),
                         placeholder = { Text("Contoh: izin ga masuk ") },
+                        singleLine = true,
                         shape = RoundedCornerShape(12.dp)
                     )
 

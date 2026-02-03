@@ -2,6 +2,8 @@ package com.example.schoolmanagement.Data.Impl
 
 import com.example.schoolmanagement.Data.Remote.ApiService
 import com.example.schoolmanagement.Data.Remote.AttendanceRecord
+import com.example.schoolmanagement.Data.Remote.StudentAttendance
+import com.example.schoolmanagement.Domain.Model.AttendanceStats
 import com.example.schoolmanagement.Domain.Repository.AttendanceRepository
 import kotlin.math.ln
 
@@ -27,6 +29,24 @@ class AttendanceRepositoryImpl(
     }
 
     override suspend fun getHistoryAttendance(token: String): Result<List<AttendanceRecord>> {
+        return try {
+            val response = apiService.getAttendanceHistory(token)
+            Result.success(response.data)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getClassAttendance(token: String, className: String): Result<List<StudentAttendance>> {
+        return try {
+            val response = apiService.getClassAttendance(token, className)
+            Result.success(response.data)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getAttendanceStats(token: String): Result<List<AttendanceRecord>> {
         return try {
             val response = apiService.getAttendanceHistory(token)
             Result.success(response.data)
