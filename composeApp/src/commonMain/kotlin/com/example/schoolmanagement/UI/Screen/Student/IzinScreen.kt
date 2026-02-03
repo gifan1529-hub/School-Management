@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,16 +28,32 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.schoolmanagement.UI.Component.IzinItem
+import com.example.schoolmanagement.ViewModel.PermitViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun IzinScreen  (
-    navController: NavController
+    navController: NavController,
+    viewModel : PermitViewModel = koinViewModel()
 ) {
     val primaryBlue = Color(0xFF0066FF)
+
+    val myPermitHistory by viewModel.myPermitHistory.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadPermitHistory()
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -114,22 +131,28 @@ fun IzinScreen  (
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        item {
-                            IzinItem(
-                                title = "Sakit Demam",
-                                date = "28 Jan 2026",
-                                status = "Disetujui"
-                            )
+                    if (isLoading && myPermitHistory.isEmpty()) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator(color = primaryBlue)
                         }
-                        item {
-                            IzinItem(
-                                title = "Acara Keluarga",
-                                date = "25 Jan 2026",
-                                status = "Pending"
-                            )
+                    } else if (myPermitHistory.isEmpty()) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text("Belum ada riwayat izin", color = Color.Gray)
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            contentPadding = PaddingValues(bottom = 20.dp)
+                        ) {
+                            items(myPermitHistory) { permit ->
+                                IzinItem(
+                                    title = permit.type + ": " + permit.reason,
+                                    date = if (permit.start_date == permit.end_date) permit.start_date
+                                    else "${permit.start_date} - ${permit.end_date}",
+                                    status = permit.status.replaceFirstChar { it.uppercase() }
+                                )
+                            }
                         }
                     }
                 }

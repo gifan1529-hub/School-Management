@@ -17,13 +17,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
     @Composable
     fun IzinItem(title: String, date: String, status: String) {
         val statusColor = when (status) {
-            "Disetujui" -> Color(0xFF4CAF50)
-            "Pending" -> Color(0xFFFFA000)
-            else -> Color(0xFFF44336)
+            "Approved" -> Color(0xFF4CAF50)
+            "Rejected" -> Color(0xFFF44336)
+            else -> Color(0xFFFFA000)
         }
 
         Row(
@@ -40,7 +39,7 @@ import androidx.compose.ui.unit.sp
 
             Surface(
                 color = statusColor.copy(alpha = 0.1f),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
                     text = status,

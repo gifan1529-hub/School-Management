@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PermitResponse (
     val message: String,
-    val data: PermitData
+    val data: List<PermitData>
 )

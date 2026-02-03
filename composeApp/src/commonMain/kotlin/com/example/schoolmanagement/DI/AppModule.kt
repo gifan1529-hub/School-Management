@@ -1,14 +1,17 @@
 package com.example.schoolmanagement.DI
 
 import com.example.schoolmanagement.Data.Impl.AttendanceRepositoryImpl
+import com.example.schoolmanagement.Data.Impl.PermitRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.ScheduleRepositoryImpl
 import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Data.Remote.ApiClient
 import com.example.schoolmanagement.Data.Remote.ApiService
 import com.example.schoolmanagement.Domain.Repository.AttendanceRepository
+import com.example.schoolmanagement.Domain.Repository.PermitRepository
 import com.example.schoolmanagement.Domain.Repository.ScheduleRepository
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceStatusUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetPermitHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetScheduleUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetTeacherDasboardUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetTeacherSchedulesUseCase
@@ -16,11 +19,14 @@ import com.example.schoolmanagement.Domain.UseCase.LoginUC
 import com.example.schoolmanagement.Domain.UseCase.SubmitAttendanceUC
 import com.example.schoolmanagement.Domain.UseCase.getDetailUserUC
 import com.example.schoolmanagement.Domain.UseCase.LogoutUseCase
+import com.example.schoolmanagement.Domain.UseCase.SubmitPermitUseCase
+import com.example.schoolmanagement.Domain.UseCase.UpdatePermitStatusUseCase
 import com.example.schoolmanagement.ViewModel.AuthViewModel
 import com.example.schoolmanagement.ViewModel.HistoryViewModel
 import com.example.schoolmanagement.ViewModel.HomeTeacherViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import com.example.schoolmanagement.ViewModel.MarkAttendanceViewModel
+import com.example.schoolmanagement.ViewModel.PermitViewModel
 import com.example.schoolmanagement.ViewModel.ProfileViewModel
 import com.example.schoolmanagement.ViewModel.ScheduleGuruViewModel
 import com.example.schoolmanagement.ViewModel.ScheduleViewModel
@@ -38,6 +44,7 @@ val appModule = module {
 
     single <AttendanceRepository>{ AttendanceRepositoryImpl(get()) }
     single <ScheduleRepository>{ ScheduleRepositoryImpl(get()) }
+    single <PermitRepository>{ PermitRepositoryImpl(get()) }
 //    // Network
 //    single {
 //        HttpClient {
@@ -61,6 +68,9 @@ val appModule = module {
     factoryOf(::GetAttendanceStatusUseCase)
     factoryOf(::GetTeacherDasboardUseCase)
     factoryOf(::GetTeacherSchedulesUseCase)
+    factoryOf(::SubmitPermitUseCase)
+    factoryOf(::GetPermitHistoryUseCase)
+    factoryOf(::UpdatePermitStatusUseCase)
 
     viewModel { MarkAttendanceViewModel(get()) }
     viewModel { HomeTeacherViewModel(get(), get(), get(), get(), get()) }
@@ -71,4 +81,5 @@ val appModule = module {
     viewModel { ScheduleViewModel(get(), get()) }
     viewModel { HistoryViewModel(get()) }
     viewModel { ScheduleGuruViewModel(get()) }
+    viewModel { PermitViewModel(get(), get(), get(), get(), get()) }
 }

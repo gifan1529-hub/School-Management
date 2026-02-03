@@ -1,14 +1,18 @@
 package com.example.schoolmanagement.Data.Remote
 
+import androidx.compose.ui.autofill.contentType
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
+import io.ktor.http.parameters
 
 class ApiService(private val client: HttpClient) {
     /**
@@ -83,11 +87,32 @@ class ApiService(private val client: HttpClient) {
          }.body()
     }
 
+    suspend fun getPermits(token: String, all: Boolean = false): PermitResponse {
+        return client.get(ApiClient.getUrl("permits")) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            url {
+                if (all) parameters.append("all", "true")
+            }
+        }.body()
+    }
+
     suspend fun getMySchedules(token: String): ScheduleResponse{
         return client.get(ApiClient.getUrl("my-schedules")) {
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
             }
+        }.body()
+    }
+
+    suspend fun updatePermitStatus(token: String, id: Int, status: String): GenericResponse {
+        return client.patch(ApiClient.getUrl("permits/$id/status")) {
+            contentType(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            setBody(mapOf("status" to status))
         }.body()
     }
 }

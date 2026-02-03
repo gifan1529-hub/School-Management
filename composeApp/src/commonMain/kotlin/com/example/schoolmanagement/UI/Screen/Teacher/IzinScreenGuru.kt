@@ -39,7 +39,6 @@ fun IzinScreenGuru(
             .fillMaxSize()
             .background(lightGray)
     ) {
-        // --- HEADER ---
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -101,7 +100,7 @@ fun IzinScreenGuru(
                 IzinPribadiContent(navController)
             } else {
                 // untuk ngeliat izin murid
-                IzinMuridContent()
+                IzinMuridContent(navController)
             }
 
             // Floating Action Button untuk buat izin baru (Hanya muncul di Tab Izin Saya)

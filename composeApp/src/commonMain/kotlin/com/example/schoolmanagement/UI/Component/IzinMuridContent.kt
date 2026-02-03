@@ -2,6 +2,7 @@ package com.example.schoolmanagement.UI.Component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,59 +16,127 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.schoolmanagement.ViewModel.PermitViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun IzinMuridContent() {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        item {
-            Text("Permohonan Izin Siswa (Kelas 12-IPA-1)", fontWeight = FontWeight.Bold, color = Color.Gray, fontSize = 14.sp)
-        }
+fun IzinMuridContent(
+    navController: NavHostController,
+    viewModel: PermitViewModel = koinViewModel()
+) {
+    val muridPermits by viewModel.muridPermitHistory .collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
-        // Dummy Data Izin Murid
-        val dummySiswaIzin = listOf(
-            Pair("Dewi Lestari", "Sakit Demam"),
-            Pair("Budi Santoso", "Izin Lomba Basket"),
-            Pair("Siti Aminah", "Acara Keluarga")
-        )
+    LaunchedEffect(Unit) {
+        viewModel.loadPermitHistory()
+    }
 
-        items(dummySiswaIzin) { (nama, alasan) ->
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(2.dp)
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (isLoading && muridPermits.isEmpty()) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        } else if (muridPermits.isEmpty()) {
+            Text(
+                "Belum ada permohonan izin dari murid",
+                modifier = Modifier.align(Alignment.Center),
+                color = Color.Gray
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(nama, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                        Text(alasan, fontSize = 13.sp, color = Color.Gray)
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text("Tgl: 30 Jan 2026", fontSize = 11.sp, color = Color.LightGray)
-                    }
+                item {
+                    Text(
+                        "Permohonan Izin Siswa",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Gray,
+                        fontSize = 14.sp
+                    )
+                }
 
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(
-                            "Detail",
-                            color = Color(0xFF0066FF),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp,
-                            modifier = Modifier.clickable { /* Detail */ }
-                        )
+                items(muridPermits) { izin ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        elevation = CardDefaults.cardElevation(2.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+
+                                Text(
+                                    text = izin.user?.name ?: "Siswa",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp
+                                )
+                                Text(
+                                    text = "${izin.type}: ${izin.reason}",
+                                    fontSize = 13.sp,
+                                    color = Color.Gray
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "Periode: ${izin.start_date} s/d ${izin.end_date}",
+                                    fontSize = 11.sp,
+                                    color = Color.LightGray
+                                )
+                            }
+
+                            Column(horizontalAlignment = Alignment.End) {
+                                Surface(
+                                    color = when (izin.status) {
+                                        "approved" -> Color(0xFFE8F5E9)
+                                        "rejected" -> Color(0xFFFFEBEE)
+                                        else -> Color(0xFFFFF3E0)
+                                    },
+                                    shape = RoundedCornerShape(8.dp)
+                                ) {
+                                    Text(
+                                        text = izin.status.uppercase(),
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = when (izin.status) {
+                                            "approved" -> Color(0xFF4CAF50)
+                                            "rejected" -> Color.Red
+                                            else -> Color(0xFFFFA500)
+                                        }
+                                    )
+                                }
+
+                                if (izin.status == "pending") {
+                                    Text(
+                                        "Detail",
+                                        color = Color(0xFF0066FF),
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 12.sp,
+                                        modifier = Modifier
+                                            .padding(top = 8.dp)
+                                            .clickable {
+                                                navController.navigate("detailIzin/${izin.id}")
+                                            }
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }

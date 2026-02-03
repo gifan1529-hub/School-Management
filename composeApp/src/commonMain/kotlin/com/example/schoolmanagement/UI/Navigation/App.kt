@@ -26,6 +26,7 @@ import com.example.schoolmanagement.UI.Screen.Student.JadwalScreen
 import com.example.schoolmanagement.UI.Screen.Student.NilaiScreen
 import com.example.schoolmanagement.UI.Screen.Student.ProfileScreen
 import com.example.schoolmanagement.UI.Screen.Student.TugasScreen
+import com.example.schoolmanagement.UI.Screen.Teacher.DetailIzinScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.HomeScreenGuru
 import com.example.schoolmanagement.UI.Screen.Teacher.HomeWorkScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.IzinScreenGuru
@@ -103,6 +104,10 @@ fun App(
             }
             composable("homework") {
                 HomeWorkScreen(navController)
+            }
+            composable("detailIzin/{id}") { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+                DetailIzinScreen(navController, id)
             }
         }
     }
