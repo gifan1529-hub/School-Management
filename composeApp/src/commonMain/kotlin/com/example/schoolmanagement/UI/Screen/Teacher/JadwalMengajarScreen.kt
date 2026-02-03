@@ -32,7 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.schoolmanagement.UI.Component.ScheduleItem
+import com.example.schoolmanagement.UI.Component.ScheduleItemGuru
+import com.example.schoolmanagement.ViewModel.ScheduleGuruViewModel
 import com.example.schoolmanagement.ViewModel.ScheduleViewModel
 import com.example.schoolmanagement.getTodaDayName
 import com.example.schoolmanagement.getTodayDate
@@ -41,10 +42,9 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun JadwalMengajarScreen (
     navController: NavController,
-    viewModel: ScheduleViewModel = koinViewModel()
+    viewModel: ScheduleGuruViewModel = koinViewModel()
 ) {
 
-    val userClass by viewModel.userClass.collectAsState()
     val schedules by viewModel.schedules.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
@@ -113,7 +113,7 @@ fun JadwalMengajarScreen (
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = userClass,
+                        text = "",
                         fontWeight = FontWeight.Normal,
                         fontSize = 13.sp,
                         color = Color.Black
@@ -142,10 +142,11 @@ fun JadwalMengajarScreen (
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(todaySchedules) { item ->
-                                ScheduleItem(
+                                ScheduleItemGuru(
                                     time = "${item.time_in.take(5)} - ${item.time_out.take(5)}",
                                     subject = item.subject,
-                                    teacher = item.teacher?.name ?: "gada"
+                                    teacher = item.teacher?.name ?: "gada",
+                                    `class` = item.`class`
                                 )
                             }
                         }

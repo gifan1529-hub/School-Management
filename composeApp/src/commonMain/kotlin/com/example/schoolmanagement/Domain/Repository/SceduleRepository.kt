@@ -5,4 +5,5 @@ import com.example.schoolmanagement.Data.Remote.ScheduleItem
 interface ScheduleRepository {
 
     suspend fun getSchedules(token: String, `class`: String): Result<List<ScheduleItem>>
+    suspend fun getTeacherSchedules(token: String): Result<List<ScheduleItem>>
 }

@@ -11,6 +11,7 @@ import com.example.schoolmanagement.Domain.UseCase.GetAttendanceHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceStatusUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetScheduleUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetTeacherDasboardUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetTeacherSchedulesUseCase
 import com.example.schoolmanagement.Domain.UseCase.LoginUC
 import com.example.schoolmanagement.Domain.UseCase.SubmitAttendanceUC
 import com.example.schoolmanagement.Domain.UseCase.getDetailUserUC
@@ -21,6 +22,7 @@ import com.example.schoolmanagement.ViewModel.HomeTeacherViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import com.example.schoolmanagement.ViewModel.MarkAttendanceViewModel
 import com.example.schoolmanagement.ViewModel.ProfileViewModel
+import com.example.schoolmanagement.ViewModel.ScheduleGuruViewModel
 import com.example.schoolmanagement.ViewModel.ScheduleViewModel
 import com.example.schoolmanagement.ViewModel.SignIn
 import org.koin.core.module.dsl.factoryOf
@@ -58,6 +60,7 @@ val appModule = module {
     factoryOf(::GetAttendanceHistoryUseCase)
     factoryOf(::GetAttendanceStatusUseCase)
     factoryOf(::GetTeacherDasboardUseCase)
+    factoryOf(::GetTeacherSchedulesUseCase)
 
     viewModel { MarkAttendanceViewModel(get()) }
     viewModel { HomeTeacherViewModel(get(), get(), get(), get(), get()) }
@@ -67,4 +70,5 @@ val appModule = module {
     viewModel { ProfileViewModel(get(), get()) }
     viewModel { ScheduleViewModel(get(), get()) }
     viewModel { HistoryViewModel(get()) }
+    viewModel { ScheduleGuruViewModel(get()) }
 }

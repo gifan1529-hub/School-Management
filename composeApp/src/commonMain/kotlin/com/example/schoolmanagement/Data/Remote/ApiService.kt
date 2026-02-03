@@ -82,4 +82,12 @@ class ApiService(private val client: HttpClient) {
              setBody(request)
          }.body()
     }
+
+    suspend fun getMySchedules(token: String): ScheduleResponse{
+        return client.get(ApiClient.getUrl("my-schedules")) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+        }.body()
+    }
 }

@@ -17,7 +17,7 @@ data class ScheduleItem (
     val time_in: String = "",
     val time_out: String = "",
     val teacher_id: String = "",
-    val teacher: Teacher? = null
+    val teacher: Teacher? = null,
 )
 
 @Serializable

@@ -39,4 +39,13 @@ class ScheduleRepositoryImpl (
             Result.failure(Exception(handleException(e)))
         }
     }
+
+    override suspend fun getTeacherSchedules(token: String): Result<List<ScheduleItem>> {
+        return try {
+            val response = apiService.getMySchedules(token)
+            Result.success(response.data)
+        } catch (e: Exception) {
+            Result.failure(handleException(e))
+        }
+    }
 }
