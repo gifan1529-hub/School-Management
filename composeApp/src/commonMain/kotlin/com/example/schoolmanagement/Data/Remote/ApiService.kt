@@ -115,4 +115,21 @@ class ApiService(private val client: HttpClient) {
             setBody(mapOf("status" to status))
         }.body()
     }
+
+    suspend fun postAnnouncement(token: String, request: AlertRequest): AlertResponse {
+        return client.post(ApiClient.getUrl("announcements")) {
+            contentType(ContentType.Application.Json)
+            headers {append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun getAnnouncements(token: String): AlertListResponse {
+        return client.get(ApiClient.getUrl("announcements")) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+        }.body()
+    }
 }

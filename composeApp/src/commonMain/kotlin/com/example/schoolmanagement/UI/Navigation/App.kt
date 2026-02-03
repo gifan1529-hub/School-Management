@@ -18,7 +18,8 @@ import com.example.schoolmanagement.UI.Screen.FormIzin
 import com.example.schoolmanagement.UI.Component.NavButton
 import com.example.schoolmanagement.UI.Screen.ScannerScreen
 import com.example.schoolmanagement.UI.Screen.SignIn
-import com.example.schoolmanagement.UI.Screen.Student.AlertScreen
+import com.example.schoolmanagement.UI.Screen.AlertScreen
+import com.example.schoolmanagement.UI.Screen.FormAlert
 import com.example.schoolmanagement.UI.Screen.Student.HistoryAbsenScreen
 import com.example.schoolmanagement.UI.Screen.Student.HomeScreen
 import com.example.schoolmanagement.UI.Screen.Student.IzinScreen
@@ -108,6 +109,9 @@ fun App(
             composable("detailIzin/{id}") { backStackEntry ->
                 val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
                 DetailIzinScreen(navController, id)
+            }
+            composable("formalert"){
+                FormAlert(navController)
             }
         }
     }

@@ -38,13 +38,13 @@ fun AlertCard (
 ) {
     val accentColor = when (type) {
         "warning" -> Color(0xFFFFA000)
-        "danger" -> Color(0xFFD32F2F)
+        "urgent" -> Color(0xFFD32F2F)
         else -> Color(0xFF0066FF)
     }
 
     val icon = when (type) {
         "warning" -> Icons.Default.Warning
-        "danger" -> Icons.Default.Warning
+        "urgent" -> Icons.Default.Warning
         else -> Icons.Default.Info
     }
 
