@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
+import com.example.schoolmanagement.Utils.HandleException
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
@@ -51,6 +52,13 @@ class HomeViewModel (
 
     private val _todayStatus = MutableStateFlow("")
     val todayStatus: StateFlow<String> = _todayStatus
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage
+
+    private val exceptionHandler = HandleException()
+
+
 
     init {
         loadUserDetail()
@@ -170,8 +178,12 @@ class HomeViewModel (
                     println("DEBUG: Absen Berhasil (Logic by UseCase)")
                 }.onFailure { e ->
                     println("DEBUG: Gagal Menyimpan Absen: ${e.message}")
+                    val handled = exceptionHandler.handleException(e as Exception)
+                    _errorMessage.value = handled.message
                 }
             } catch (e: Exception) {
+                val handled = exceptionHandler.handleException(e as Exception)
+                _errorMessage.value = handled.message
                 println("DEBUG: Crash woii: ${e.message}")
             } finally {
                 _isLoadingAbsen.value = false

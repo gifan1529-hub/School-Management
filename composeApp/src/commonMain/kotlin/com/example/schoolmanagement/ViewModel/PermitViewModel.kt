@@ -3,12 +3,14 @@ package com.example.schoolmanagement.ViewModel
 import androidx.compose.ui.semantics.role
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.schoolmanagement.DI.ToastHelper
 import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Domain.Model.PermitData
 import com.example.schoolmanagement.Domain.Repository.PermitRepository
 import com.example.schoolmanagement.Domain.UseCase.GetPermitHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitPermitUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdatePermitStatusUseCase
+import com.example.schoolmanagement.Utils.HandleException
 import com.example.schoolmanagement.getTodayDateS
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -53,6 +55,11 @@ class PermitViewModel(
     private val _isSuccess = MutableStateFlow(false)
     val isSuccess: StateFlow<Boolean> = _isSuccess
 
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage
+
+    private val exceptionHandler = HandleException()
+
     fun onTipeChange(newType: String) { _tipeIzin.value = newType }
     fun onStartDateChange(date: String) { _tanggalMulai.value = date }
     fun onEndDateChange(date: String) { _tanggalSelesai.value = date }
@@ -76,7 +83,9 @@ class PermitViewModel(
 
             result.onSuccess {
                 _isSuccess.value = true
-            }.onFailure {
+            }.onFailure { e ->
+                val handledError = exceptionHandler.handleException(e as Exception)
+                _errorMessage.value = handledError.message
                 _isSuccess.value = false
             }
             _isLoading.value = false
@@ -108,7 +117,9 @@ class PermitViewModel(
             result.onSuccess {
                 _isSuccess.value = true
                 loadPermitHistory()
-            }.onFailure {
+            }.onFailure { e ->
+                val handledError = exceptionHandler.handleException(e as Exception)
+                _errorMessage.value = handledError.message
                 _isSuccess.value = false
             }
             _isLoading.value = false

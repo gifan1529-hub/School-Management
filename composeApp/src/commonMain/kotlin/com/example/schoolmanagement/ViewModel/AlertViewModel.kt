@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.schoolmanagement.Domain.Model.AlertData
 import com.example.schoolmanagement.Domain.UseCase.GetAnnouncmentUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostAnnouncmentUseCase
+import com.example.schoolmanagement.Utils.HandleException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -25,6 +26,8 @@ class AlertViewModel (
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
+    private val exceptionHandler = HandleException()
+
     init {
         loadAnnouncements()
     }
@@ -38,8 +41,8 @@ class AlertViewModel (
                 _alerts.value = data
             }
             result.onFailure { e ->
-                println("DEBUG ALERT ERROR: ${e.message}")
-                _errorMessage.value = e.message
+                val handledError = exceptionHandler.handleException(e as Exception)
+                _errorMessage.value = handledError.message
             }
             _isLoading.value = false
         }
@@ -59,7 +62,8 @@ class AlertViewModel (
                 _isSuccess.value = true
                 loadAnnouncements()
             }.onFailure { e ->
-                _errorMessage.value = e.message
+                val handledError = exceptionHandler.handleException(e as Exception)
+                _errorMessage.value = handledError.message
             }
             _isLoading.value = false
         }

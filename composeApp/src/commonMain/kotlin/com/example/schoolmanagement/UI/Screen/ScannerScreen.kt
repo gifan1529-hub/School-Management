@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.schoolmanagement.DI.Location
 import com.example.schoolmanagement.DI.ToastHelper
+import com.example.schoolmanagement.Utils.HandleException
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import com.example.schoolmanagement.getAttendanceStatus
 import com.example.schoolmanagement.getTodayTime
@@ -39,6 +40,7 @@ import com.example.schoolmanagement.isLate
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
+import io.github.aakira.napier.Napier.e
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -53,6 +55,8 @@ fun ScannerScreen (
     navController: NavHostController,
     viewModel: HomeViewModel = koinViewModel()
 ) {
+    val exceptionHandler = remember { HandleException() }
+
     val locationHelper : Location = koinInject ()
 
     val userRole by viewModel.userRole.collectAsState()
@@ -109,36 +113,56 @@ fun ScannerScreen (
                                 } else {
                                     val cord = locationHelper.getCurrentLocation()
                                     if (cord != null ) {
-                                        viewModel.submitAbsen(
-                                            qrCode,
-                                            lat = cord.first,
-                                            long = cord.second
-                                        )
-                                        delay(800)
-                                        navController.popBackStack()
-                                        val status = getAttendanceStatus()
-                                        val pesan = when(status) {
-                                            "Late" -> "Yah, kamu Telat Absen jam $timeNow"
-                                            "Absent" -> "Waduh, Kamu Alpa (Sudah lewat jam 11)!"
-                                            else -> "Mantap! Kamu Hadir jam $timeNow"
-                                        }
-                                        ToastHelper().Toast(pesan)
-                                        println("Scanner Result: $qrCode | Loc: ${cord.first}, ${cord.second}")
+                                            try {
+                                                viewModel.submitAbsen(
+                                                    qrCode,
+                                                    lat = cord.first,
+                                                    long = cord.second
+                                                )
+                                                delay(1200)
+                                                val errorByVM = viewModel.errorMessage.value
+                                                if (viewModel.isAlreadyAbsen.value) {
+                                                    navController.popBackStack()
+                                                    val status = getAttendanceStatus()
+                                                    val pesan = when (status) {
+                                                        "Late" -> "Yah, kamu Telat Absen jam $timeNow"
+                                                        "Absent" -> "Waduh, Kamu Alpa (Sudah lewat jam 11)!"
+                                                        else -> "Mantap! Kamu Hadir jam $timeNow"
+                                                    }
+                                                    ToastHelper().Toast(pesan)
+                                                    println("Scanner Result: $qrCode | Loc: ${cord.first}, ${cord.second}")
+                                                } else if (errorByVM != null){
+                                                    ToastHelper().Toast(errorByVM)
+                                                    isScanningActive = true
+                                                } else {
+                                                    ToastHelper().Toast("Gagal Absen : Data Tidak Valid")
+                                                    isScanningActive = true
+                                                }
+                                            } catch (e: Exception) {
+                                                val errorManual = exceptionHandler.handleException(e)
+                                                ToastHelper().Toast(errorManual.message ?: "Gagal Absens")
+                                                isScanningActive = true
+                                            }
                                     } else {
                                         ToastHelper().Toast("Gagal mendapatkan lokasi. Pastikan GPS aktif!")
                                         isScanningActive = true
                                     }
                                 }
                             } catch (e: Exception) {
+                                val errorManual = exceptionHandler.handleException(e)
+                                ToastHelper().Toast(errorManual.message ?: "Gagal Absenss")
                                 isScanningActive = true
                                 println("Scanner Error: $e")
                             }
                         }
                     }
                 },
+
                 flashlightOn = false,
                 openImagePicker = false,
                 onFailure = { error ->
+                    val erorr = exceptionHandler.handleException(error as Exception)
+                    ToastHelper().Toast(erorr.message ?: "Gagal Men")
                     println("Scanner Error: $error")
                 },
                 imagePickerHandler = { _ -> }

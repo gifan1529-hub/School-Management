@@ -85,12 +85,14 @@ fun AlertCard (
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = title,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp,
-                        color = Color(0xFF1A1A1A)
-                    )
+                        Text(
+                            text = title,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp,
+                            color = Color(0xFF1A1A1A),
+                            modifier = Modifier.weight(1f)
+                        )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = time,
                         fontSize = 11.sp,

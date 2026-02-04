@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.schoolmanagement.Data.Remote.ScheduleItem
 import com.example.schoolmanagement.Domain.UseCase.GetTeacherSchedulesUseCase
+import com.example.schoolmanagement.Utils.HandleException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,6 +21,8 @@ class ScheduleGuruViewModel (
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
+    private val exceptionHandler = HandleException()
+
     init {
         loadSchedules()
     }
@@ -33,6 +36,8 @@ class ScheduleGuruViewModel (
             result.onSuccess { data ->
                 _schedules.value = data
             }.onFailure { e ->
+                val handledError = exceptionHandler.handleException(e as Exception)
+                _errorMessage.value = handledError.message
                 _errorMessage.value = e.message
             }
             _isLoading.value = false

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Data.Remote.ScheduleItem
 import com.example.schoolmanagement.Domain.UseCase.GetScheduleUseCase
+import com.example.schoolmanagement.Utils.HandleException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +24,11 @@ class ScheduleViewModel (
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage
+
+    private val exceptionHandler = HandleException()
+
     init {
         loadSchedules()
     }
@@ -34,8 +40,10 @@ class ScheduleViewModel (
 
             result.onSuccess {
                 _schedules.value = it
-            }.onFailure {
-                println("DEEBUG: gagal jadwal: ${it.message}")
+            }.onFailure { e ->
+                val handledError = exceptionHandler.handleException(e as Exception)
+                _errorMessage.value = handledError.message
+                println("DEEBUG: gagal jadwal: ${handledError.message}")
             }
             _isLoading.value = false
         }
