@@ -2,6 +2,7 @@ package com.example.schoolmanagement.DI
 
 import com.example.schoolmanagement.Data.Impl.AnnouncmentRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.AttendanceRepositoryImpl
+import com.example.schoolmanagement.Data.Impl.HomeWorkRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.PermitRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.ScheduleRepositoryImpl
 import com.example.schoolmanagement.Data.Local.PrefsManager
@@ -9,11 +10,14 @@ import com.example.schoolmanagement.Data.Remote.ApiClient
 import com.example.schoolmanagement.Data.Remote.ApiService
 import com.example.schoolmanagement.Domain.Repository.AnnouncmentRepository
 import com.example.schoolmanagement.Domain.Repository.AttendanceRepository
+import com.example.schoolmanagement.Domain.Repository.HomeWorkRepository
 import com.example.schoolmanagement.Domain.Repository.PermitRepository
 import com.example.schoolmanagement.Domain.Repository.ScheduleRepository
+import com.example.schoolmanagement.Domain.UseCase.DeleteHomeWork
 import com.example.schoolmanagement.Domain.UseCase.GetAnnouncmentUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceStatusUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetPermitHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetScheduleUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetTeacherDasboardUseCase
@@ -23,6 +27,7 @@ import com.example.schoolmanagement.Domain.UseCase.SubmitAttendanceUC
 import com.example.schoolmanagement.Domain.UseCase.getDetailUserUC
 import com.example.schoolmanagement.Domain.UseCase.LogoutUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostAnnouncmentUseCase
+import com.example.schoolmanagement.Domain.UseCase.PostHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitPermitUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdatePermitStatusUseCase
 import com.example.schoolmanagement.ViewModel.AlertViewModel
@@ -30,6 +35,7 @@ import com.example.schoolmanagement.ViewModel.AuthViewModel
 import com.example.schoolmanagement.ViewModel.HistoryViewModel
 import com.example.schoolmanagement.ViewModel.HomeTeacherViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
+import com.example.schoolmanagement.ViewModel.HomeWorkViewModel
 import com.example.schoolmanagement.ViewModel.MarkAttendanceViewModel
 import com.example.schoolmanagement.ViewModel.PermitViewModel
 import com.example.schoolmanagement.ViewModel.ProfileViewModel
@@ -51,7 +57,7 @@ val appModule = module {
     single <ScheduleRepository>{ ScheduleRepositoryImpl(get()) }
     single <PermitRepository>{ PermitRepositoryImpl(get()) }
     single <AnnouncmentRepository>{ AnnouncmentRepositoryImpl(get()) }
-
+    single <HomeWorkRepository>{ HomeWorkRepositoryImpl(get()) }
 //    // Network
 //    single {
 //        HttpClient {
@@ -80,6 +86,9 @@ val appModule = module {
     factoryOf(::UpdatePermitStatusUseCase)
     factoryOf(::GetAnnouncmentUseCase)
     factoryOf(::PostAnnouncmentUseCase)
+    factoryOf(::GetHomeWorkUseCase)
+    factoryOf(::PostHomeWorkUseCase)
+    factoryOf(::DeleteHomeWork)
 
     viewModel { MarkAttendanceViewModel(get()) }
     viewModel { HomeTeacherViewModel(get(), get(), get(), get(), get()) }
@@ -92,4 +101,5 @@ val appModule = module {
     viewModel { ScheduleGuruViewModel(get()) }
     viewModel { PermitViewModel(get(), get(), get(), get(), get()) }
     viewModel { AlertViewModel(get(), get())}
+    viewModel { HomeWorkViewModel(get(), get(), get()) }
 }

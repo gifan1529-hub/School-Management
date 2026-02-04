@@ -28,7 +28,11 @@ import androidx.compose.ui.unit.sp
 import com.example.schoolmanagement.Domain.Model.HomeworkData
 
 @Composable
-fun HomeworkTeacherItem(data: HomeworkData, color: Color) {
+fun HomeworkTeacherItem(
+    data: HomeworkData,
+    color: Color,
+    onDelete: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),

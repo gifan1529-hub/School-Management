@@ -1,6 +1,7 @@
 package com.example.schoolmanagement.UI.Component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +28,8 @@ fun TugasItem (
     subject: String,
     title: String,
     deadline: String,
-    status: String
+    status: String,
+    onClick: () -> Unit
 ) {
     val primaryBlue = Color(0xFF0066FF)
     val statusColor = if (status == "Selesai") Color(0xFF4CAF50) else Color(0xFFF44336)
@@ -36,6 +38,7 @@ fun TugasItem (
     Row (
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onClick() }
             .background(Color(0xFFF8FAFC), RoundedCornerShape(12.dp))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically

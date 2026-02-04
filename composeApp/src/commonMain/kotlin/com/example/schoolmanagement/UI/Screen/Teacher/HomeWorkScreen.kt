@@ -26,13 +26,23 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,19 +56,86 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.schoolmanagement.Domain.Model.HomeworkData
 import com.example.schoolmanagement.UI.Component.HomeworkTeacherItem
+import com.example.schoolmanagement.ViewModel.HomeWorkViewModel
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeWorkScreen (
     navController: NavHostController,
+    viewModel: HomeWorkViewModel = koinViewModel()
 ) {
+    var showDatePicker by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
+
+    val datePickerState = rememberDatePickerState()
+    val timePickerState = rememberTimePickerState(is24Hour = true)
+
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
 
+    val homeworkList by viewModel.homeworkList.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val isSuccess by viewModel.isSuccess.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+
     var taskTitle by remember { mutableStateOf("") }
+    var taskDesc by remember { mutableStateOf("") }
+    var taskSubject by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
     var selectedClass by remember { mutableStateOf("Pilih Kelas") }
-    val classOptions = listOf("12-IPA-1", "12-IPA-2", "12-IPS-1", "12-IPS-2")
-    var deadLine by remember { mutableStateOf("Besok, 23:59") }
+    val classOptions = listOf("12-IPA-1", "11-IPA-2", "10-IPA-3")
+    var deadLine by remember { mutableStateOf("Pilih Tanggal") }
+
+    if(showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    val selectedMillis = datePickerState.selectedDateMillis
+                    if (selectedMillis != null) {
+                        val date = Instant.fromEpochMilliseconds(selectedMillis)
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
+                        deadLine = date
+                        showDatePicker = false
+                        showTimePicker = true // lanjut munculin jam setelah tanggal dipilih
+                    }
+                }) { Text("Lanjut Pilih Jam") }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+
+    if (showTimePicker) {
+        com.example.schoolmanagement.UI.Component.TimePickerDialog(
+            onDismissRequest = { showTimePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    val hour = timePickerState.hour.toString().padStart(2, '0')
+                    val min = timePickerState.minute.toString().padStart(2, '0')
+                    // Gabungkan Tanggal yang tadi dengan Jam baru
+                    deadLine = "$deadLine | $hour:$min"
+                    showTimePicker = false
+                }) { Text("Selesai") }
+            }
+        ) {
+            TimePicker(state = timePickerState)
+        }
+    }
+
+
+    LaunchedEffect(isSuccess) {
+        if (isSuccess) {
+            taskTitle = ""
+            taskDesc = ""
+            taskSubject = ""
+            viewModel.resetState()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -100,80 +177,89 @@ fun HomeWorkScreen (
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text("Buat Tugas Baru", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Spacer(Modifier.height(12.dp))
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        OutlinedTextField(
+                            value = taskSubject,
+                            onValueChange = { taskSubject = it },
+                            label = { Text("Mata Pelajaran") },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        Spacer(Modifier.height(8.dp))
 
                         OutlinedTextField(
                             value = taskTitle,
                             onValueChange = { taskTitle = it },
-                            label = { Text("Judul Tugas (Contoh: Latihan Bab 3)") },
+                            label = { Text("Deskripsi Tugas") },
                             modifier = Modifier.fillMaxWidth(),
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+                            shape = RoundedCornerShape(12.dp)
                         )
-
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(Modifier.height(8.dp))
 
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Box(modifier = Modifier.weight(1f)) {
                                 OutlinedTextField(
                                     value = selectedClass,
                                     onValueChange = { },
-                                    readOnly = true, // Supaya tidak bisa diketik manual
-                                    label = { Text("Pilih Kelas") },
+                                    readOnly = true,
+                                    label = { Text("Kelas") },
                                     shape = RoundedCornerShape(12.dp),
                                     modifier = Modifier.fillMaxWidth(),
                                     trailingIcon = {
                                         IconButton(onClick = { expanded = !expanded }) {
-                                            Icon(
-                                                imageVector = if (expanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                                                contentDescription = null
-                                            )
+                                            Icon(if (expanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown, null)
                                         }
                                     }
                                 )
-
-                                DropdownMenu(
-                                    expanded = expanded,
-                                    onDismissRequest = { expanded = false },
-                                    modifier = Modifier
-                                        .background(Color.White)
-                                        .fillMaxWidth(0.4f)
-                                ) {
-                                    classOptions.forEach { selectionOption ->
-                                        DropdownMenuItem(
-                                            text = { Text(selectionOption) },
-                                            onClick = {
-                                                selectedClass = selectionOption
-                                                expanded = false
-                                            }
-                                        )
+                                Box(Modifier.matchParentSize().clickable { expanded = !expanded })
+                                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                                    classOptions.forEach { cls ->
+                                        DropdownMenuItem(text = { Text(cls) }, onClick = { selectedClass = cls; expanded = false })
                                     }
                                 }
+                            }
+                            Box(modifier = Modifier.weight(1f)) {
+                                OutlinedTextField(
+                                    value = deadLine,
+                                    readOnly = true,
+                                    enabled = false,
+                                    onValueChange = { deadLine = it },
+                                    label = { Text("Deadline (Tgl)") },
+                                    modifier = Modifier
+                                        .clickable { showDatePicker = true }
+                                        .fillMaxWidth(),
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        disabledTextColor = Color.Black,
+                                        disabledBorderColor = Color.Gray,
+                                        disabledLabelColor = primaryBlue
+                                    )
+                                )
                                 Box(
                                     modifier = Modifier
                                         .matchParentSize()
-                                        .clickable { expanded = !expanded }
+                                        .clickable { showDatePicker = true }
                                 )
                             }
-                            OutlinedTextField(
-                                value = deadLine,
-                                onValueChange = { deadLine = it },
-                                label = { Text("Deadline") },
-                                modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(12.dp)
-                            )
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Button(
-                            onClick = { /* Logic Simpan Tugas pake UC */ },
+                            onClick = {
+                                viewModel.addHomework(
+                                    subject = taskSubject,
+                                    targetClass = selectedClass,
+                                    title = taskTitle,
+                                    description = "Silakan kerjakan tugas ini",
+                                    deadline = deadLine
+                                )
+                            },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = primaryBlue)
                         ) {
-                            Icon(Icons.Default.Add, contentDescription = null)
-                            Spacer(Modifier.width(8.dp))
                             Text("Bagikan Tugas")
                         }
                     }
@@ -181,22 +267,15 @@ fun HomeWorkScreen (
             }
 
             item {
-                Text(
-                    "Tugas Terkirim",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = Color.Black.copy(alpha = 0.7f)
-                )
+                Text("Tugas Terkirim", fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
 
-            // Dummy Data (Nantinya ambil dari API Laravel)
-            val homeworkList = listOf(
-                HomeworkData("Tugas Matematika", "12-IPA-1", "Terkirim", "12 Feb"),
-                HomeworkData("Laporan Biologi", "12-IPA-2", "Draft", "15 Feb")
-            )
-
             items(homeworkList) { hw ->
-                HomeworkTeacherItem(hw, primaryBlue)
+                HomeworkTeacherItem(
+                    HomeworkData(hw.title, hw.`class`, "Terkirim", hw.deadline),
+                    primaryBlue,
+                    onDelete = { viewModel.deletePR(hw.id) }
+                )
             }
         }
     }

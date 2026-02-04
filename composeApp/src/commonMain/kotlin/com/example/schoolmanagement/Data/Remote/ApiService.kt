@@ -3,6 +3,7 @@ package com.example.schoolmanagement.Data.Remote
 import androidx.compose.ui.autofill.contentType
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.patch
@@ -127,6 +128,32 @@ class ApiService(private val client: HttpClient) {
 
     suspend fun getAnnouncements(token: String): AlertListResponse {
         return client.get(ApiClient.getUrl("announcements")) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+        }.body()
+    }
+
+    suspend fun getHomeworks(token: String): HomeWorkListResponse {
+        return client.get(ApiClient.getUrl("homework")) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+        }.body()
+    }
+
+    suspend fun postHomework(token: String, request: HomeWorkRequest): GenericResponse {
+        return client.post(ApiClient.getUrl("homework")) {
+            contentType(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun deleteHomework(token: String, id: Int): GenericResponse {
+        return client.delete(ApiClient.getUrl("homework/$id")) {
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
             }
