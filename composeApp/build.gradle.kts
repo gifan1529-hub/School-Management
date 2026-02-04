@@ -100,6 +100,9 @@ kotlin {
             implementation("com.google.android.gms:play-services-location:21.3.0")
 
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
+
+            // file picker
+//            implementation("com.mohammad-faisal:viewmodel-file-picker:1.0.0")
         }
         iosMain.dependencies{
             implementation("io.ktor:ktor-client-darwin:3.0.0")

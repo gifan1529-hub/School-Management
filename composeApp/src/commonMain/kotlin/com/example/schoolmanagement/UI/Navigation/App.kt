@@ -16,6 +16,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.schoolmanagement.UI.Screen.FormIzin
 import com.example.schoolmanagement.UI.Component.NavButton
+import com.example.schoolmanagement.UI.Screen.Admin.AttendanceReportScreen
 import com.example.schoolmanagement.UI.Screen.Admin.HomeScreenAdmin
 import com.example.schoolmanagement.UI.Screen.ScannerScreen
 import com.example.schoolmanagement.UI.Screen.SignIn
@@ -118,6 +119,9 @@ fun App(
             composable("detailtugas/{id}") { backStackEntry ->
                 val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
                 DetailHomeWork(navController, homeworkId = id)
+            }
+            composable("attendancereport"){
+                AttendanceReportScreen(navController)
             }
         }
     }
