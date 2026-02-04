@@ -48,7 +48,7 @@ class AlertViewModel (
         }
     }
 
-    fun createAnnouncement(title: String, message: String, type: String) {
+    fun createAnnouncement(title: String, message: String, type: String, audience: String) {
         viewModelScope.launch {
             if (title.isBlank() || message.isBlank()) {
                 _errorMessage.value = "Judul dan Pesan wajib diisi"
@@ -56,7 +56,7 @@ class AlertViewModel (
             }
 
             _isLoading.value = true
-            val result = postAnnouncementUC(title, message, type)
+            val result = postAnnouncementUC(title, message, type, audience)
 
             result.onSuccess {
                 _isSuccess.value = true

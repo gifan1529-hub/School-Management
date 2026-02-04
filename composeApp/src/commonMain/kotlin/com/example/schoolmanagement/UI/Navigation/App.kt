@@ -16,10 +16,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.schoolmanagement.UI.Screen.FormIzin
 import com.example.schoolmanagement.UI.Component.NavButton
+import com.example.schoolmanagement.UI.Screen.Admin.HomeScreenAdmin
 import com.example.schoolmanagement.UI.Screen.ScannerScreen
 import com.example.schoolmanagement.UI.Screen.SignIn
 import com.example.schoolmanagement.UI.Screen.AlertScreen
 import com.example.schoolmanagement.UI.Screen.FormAlert
+import com.example.schoolmanagement.UI.Screen.Student.DetailHomeWork
 import com.example.schoolmanagement.UI.Screen.Student.HistoryAbsenScreen
 import com.example.schoolmanagement.UI.Screen.Student.HomeScreen
 import com.example.schoolmanagement.UI.Screen.Student.IzinScreen
@@ -113,6 +115,10 @@ fun App(
             composable("formalert"){
                 FormAlert(navController)
             }
+            composable("detailtugas/{id}") { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+                DetailHomeWork(navController, homeworkId = id)
+            }
         }
     }
 }
@@ -147,7 +153,7 @@ fun MainPagerScreen (
                 1 -> when (userRole) {
                     "student" -> HomeScreen(navController)
                     "teacher" -> HomeScreenGuru(navController)
-                    "admin" -> HomeScreen(navController)
+                    "admin" -> HomeScreenAdmin(navController)
                 }
                 0 -> AlertScreen(navController)
                 2 -> ProfileScreen(navController)

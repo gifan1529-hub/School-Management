@@ -59,9 +59,14 @@ fun FormAlert (
 
     var title by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
-    var selectedType by remember { mutableStateOf("info") } // info, warning, danger
+    var selectedType by remember { mutableStateOf("info") }
     var expanded by remember { mutableStateOf(false) }
     val typeOptions = listOf("info", "warning", "urgent")
+
+    var selectedAudience by remember { mutableStateOf("all")  }
+    var audienceExpanded by remember { mutableStateOf(false) }
+    val audienceOptions = listOf("all", "teacher", "student")
+
 
 //    LaunchedEffect(isSuccess) {
 //        if (isSuccess) {
@@ -108,7 +113,7 @@ fun FormAlert (
                 onValueChange = { title = it },
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text("Contoh: Pengumuman Rapat") },
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp)
             )
 
             Text("Pesan Notifikasi", fontWeight = FontWeight.Bold, fontSize = 14.sp)
@@ -155,11 +160,46 @@ fun FormAlert (
                 }
             }
 
+            Text("Tujuan Notifikasi", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Box {
+                OutlinedTextField(
+                    value = if (selectedAudience == "all") "Semua (Murid & Guru)" else if (selectedAudience == "student") "Murid" else "Guru",
+                    onValueChange = { },
+                    readOnly = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    trailingIcon = {
+                        Icon(
+                            imageVector = if (audienceExpanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                            contentDescription = null,
+                            modifier = Modifier.clickable { audienceExpanded = !audienceExpanded }
+                        )
+                    }
+                )
+                Box(modifier = Modifier.matchParentSize().clickable { audienceExpanded = !audienceExpanded })
+
+                DropdownMenu(
+                    expanded = audienceExpanded,
+                    onDismissRequest = { audienceExpanded = false },
+                    modifier = Modifier.fillMaxWidth(0.8f).background(Color.White)
+                ) {
+                    audienceOptions.forEach { option ->
+                        DropdownMenuItem(
+                            text = { Text(if (option == "all") "Semua (Murid & Guru)" else if (option == "student") "Murid" else "Guru") },
+                            onClick = {
+                                selectedAudience = option
+                                audienceExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
-                    viewModel.createAnnouncement(title, message, selectedType)
+                    viewModel.createAnnouncement(title, message, selectedType, selectedAudience)
                     navController.popBackStack()
                 },
                 modifier = Modifier.fillMaxWidth().height(50.dp),

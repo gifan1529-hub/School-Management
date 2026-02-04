@@ -118,6 +118,9 @@ class ApiService(private val client: HttpClient) {
     }
 
     suspend fun postAnnouncement(token: String, request: AlertRequest): AlertResponse {
+        println("DEBUG API SEND - URL: ${ApiClient.getUrl("announcements")}")
+        println("DEBUG API SEND - TOKEN: Bearer ${token.take(10)}...") // Cek token dikit aja
+        println("DEBUG API SEND - BODY: $request")
         return client.post(ApiClient.getUrl("announcements")) {
             contentType(ContentType.Application.Json)
             headers {append(HttpHeaders.Authorization, "Bearer ${token.trim()}")

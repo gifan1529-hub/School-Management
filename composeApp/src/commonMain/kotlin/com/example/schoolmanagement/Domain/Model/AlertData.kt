@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class AlertData(
     val title: String,
     val message: String,
+    val audience: String,
     val type: String,
     val created_at: String,
     val creator: CreatorData? = null

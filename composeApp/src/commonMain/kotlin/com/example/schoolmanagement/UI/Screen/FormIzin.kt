@@ -22,6 +22,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -342,7 +343,7 @@ fun FormIzin (
                         colors = ButtonDefaults.buttonColors(containerColor = primaryBlue)
                     ) {
                         if (isLoading) {
-                            androidx.compose.material3.CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
+                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
                         } else {
                             Text("Kirim Pengajuan", fontWeight = FontWeight.Bold, color = Color.White)
                         }

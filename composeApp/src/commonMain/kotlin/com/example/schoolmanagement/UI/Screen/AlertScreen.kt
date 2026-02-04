@@ -151,9 +151,9 @@ fun AlertScreen(
                             AlertCard(
                                 title = alert.title,
                                 message = alert.message,
-                                time = alert.created_at.take(10), // Ambil tanggal YYYY-MM-DD
+                                time = alert.created_at.take(10),
                                 type = alert.type,
-                                onClick = { /* detail jika perlu */ }
+                                onClick = { /* detail alert */ }
                             )
                         }
 

@@ -11,7 +11,7 @@ class PostAnnouncmentUseCase (
     private val repository: AnnouncmentRepository,
     private val prefsManager: PrefsManager
 ) {
-    suspend operator fun invoke(title: String, message: String, type: String): Result<AlertResponse> {
+    suspend operator fun invoke(title: String, message: String, type: String, audience: String): Result<AlertResponse> {
         return try {
             val token = prefsManager.getAuthToken.first() ?: ""
 
@@ -21,7 +21,8 @@ class PostAnnouncmentUseCase (
             val request = AlertRequest(
                 title = title,
                 message = message,
-                type = type
+                type = type,
+                audience = audience
             )
 
             repository.postAnnouncement(token, request)
