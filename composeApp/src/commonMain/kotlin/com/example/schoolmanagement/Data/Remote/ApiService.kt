@@ -22,7 +22,7 @@ class ApiService(private val client: HttpClient) {
     /**
      * ngambil data dari api
      */
-    suspend fun getUser(token: String): UserApiResponse{
+    suspend fun getUser(token: String): UserApiResponse {
         return client.get(ApiClient.getUrl("user")) {
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
@@ -37,23 +37,30 @@ class ApiService(private val client: HttpClient) {
         }.body()
     }
 
-    suspend fun postAttendance(qrCode: String, token: String, lat: Double, long: Double): AttendanceResponse {
+    suspend fun postAttendance(
+        qrCode: String,
+        token: String,
+        lat: Double,
+        long: Double
+    ): AttendanceResponse {
         return client.post(ApiClient.getUrl("attendance")) {
             contentType(ContentType.Application.Json)
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
             }
-            setBody(AttendanceRequest(
-                qr_code = qrCode,
-                lat = lat,
-                long = long
-            ))
+            setBody(
+                AttendanceRequest(
+                    qr_code = qrCode,
+                    lat = lat,
+                    long = long
+                )
+            )
         }.body()
     }
 
     suspend fun getAttendanceHistory(token: String): AttendanceHistoryResponse {
         return client.get(ApiClient.getUrl("attendance/history")) {
-                headers {
+            headers {
                 append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
             }
         }.body()
@@ -71,7 +78,7 @@ class ApiService(private val client: HttpClient) {
     }
 
     suspend fun getClassAttendance(token: String, className: String): ClassAttendanceResponse {
-        return client.get(ApiClient.getUrl("attendance/by-class")){
+        return client.get(ApiClient.getUrl("attendance/by-class")) {
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
             }
@@ -82,13 +89,13 @@ class ApiService(private val client: HttpClient) {
     }
 
     suspend fun postPermit(token: String, request: PermitRequest): PermitResponse {
-         return client.post(ApiClient.getUrl("permits")) {
-             contentType(ContentType.Application.Json)
-             headers {
-                 append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
-             }
-             setBody(request)
-         }.body()
+        return client.post(ApiClient.getUrl("permits")) {
+            contentType(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            setBody(request)
+        }.body()
     }
 
     suspend fun getPermits(token: String, all: Boolean = false): PermitResponse {
@@ -102,7 +109,7 @@ class ApiService(private val client: HttpClient) {
         }.body()
     }
 
-    suspend fun getMySchedules(token: String): ScheduleResponse{
+    suspend fun getMySchedules(token: String): ScheduleResponse {
         return client.get(ApiClient.getUrl("my-schedules")) {
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
@@ -126,7 +133,8 @@ class ApiService(private val client: HttpClient) {
         println("DEBUG API SEND - BODY: $request")
         return client.post(ApiClient.getUrl("announcements")) {
             contentType(ContentType.Application.Json)
-            headers {append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
             }
             setBody(request)
         }.body()
@@ -199,6 +207,36 @@ class ApiService(private val client: HttpClient) {
         return client.get(ApiClient.getUrl("dashboard/stats")) {
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+        }.body()
+    }
+
+    suspend fun getAttendanceTrend(token: String): AttendanceTrendResponse {
+        return client.get(ApiClient.getUrl("attendance/trend")) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+        }.body()
+    }
+
+    suspend fun getAttendanceReport(
+        token: String,
+        role: String,
+        `class`: String?,
+        status: String
+    ): AttendanceReportResponse {
+        return client.get(ApiClient.getUrl("attendance/report")) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            url {
+                parameters.append("role", role)
+                if (`class`.isNullOrBlank() && `class` != "Semua Kelas") {
+                    parameters.append("class", `class`)
+                }
+                if (status.isNullOrBlank() && status != "Semua Status") {
+                    parameters.append("status", status)
+                }
             }
         }.body()
     }

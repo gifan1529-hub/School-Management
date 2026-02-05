@@ -21,6 +21,7 @@ import com.example.schoolmanagement.Domain.UseCase.GetAdminStatsUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAnnouncmentUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceStatusUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetAttendanceTrendUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetPermitHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetScheduleUseCase
@@ -99,6 +100,7 @@ val appModule = module {
     factoryOf(::SubmitHomeworkUseCase)
     factoryOf(::GetHomeWorkDetailUseCase)
     factoryOf(::GetAdminStatsUseCase)
+    factoryOf(::GetAttendanceTrendUseCase)
 
 
     viewModel { MarkAttendanceViewModel(get()) }
@@ -113,5 +115,5 @@ val appModule = module {
     viewModel { PermitViewModel(get(), get(), get(), get(), get()) }
     viewModel { AlertViewModel(get(), get())}
     viewModel { HomeWorkViewModel(get(), get(), get(), get(), get()) }
-    viewModel { HomeAdminViewModel(get()) }
+    viewModel { HomeAdminViewModel(get(), get()) }
 }
