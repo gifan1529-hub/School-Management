@@ -37,6 +37,7 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -162,6 +163,12 @@ fun FormIzin (
             }
         ) {
             TimePicker(state = timePickerStateSelesai)
+        }
+    }
+
+    LaunchedEffect(isSuccess) {
+        if (isSuccess) {
+            navController.popBackStack()
         }
     }
 
@@ -336,7 +343,6 @@ fun FormIzin (
                     Button(
                         onClick = {
                             viewModel.submitPermit()
-                            navController.popBackStack()
                         },
                         modifier = Modifier.fillMaxWidth().height(50.dp),
                         shape = RoundedCornerShape(12.dp),

@@ -16,7 +16,7 @@ class HandleException {
             }
             Exception(message)
         } else {
-            Exception("Nyalain Data / Wifi Men : ${e.message}")
+            Exception("Terjadi kesalahan: ${e.message}")
         }
     }
 }

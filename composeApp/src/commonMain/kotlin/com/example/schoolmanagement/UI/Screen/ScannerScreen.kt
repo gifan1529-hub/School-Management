@@ -120,7 +120,7 @@ fun ScannerScreen (
                                                     long = cord.second
                                                 )
                                                 delay(1200)
-                                                val errorByVM = viewModel.errorMessage.value
+                                                val errorByVM = viewModel.errorSubmitMessage.value
                                                 if (viewModel.isAlreadyAbsen.value) {
                                                     navController.popBackStack()
                                                     val status = getAttendanceStatus()

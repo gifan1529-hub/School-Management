@@ -43,6 +43,8 @@ import com.example.schoolmanagement.ViewModel.SignIn
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import schoolmanagement.composeapp.generated.resources.Res
+import schoolmanagement.composeapp.generated.resources.school
+import schoolmanagement.composeapp.generated.resources.sekoah
 
 @Composable
 fun SignIn(
@@ -91,11 +93,11 @@ fun SignIn(
                         .background(Color.White, RoundedCornerShape(20.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-//                Image(
-//                    painter = painterResource(Res.drawable.school),
-//                    contentDescription = "Logo",
-//                    modifier = Modifier.size(40.dp)
-//                )
+                Image(
+                    painter = painterResource(Res.drawable.sekoah),
+                    contentDescription = "Logo",
+                    modifier = Modifier.size(40.dp)
+                )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

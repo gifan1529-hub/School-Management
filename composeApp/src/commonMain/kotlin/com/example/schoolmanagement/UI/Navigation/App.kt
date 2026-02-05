@@ -18,6 +18,7 @@ import com.example.schoolmanagement.UI.Screen.FormIzin
 import com.example.schoolmanagement.UI.Component.NavButton
 import com.example.schoolmanagement.UI.Screen.Admin.AttendanceReportScreen
 import com.example.schoolmanagement.UI.Screen.Admin.HomeScreenAdmin
+import com.example.schoolmanagement.UI.Screen.Admin.KelolaUserScreen
 import com.example.schoolmanagement.UI.Screen.ScannerScreen
 import com.example.schoolmanagement.UI.Screen.SignIn
 import com.example.schoolmanagement.UI.Screen.AlertScreen
@@ -127,6 +128,9 @@ fun App(
             composable("detailtugasguru/{id}"){ backStackEntry ->
                 val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
                 SubmissionListScreen(navController, homeworkId = id)
+            }
+            composable ("usermanage"){
+                KelolaUserScreen(navController)
             }
         }
     }

@@ -70,28 +70,37 @@ class PermitViewModel(
     fun onTimeOutChange(time: String) { _jamSelesai.value = time }
     fun onReasonChange(text: String) { _alasan.value = text }
 
-    fun submitPermit() {
+    fun  submitPermit() {
         viewModelScope.launch {
-            if (_alasan.value.isBlank() || _jamMulai.value.isBlank()) return@launch
+            if (
+                _alasan.value.isBlank() ||
+                _jamMulai.value.isBlank() ||
+                _jamSelesai.value.isBlank() ||
+                _tanggalMulai.value.isBlank() ||
+                _tanggalSelesai.value.isBlank()
+            ) {
+                ToastHelper().Toast("Mohon isi semua data")
+                return@launch
+            } else {
+                _isLoading.value = true
+                val result = submitPermitUseCase.invoke(
+                    type = _tipeIzin.value,
+                    startDate = _tanggalMulai.value,
+                    endDate = _tanggalSelesai.value,
+                    reason = _alasan.value,
+                    tIn = _jamMulai.value,
+                    tOut = _jamSelesai.value
+                )
 
-            _isLoading.value = true
-            val result = submitPermitUseCase.invoke(
-                type = _tipeIzin.value,
-                startDate = _tanggalMulai.value,
-                endDate = _tanggalSelesai.value,
-                reason = _alasan.value,
-                tIn = _jamMulai.value,
-                tOut = _jamSelesai.value
-            )
-
-            result.onSuccess {
-                _isSuccess.value = true
-            }.onFailure { e ->
-                val handledError = exceptionHandler.handleException(e as Exception)
-                _errorSubmitMessage.value = handledError.message
-                _isSuccess.value = false
+                result.onSuccess {
+                    _isSuccess.value = true
+                }.onFailure { e ->
+                    val handledError = exceptionHandler.handleException(e as Exception)
+                    _errorSubmitMessage.value = handledError.message
+                    _isSuccess.value = false
+                }
+                _isLoading.value = false
             }
-            _isLoading.value = false
         }
     }
 

@@ -163,17 +163,21 @@ fun DetailHomeWork (
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(
-                        onClick = {
-                            if (detail?.status != "Done") {
-                            showFilePicker = true
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth().height(50.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = primaryBlue)
-                    ) {
-                        Text("Kumpulkan Jawaban", fontWeight = FontWeight.Bold)
+                    if (detail.status == "Done") {
+                        Box(){}
+                    } else {
+                        Button(
+                            onClick = {
+                                if (detail?.status != "Done") {
+                                    showFilePicker = true
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth().height(50.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = primaryBlue)
+                        ) {
+                            Text("Kumpulkan Jawaban", fontWeight = FontWeight.Bold)
+                        }
                     }
                 }
             }

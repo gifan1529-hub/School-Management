@@ -2,6 +2,7 @@ package com.example.schoolmanagement.Data.Impl
 
 import com.example.schoolmanagement.Data.Remote.ApiService
 import com.example.schoolmanagement.Domain.Model.AdminStatsData
+import com.example.schoolmanagement.Domain.Model.TrendData
 import com.example.schoolmanagement.Domain.Repository.StatsRepository
 import com.example.schoolmanagement.Utils.HandleException
 
@@ -15,6 +16,15 @@ class StatsRepositoryImpl(
             val response = apiService.getStats(token)
             Result.success(response.data)
         } catch (e: Exception) {
+            Result.failure(exceptionHandler.handleException(e))
+        }
+    }
+
+    override suspend fun getAttendanceTrend(token: String): Result<List<TrendData>>{
+        return try {
+            val response = apiService.getAttendanceTrend(token)
+            Result.success(response.data)
+    }    catch (e: Exception) {
             Result.failure(exceptionHandler.handleException(e))
         }
     }

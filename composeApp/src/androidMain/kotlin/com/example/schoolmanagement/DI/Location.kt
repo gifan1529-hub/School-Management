@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.tasks.await
 
-actual class Location (private val context: Context) {
+actual class  Location (private val context: Context) {
 
     actual suspend fun getCurrentLocation(): Pair<Double, Double>? {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)

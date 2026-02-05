@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -59,137 +60,148 @@ fun HomeScreenAdmin (
 
     val stats by viewModel.stats.collectAsState()
     val error by viewModel.error.collectAsState()
+    val refresh by viewModel.isRefreshing.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
-
-    val attendanceTrend = listOf(
-        ChartData("Apr", 0.85f, primaryBlue),
-        ChartData("May", 0.87f, primaryBlue),
-        ChartData("Jun", 0.88f, primaryBlue),
-        ChartData("Jul", 0.86f, primaryBlue),
-        ChartData("Aug", 0.90f, primaryBlue),
-        ChartData("Sep", 0.88f, primaryBlue),
-        ChartData("Oct", 0.89f, primaryBlue)
-    )
+    val trendData by viewModel.trendData.collectAsState()
+    val errorTrend by viewModel.errorTrend.collectAsState()
 
     LaunchedEffect(Unit){
         viewModel.loadStats()
+        viewModel.loadAttendanceTrend()
     }
 
-    LaunchedEffect(error){
-        ToastHelper().Toast(error ?: "")
-    }
-
-    Column(
+    PullToRefreshBox(
+        isRefreshing = refresh,
+        onRefresh = {viewModel.refreshData()},
         modifier = Modifier
             .fillMaxSize()
-            .background(lightGray)
-            .verticalScroll(rememberScrollState())
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = primaryBlue,
-                    shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
-                )
-                .padding(horizontal = 24.dp, vertical = 40.dp)
-        ) {
-            Column {
-                Text(
-                    text = "Panel Administrator",
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Selamat Datang di EduTrack Admin",
-                    color = Color.White.copy(alpha = 0.8f),
-                    fontSize = 14.sp
-                )
-            }
-        }
-
         Column(
-            modifier = Modifier.padding(horizontal = 20.dp).offset(y = (-20).dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(lightGray)
+                .verticalScroll(rememberScrollState())
         ) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(4.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = primaryBlue,
+                        shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
+                    )
+                    .padding(horizontal = 24.dp, vertical = 40.dp)
             ) {
-                Column(modifier = Modifier.padding(20.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                Column {
+                    Text(
+                        text = "Panel Administrator",
+                        color = Color.White,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Selamat Datang di EduTrack Admin",
+                        color = Color.White.copy(alpha = 0.8f),
+                        fontSize = 14.sp
+                    )
+                }
+            }
+
+            Column(
+                modifier = Modifier.padding(horizontal = 20.dp).offset(y = (-20).dp)
+            ) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    elevation = CardDefaults.cardElevation(4.dp)
+                ) {
+                    Column(modifier = Modifier.padding(20.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Data Sekolah", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            Text(getTodayDate(), color = primaryBlue, fontSize = 12.sp)
+                        }
+
+                        Spacer(Modifier.height(16.dp))
+
+                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            StatsBox(
+                                "Siswa",
+                                stats.total_siswa,
+                                Icons.Default.Groups,
+                                Modifier.weight(1f)
+                            )
+                            StatsBox(
+                                "Guru",
+                                stats.total_guru,
+                                Icons.Default.Person,
+                                Modifier.weight(1f)
+                            )
+                            StatsBox(
+                                "Kelas",
+                                stats.total_kelas,
+                                Icons.Default.Class,
+                                Modifier.weight(1f)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text("Manajemen Data", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Spacer(Modifier.height(12.dp))
+
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    AdminMenuCard(
+                        "Kelola Pengguna",
+                        "Tambah/Edit Siswa & Guru",
+                        Icons.Default.Add,
+                        primaryBlue
                     ) {
-                        Text("Data Sekolah", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                        Text(getTodayDate(), color = primaryBlue, fontSize = 12.sp)
+                        navController.navigate("usermanage")
                     }
-
-                    Spacer(Modifier.height(16.dp))
-
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        StatsBox(
-                            "Siswa",
-                            stats.total_siswa,
-                            Icons.Default.Groups,
-                            Modifier.weight(1f))
-                        StatsBox(
-                            "Guru",
-                            stats.total_guru,
-                            Icons.Default.Person,
-                            Modifier.weight(1f))
-                        StatsBox(
-                            "Kelas",
-                            stats.total_kelas,
-                            Icons.Default.Class,
-                            Modifier.weight(1f))
+                    AdminMenuCard(
+                        "Jadwal Pelajaran", "Atur jam mengajar guru", Icons.Default.DateRange,
+                        Color(0xFF4CAF50)
+                    ) {
+                        // navController.navigate("manage_schedule")
+                    }
+                    AdminMenuCard(
+                        "Laporan Absensi",
+                        "Export data kehadiran bulanan",
+                        Icons.Default.Description,
+                        Color(0xFFFFA500)
+                    ) {
+                        navController.navigate("attendancereport")
+                    }
+                    AdminMenuCard(
+                        "Broadcast Pengumuman", "Kirim alert ke semua user", Icons.Default.Campaign,
+                        Color(0xFFF44336)
+                    ) {
+                        navController.navigate("formalert")
                     }
                 }
-            }
+                Spacer(Modifier.height(40.dp))
+                Text(
+                    "Statistik Kehadiran Bulanan",
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
 
-            Spacer(Modifier.height(24.dp))
-
-            Text("Manajemen Data", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            Spacer(Modifier.height(12.dp))
-
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                AdminMenuCard("Kelola Pengguna", "Tambah/Edit Siswa & Guru", Icons.Default.Add, primaryBlue) {
-                    // navController.navigate("manage_users")
-                }
-                AdminMenuCard("Jadwal Pelajaran", "Atur jam mengajar guru", Icons.Default.DateRange,
-                    Color(0xFF4CAF50)
+                Card(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 130.dp), // 16dp padding di sini
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    elevation = CardDefaults.cardElevation(2.dp)
                 ) {
-                    // navController.navigate("manage_schedule")
+                    AttendanceTrendChart(data = trendData)
                 }
-                AdminMenuCard("Laporan Absensi", "Export data kehadiran bulanan", Icons.Default.Description,
-                    Color(0xFFFFA500)
-                ) {
-                     navController.navigate("attendancereport")
-                }
-                AdminMenuCard("Broadcast Pengumuman", "Kirim alert ke semua user", Icons.Default.Campaign,
-                    Color(0xFFF44336)
-                ) {
-                    navController.navigate("formalert")
-                }
-            }
-            Spacer(Modifier.height(40.dp))
-            Text(
-                "Statistik Kehadiran Bulanan",
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            )
-
-            Card(
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 130.dp), // 16dp padding di sini
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(2.dp)
-            ) {
-                AttendanceTrendChart(data = attendanceTrend)
             }
         }
     }

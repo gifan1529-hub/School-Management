@@ -140,9 +140,6 @@ fun HomeWorkScreen (
         viewModel.loadHomeworks()
     }
 
-    LaunchedEffect(errorMessage) {
-        ToastHelper().Toast(errorMessage ?: "")
-    }
     LaunchedEffect(isAddSuccess) {
         if (isAddSuccess) {
             taskTitle = ""

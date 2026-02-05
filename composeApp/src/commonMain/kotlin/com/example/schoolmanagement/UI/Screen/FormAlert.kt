@@ -54,7 +54,6 @@ fun FormAlert (
     val lightGray = Color(0xFFF5F7FA)
 
     val isLoading by viewModel.isLoading.collectAsState()
-    val isSuccess by viewModel.isSuccess.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     var title by remember { mutableStateOf("") }
