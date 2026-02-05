@@ -222,7 +222,7 @@ class ApiService(private val client: HttpClient) {
     suspend fun getAttendanceReport(
         token: String,
         role: String,
-        `class`: String?,
+        `class`: String,
         status: String
     ): AttendanceReportResponse {
         return client.get(ApiClient.getUrl("attendance/report")) {
@@ -231,10 +231,10 @@ class ApiService(private val client: HttpClient) {
             }
             url {
                 parameters.append("role", role)
-                if (`class`.isNullOrBlank() && `class` != "Semua Kelas") {
+                if (`class`.isNotBlank() && `class` != "Semua Kelas") {
                     parameters.append("class", `class`)
                 }
-                if (status.isNullOrBlank() && status != "Semua Status") {
+                if (status.isNotBlank() && status != "Semua Status") {
                     parameters.append("status", status)
                 }
             }

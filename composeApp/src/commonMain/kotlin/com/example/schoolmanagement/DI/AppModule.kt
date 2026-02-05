@@ -1,6 +1,7 @@
 package com.example.schoolmanagement.DI
 
 import com.example.schoolmanagement.Data.Impl.AnnouncmentRepositoryImpl
+import com.example.schoolmanagement.Data.Impl.AttendanceReportImpl
 import com.example.schoolmanagement.Data.Impl.AttendanceRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.HomeWorkRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.PermitRepositoryImpl
@@ -11,6 +12,7 @@ import com.example.schoolmanagement.Data.Remote.ApiClient
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkDetailUseCase
 import com.example.schoolmanagement.Data.Remote.ApiService
 import com.example.schoolmanagement.Domain.Repository.AnnouncmentRepository
+import com.example.schoolmanagement.Domain.Repository.AttendanceReportRepository
 import com.example.schoolmanagement.Domain.Repository.AttendanceRepository
 import com.example.schoolmanagement.Domain.Repository.HomeWorkRepository
 import com.example.schoolmanagement.Domain.Repository.PermitRepository
@@ -20,6 +22,7 @@ import com.example.schoolmanagement.Domain.UseCase.DeleteHomeWork
 import com.example.schoolmanagement.Domain.UseCase.GetAdminStatsUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAnnouncmentUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceHistoryUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetAttendanceReportUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceStatusUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceTrendUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkUseCase
@@ -37,6 +40,7 @@ import com.example.schoolmanagement.Domain.UseCase.SubmitHomeworkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitPermitUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdatePermitStatusUseCase
 import com.example.schoolmanagement.ViewModel.AlertViewModel
+import com.example.schoolmanagement.ViewModel.AttendanceReportViewModel
 import com.example.schoolmanagement.ViewModel.AuthViewModel
 import com.example.schoolmanagement.ViewModel.HistoryViewModel
 import com.example.schoolmanagement.ViewModel.HomeAdminViewModel
@@ -66,6 +70,9 @@ val appModule = module {
     single <AnnouncmentRepository>{ AnnouncmentRepositoryImpl(get()) }
     single <HomeWorkRepository>{ HomeWorkRepositoryImpl(get()) }
     single <StatsRepository>{ StatsRepositoryImpl(get()) }
+    single <AttendanceReportRepository>{ AttendanceReportImpl(get()) }
+
+
 //    // Network
 //    single {
 //        HttpClient {
@@ -101,6 +108,7 @@ val appModule = module {
     factoryOf(::GetHomeWorkDetailUseCase)
     factoryOf(::GetAdminStatsUseCase)
     factoryOf(::GetAttendanceTrendUseCase)
+    factoryOf(::GetAttendanceReportUseCase)
 
 
     viewModel { MarkAttendanceViewModel(get()) }
@@ -116,4 +124,5 @@ val appModule = module {
     viewModel { AlertViewModel(get(), get())}
     viewModel { HomeWorkViewModel(get(), get(), get(), get(), get()) }
     viewModel { HomeAdminViewModel(get(), get()) }
+    viewModel { AttendanceReportViewModel(get()) }
 }
