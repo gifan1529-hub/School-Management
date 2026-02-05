@@ -54,15 +54,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.schoolmanagement.DI.ToastHelper
 import com.example.schoolmanagement.Domain.Model.HomeworkData
 import com.example.schoolmanagement.UI.Component.HomeworkTeacherItem
+import com.example.schoolmanagement.UI.Component.TimePickerDialog
 import com.example.schoolmanagement.ViewModel.HomeWorkViewModel
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 fun HomeWorkScreen (
     navController: NavHostController,
@@ -79,8 +83,13 @@ fun HomeWorkScreen (
 
     val homeworkList by viewModel.homeworkList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
-    val isSuccess by viewModel.isSuccess.collectAsState()
+    val isAddSuccess by viewModel.isAddSuccess.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    val errorLoad by viewModel.errorLoadHomeworks.collectAsState()
+    val errorSubmit by viewModel.errorSubmitHomeworks.collectAsState()
+    val errorDelete by viewModel.errorDeleteHomeworks.collectAsState()
+    val errorAdd by viewModel.errorAddHomeworks.collectAsState()
+
 
     var taskTitle by remember { mutableStateOf("") }
     var taskDesc by remember { mutableStateOf("") }
@@ -111,14 +120,14 @@ fun HomeWorkScreen (
     }
 
     if (showTimePicker) {
-        com.example.schoolmanagement.UI.Component.TimePickerDialog(
+        TimePickerDialog(
             onDismissRequest = { showTimePicker = false },
             confirmButton = {
                 TextButton(onClick = {
                     val hour = timePickerState.hour.toString().padStart(2, '0')
                     val min = timePickerState.minute.toString().padStart(2, '0')
                     // Gabungkan Tanggal yang tadi dengan Jam baru
-                    deadLine = "$deadLine | $hour:$min"
+                    deadLine = "$deadLine $hour:$min"
                     showTimePicker = false
                 }) { Text("Selesai") }
             }
@@ -127,9 +136,15 @@ fun HomeWorkScreen (
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.loadHomeworks()
+    }
 
-    LaunchedEffect(isSuccess) {
-        if (isSuccess) {
+    LaunchedEffect(errorMessage) {
+        ToastHelper().Toast(errorMessage ?: "")
+    }
+    LaunchedEffect(isAddSuccess) {
+        if (isAddSuccess) {
             taskTitle = ""
             taskDesc = ""
             taskSubject = ""
@@ -274,6 +289,7 @@ fun HomeWorkScreen (
                 HomeworkTeacherItem(
                     HomeworkData(hw.title, hw.`class`, "Terkirim", hw.deadline),
                     primaryBlue,
+                    onClick = { navController.navigate("detailtugasguru/${hw.id}") },
                     onDelete = { viewModel.deletePR(hw.id) }
                 )
             }

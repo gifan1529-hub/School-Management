@@ -37,4 +37,27 @@ class HomeWorkRepositoryImpl (
             Result.failure(exceptionHandler.handleException(e))
         }
     }
+
+    override suspend fun submitHomework(
+        token: String,
+        homeworkId: Int,
+        fileBytes: ByteArray,
+        fileName: String
+    ): Result<Boolean> {
+        return try {
+            apiService.submitHomework(token, homeworkId, fileBytes, fileName)
+            Result.success(true)
+        } catch (e: Exception) {
+            Result.failure(exceptionHandler.handleException(e))
+        }
+    }
+
+    override suspend fun getHomeworkDetail(token: String, id: Int): Result<HomeWorkResponse> {
+        return try {
+            val response = apiService.getHomeworkDetail(token, id)
+            Result.success(response.data)
+        } catch (e: Exception) {
+            Result.failure(exceptionHandler.handleException(e))
+        }
+    }
 }

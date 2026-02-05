@@ -130,7 +130,7 @@ fun TugasScreen (
                                     subject = tugas.subject,
                                     title = tugas.title,
                                     deadline = "Batas: ${tugas.deadline.take(16)}",
-                                    status = "Aktif",
+                                    status = tugas.status ?: "Aktif",
                                     onClick = {
                                         navController.navigate("detailtugas/${tugas.id}")
                                     }

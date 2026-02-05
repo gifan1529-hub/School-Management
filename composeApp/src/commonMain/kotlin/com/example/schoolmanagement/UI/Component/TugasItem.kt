@@ -32,9 +32,23 @@ fun TugasItem (
     onClick: () -> Unit
 ) {
     val primaryBlue = Color(0xFF0066FF)
-    val statusColor = if (status == "Selesai") Color(0xFF4CAF50) else Color(0xFFF44336)
-    val statusBg = if (status == "Selesai") Color(0xFFE8F5E9) else Color(0xFFFFEBEE)
-
+    val (statusColor, statusBg, statusLabel) = when (status) {
+        "Done" -> Triple(
+            Color(0xFF4CAF50),
+            Color(0xFFE8F5E9),
+            "Selesai"
+        )
+        "Expired" -> Triple(
+            Color(0xFFF44336),
+            Color(0xFFFFEBEE),
+            "Terlewat"
+        )
+        else -> Triple( // Active
+            primaryBlue,
+            Color(0xFFE3F2FD),
+            "Aktif"
+        )
+    }
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -65,7 +79,7 @@ fun TugasItem (
             shape = RoundedCornerShape(8.dp)
         ) {
             Text(
-                text = status,
+                text = statusLabel,
                 color = statusColor,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,

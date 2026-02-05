@@ -1,9 +1,10 @@
 package com.example.schoolmanagement.Data.Remote
 
-import androidx.compose.ui.autofill.contentType
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.patch
@@ -11,9 +12,11 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
+import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.http.parameters
+import kotlin.text.append
 
 class ApiService(private val client: HttpClient) {
     /**
@@ -157,6 +160,35 @@ class ApiService(private val client: HttpClient) {
 
     suspend fun deleteHomework(token: String, id: Int): GenericResponse {
         return client.delete(ApiClient.getUrl("homework/$id")) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+        }.body()
+    }
+
+    suspend fun submitHomework(
+        token: String,
+        homeworkId: Int,
+        fileBytes: ByteArray,
+        fileName: String
+    ): HttpResponse {
+        return client.submitFormWithBinaryData(
+            url = ApiClient.getUrl("homework/$homeworkId/submit"),
+            formData = formData {
+                append("file", fileBytes, Headers.build {
+                    append(HttpHeaders.ContentType, "application/octet-stream")
+                    append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
+                })
+            }
+        ) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+        }
+    }
+
+    suspend fun getHomeworkDetail(token: String, id: Int): HomeWorkDetailResponse {
+        return client.get(ApiClient.getUrl("homework/$id")) {
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
             }

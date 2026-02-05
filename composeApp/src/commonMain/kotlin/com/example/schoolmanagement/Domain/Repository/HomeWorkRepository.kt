@@ -7,5 +7,11 @@ interface  HomeWorkRepository {
     suspend fun getHomeworks(token: String): Result<List<HomeWorkResponse>>
     suspend fun postHomework(token: String, request: HomeWorkRequest): Result<Boolean>
     suspend fun deleteHomework(token: String, id: Int): Result<Boolean>
-
+    suspend fun submitHomework(
+        token: String,
+        homeworkId: Int,
+        fileBytes: ByteArray,
+        fileName: String
+    ): Result<Boolean>
+    suspend fun getHomeworkDetail(token: String, id: Int): Result<HomeWorkResponse>
 }

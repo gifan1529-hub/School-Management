@@ -2,6 +2,7 @@ package com.example.schoolmanagement.UI.Component
 
 import androidx.compose.animation.core.copy
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,10 +32,13 @@ import com.example.schoolmanagement.Domain.Model.HomeworkData
 fun HomeworkTeacherItem(
     data: HomeworkData,
     color: Color,
+    onClick: () -> Unit,
     onDelete: () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .clickable { onClick() }
+            .fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {

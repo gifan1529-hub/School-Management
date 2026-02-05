@@ -11,13 +11,16 @@ class GetHomeWorkUseCase (
     private val prefsManager: PrefsManager
 ) {
     suspend operator fun invoke(): Result<List<HomeWorkResponse>> {
+        println("DEBUG GURU: Memanggil GetHomeWorkUseCase")
         return try {
             val token = prefsManager.getAuthToken.first() ?: ""
+            val response = repository.getHomeworks(token)
+            println("DEBUG GURU: $response")
 
             if (token.isEmpty()) {
                 return Result.failure(Exception("Sesi berakhir, silakan login ulang"))
             }
-            repository.getHomeworks(token)
+            response
         } catch (e: Exception) {
             Result.failure(e)
         }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.schoolmanagement.Data.Remote.HomeWorkResponse
 import com.example.schoolmanagement.Domain.UseCase.DeleteHomeWork
+import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkDetailUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitHomeworkUseCase
@@ -16,7 +17,8 @@ class HomeWorkViewModel (
     private val submitHomeworkUseCase: SubmitHomeworkUseCase,
     private val getHomeWorkUseCase: GetHomeWorkUseCase,
     private val postHomeWorkUseCase: PostHomeWorkUseCase,
-    private val deleteHomeWorkUseCase: DeleteHomeWork
+    private val deleteHomeWorkUseCase: DeleteHomeWork,
+    private val getHomeWorkDetailUseCase: GetHomeWorkDetailUseCase
 ): ViewModel() {
     private val _homeworkList = MutableStateFlow<List<HomeWorkResponse>>(emptyList())
     val homeworkList: StateFlow<List<HomeWorkResponse>> = _homeworkList
@@ -47,6 +49,10 @@ class HomeWorkViewModel (
 
     private val _errorDeleteHomework = MutableStateFlow<String?>(null)
     val errorDeleteHomeworks: StateFlow<String?> = _errorDeleteHomework
+
+    private val _selectedHomeworkDetail = MutableStateFlow<HomeWorkResponse?>(null)
+    val selectedHomeworkDetail: StateFlow<HomeWorkResponse?> = _selectedHomeworkDetail
+
     private val exceptionHandler = HandleException()
 
 
@@ -137,6 +143,19 @@ class HomeWorkViewModel (
             } finally {
                 _isLoading.value = false
             }
+        }
+    }
+
+
+    fun loadHomeworkDetail(id: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            getHomeWorkDetailUseCase(id).onSuccess {
+                _selectedHomeworkDetail.value = it
+            }.onFailure { e ->
+                _errorMessage.value = e.message
+            }
+            _isLoading.value = false
         }
     }
 

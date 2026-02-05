@@ -36,6 +36,7 @@ import com.example.schoolmanagement.UI.Screen.Teacher.HomeWorkScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.IzinScreenGuru
 import com.example.schoolmanagement.UI.Screen.Teacher.JadwalMengajarScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.MarkAttendanceScreen
+import com.example.schoolmanagement.UI.Screen.Teacher.SubmissionListScreen
 import com.example.schoolmanagement.ViewModel.AuthViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import kotlinx.coroutines.launch
@@ -122,6 +123,10 @@ fun App(
             }
             composable("attendancereport"){
                 AttendanceReportScreen(navController)
+            }
+            composable("detailtugasguru/{id}"){ backStackEntry ->
+                val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+                SubmissionListScreen(navController, homeworkId = id)
             }
         }
     }

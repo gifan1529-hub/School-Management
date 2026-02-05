@@ -1,5 +1,6 @@
 package com.example.schoolmanagement.UI.Screen.Student
 
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +34,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,8 +45,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.darkrockstudios.libraries.mpfilepicker.FilePicker
+import com.example.schoolmanagement.DI.readFileBytes
 import com.example.schoolmanagement.UI.Component.InfoCard
 import com.example.schoolmanagement.ViewModel.HomeWorkViewModel
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,11 +62,29 @@ fun DetailHomeWork (
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
 
+    var showFilePicker by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
     val homeworkList by viewModel.homeworkList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
     val detail = remember(homeworkList, homeworkId) {
         homeworkList.find { it.id == homeworkId }
+    }
+
+    FilePicker(show = showFilePicker, fileExtensions = listOf("pdf", "jpg", "png", "doc", "docx")) { platformFile ->
+        showFilePicker = false
+        platformFile?.let { file ->
+            scope.launch {
+                val bytes = file.readFileBytes()
+                if (bytes != null) {
+                    val fileName = file.path.split("/").last().split("\\").last()
+                    viewModel.submitHomework(homeworkId, bytes, fileName)
+                } else {
+                    // Tampilkan pesan error jika file gagal dibaca
+                }
+            }
+        }
     }
 
     LaunchedEffect(homeworkList) {
@@ -139,7 +164,11 @@ fun DetailHomeWork (
 
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
-                        onClick = { /* upload jawaban */ },
+                        onClick = {
+                            if (detail?.status != "Done") {
+                            showFilePicker = true
+                            }
+                        },
                         modifier = Modifier.fillMaxWidth().height(50.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = primaryBlue)

@@ -7,6 +7,7 @@ import com.example.schoolmanagement.Data.Impl.PermitRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.ScheduleRepositoryImpl
 import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Data.Remote.ApiClient
+import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkDetailUseCase
 import com.example.schoolmanagement.Data.Remote.ApiService
 import com.example.schoolmanagement.Domain.Repository.AnnouncmentRepository
 import com.example.schoolmanagement.Domain.Repository.AttendanceRepository
@@ -28,6 +29,7 @@ import com.example.schoolmanagement.Domain.UseCase.getDetailUserUC
 import com.example.schoolmanagement.Domain.UseCase.LogoutUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostAnnouncmentUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostHomeWorkUseCase
+import com.example.schoolmanagement.Domain.UseCase.SubmitHomeworkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitPermitUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdatePermitStatusUseCase
 import com.example.schoolmanagement.ViewModel.AlertViewModel
@@ -89,6 +91,9 @@ val appModule = module {
     factoryOf(::GetHomeWorkUseCase)
     factoryOf(::PostHomeWorkUseCase)
     factoryOf(::DeleteHomeWork)
+    factoryOf(::SubmitHomeworkUseCase)
+    factoryOf(::GetHomeWorkDetailUseCase)
+
 
     viewModel { MarkAttendanceViewModel(get()) }
     viewModel { HomeTeacherViewModel(get(), get(), get(), get(), get()) }
@@ -101,5 +106,5 @@ val appModule = module {
     viewModel { ScheduleGuruViewModel(get()) }
     viewModel { PermitViewModel(get(), get(), get(), get(), get()) }
     viewModel { AlertViewModel(get(), get())}
-    viewModel { HomeWorkViewModel(get(), get(), get()) }
+    viewModel { HomeWorkViewModel(get(), get(), get(), get(), get()) }
 }
