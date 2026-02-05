@@ -5,6 +5,7 @@ import com.example.schoolmanagement.Data.Impl.AttendanceRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.HomeWorkRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.PermitRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.ScheduleRepositoryImpl
+import com.example.schoolmanagement.Data.Impl.StatsRepositoryImpl
 import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Data.Remote.ApiClient
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkDetailUseCase
@@ -14,7 +15,9 @@ import com.example.schoolmanagement.Domain.Repository.AttendanceRepository
 import com.example.schoolmanagement.Domain.Repository.HomeWorkRepository
 import com.example.schoolmanagement.Domain.Repository.PermitRepository
 import com.example.schoolmanagement.Domain.Repository.ScheduleRepository
+import com.example.schoolmanagement.Domain.Repository.StatsRepository
 import com.example.schoolmanagement.Domain.UseCase.DeleteHomeWork
+import com.example.schoolmanagement.Domain.UseCase.GetAdminStatsUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAnnouncmentUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceStatusUseCase
@@ -35,6 +38,7 @@ import com.example.schoolmanagement.Domain.UseCase.UpdatePermitStatusUseCase
 import com.example.schoolmanagement.ViewModel.AlertViewModel
 import com.example.schoolmanagement.ViewModel.AuthViewModel
 import com.example.schoolmanagement.ViewModel.HistoryViewModel
+import com.example.schoolmanagement.ViewModel.HomeAdminViewModel
 import com.example.schoolmanagement.ViewModel.HomeTeacherViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import com.example.schoolmanagement.ViewModel.HomeWorkViewModel
@@ -60,6 +64,7 @@ val appModule = module {
     single <PermitRepository>{ PermitRepositoryImpl(get()) }
     single <AnnouncmentRepository>{ AnnouncmentRepositoryImpl(get()) }
     single <HomeWorkRepository>{ HomeWorkRepositoryImpl(get()) }
+    single <StatsRepository>{ StatsRepositoryImpl(get()) }
 //    // Network
 //    single {
 //        HttpClient {
@@ -93,6 +98,7 @@ val appModule = module {
     factoryOf(::DeleteHomeWork)
     factoryOf(::SubmitHomeworkUseCase)
     factoryOf(::GetHomeWorkDetailUseCase)
+    factoryOf(::GetAdminStatsUseCase)
 
 
     viewModel { MarkAttendanceViewModel(get()) }
@@ -107,4 +113,5 @@ val appModule = module {
     viewModel { PermitViewModel(get(), get(), get(), get(), get()) }
     viewModel { AlertViewModel(get(), get())}
     viewModel { HomeWorkViewModel(get(), get(), get(), get(), get()) }
+    viewModel { HomeAdminViewModel(get()) }
 }

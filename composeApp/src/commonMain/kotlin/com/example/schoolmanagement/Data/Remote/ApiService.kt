@@ -194,4 +194,12 @@ class ApiService(private val client: HttpClient) {
             }
         }.body()
     }
+
+    suspend fun getStats(token: String): AdminStatsResponse {
+        return client.get(ApiClient.getUrl("dashboard/stats")) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+        }.body()
+    }
 }

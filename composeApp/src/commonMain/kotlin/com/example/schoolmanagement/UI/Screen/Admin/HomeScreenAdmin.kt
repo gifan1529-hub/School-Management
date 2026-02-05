@@ -30,6 +30,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,18 +40,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.schoolmanagement.DI.ToastHelper
 import com.example.schoolmanagement.Domain.Model.ChartData
 import com.example.schoolmanagement.UI.Component.AdminMenuCard
 import com.example.schoolmanagement.UI.Component.AttendanceTrendChart
 import com.example.schoolmanagement.UI.Component.StatsBox
+import com.example.schoolmanagement.ViewModel.HomeAdminViewModel
 import com.example.schoolmanagement.getTodayDate
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreenAdmin (
-    navController: NavController
+    navController: NavController,
+    viewModel: HomeAdminViewModel = koinViewModel()
 ) {
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
+
+    val stats by viewModel.stats.collectAsState()
+    val error by viewModel.error.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     val attendanceTrend = listOf(
         ChartData("Apr", 0.85f, primaryBlue),
@@ -59,6 +70,14 @@ fun HomeScreenAdmin (
         ChartData("Sep", 0.88f, primaryBlue),
         ChartData("Oct", 0.89f, primaryBlue)
     )
+
+    LaunchedEffect(Unit){
+        viewModel.loadStats()
+    }
+
+    LaunchedEffect(error){
+        ToastHelper().Toast(error ?: "")
+    }
 
     Column(
         modifier = Modifier
@@ -112,10 +131,21 @@ fun HomeScreenAdmin (
                     Spacer(Modifier.height(16.dp))
 
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        StatsBox("Siswa", "1.200", Icons.Default.Groups,
+                        StatsBox(
+                            "Siswa",
+                            stats.total_siswa,
+                            Icons.Default.Groups,
                             Modifier.weight(1f))
-                        StatsBox("Guru", "85", Icons.Default.Person, Modifier.weight(1f))
-                        StatsBox("Kelas", "36", Icons.Default.Class, Modifier.weight(1f))
+                        StatsBox(
+                            "Guru",
+                            stats.total_guru,
+                            Icons.Default.Person,
+                            Modifier.weight(1f))
+                        StatsBox(
+                            "Kelas",
+                            stats.total_kelas,
+                            Icons.Default.Class,
+                            Modifier.weight(1f))
                     }
                 }
             }
