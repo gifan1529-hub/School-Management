@@ -53,8 +53,8 @@ class HomeViewModel (
     private val _todayStatus = MutableStateFlow("")
     val todayStatus: StateFlow<String> = _todayStatus
 
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
+    private val _errorSubmitMessage = MutableStateFlow<String?>(null)
+    val errorSubmitMessage: StateFlow<String?> = _errorSubmitMessage
 
     private val exceptionHandler = HandleException()
 
@@ -179,11 +179,11 @@ class HomeViewModel (
                 }.onFailure { e ->
                     println("DEBUG: Gagal Menyimpan Absen: ${e.message}")
                     val handled = exceptionHandler.handleException(e as Exception)
-                    _errorMessage.value = handled.message
+                    _errorSubmitMessage.value = handled.message
                 }
             } catch (e: Exception) {
                 val handled = exceptionHandler.handleException(e as Exception)
-                _errorMessage.value = handled.message
+                _errorSubmitMessage.value = handled.message
                 println("DEBUG: Crash woii: ${e.message}")
             } finally {
                 _isLoadingAbsen.value = false

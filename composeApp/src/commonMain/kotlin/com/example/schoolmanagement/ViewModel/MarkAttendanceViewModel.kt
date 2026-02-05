@@ -22,8 +22,8 @@ class MarkAttendanceViewModel (
     private val _countAbsen = MutableStateFlow("0")
     val countAbsen: StateFlow<String> = _countAbsen
 
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
+    private val _errorLoadMessage = MutableStateFlow<String?>(null)
+    val errorLoadMessage: StateFlow<String?> = _errorLoadMessage
 
     private val exceptionHandler = HandleException()
 
@@ -41,7 +41,7 @@ class MarkAttendanceViewModel (
                 }
                 .onFailure { e ->
                     val handledError = exceptionHandler.handleException(e as Exception)
-                    _errorMessage.value = handledError.message
+                    _errorLoadMessage.value = handledError.message
                 }
         }
     }

@@ -55,8 +55,11 @@ class PermitViewModel(
     private val _isSuccess = MutableStateFlow(false)
     val isSuccess: StateFlow<Boolean> = _isSuccess
 
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
+    private val _errorSubmitMessage = MutableStateFlow<String?>(null)
+    val errorSubmitMessage: StateFlow<String?> = _errorSubmitMessage
+
+    private val _errorUpdateMessage = MutableStateFlow<String?>(null)
+    val errorUpdateMessage: StateFlow<String?> = _errorUpdateMessage
 
     private val exceptionHandler = HandleException()
 
@@ -85,7 +88,7 @@ class PermitViewModel(
                 _isSuccess.value = true
             }.onFailure { e ->
                 val handledError = exceptionHandler.handleException(e as Exception)
-                _errorMessage.value = handledError.message
+                _errorSubmitMessage.value = handledError.message
                 _isSuccess.value = false
             }
             _isLoading.value = false
@@ -119,7 +122,7 @@ class PermitViewModel(
                 loadPermitHistory()
             }.onFailure { e ->
                 val handledError = exceptionHandler.handleException(e as Exception)
-                _errorMessage.value = handledError.message
+                _errorUpdateMessage.value = handledError.message
                 _isSuccess.value = false
             }
             _isLoading.value = false

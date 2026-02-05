@@ -24,8 +24,8 @@ class ScheduleViewModel (
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
+    private val _errorLoadMessage = MutableStateFlow<String?>(null)
+    val errorLoadMessage: StateFlow<String?> = _errorLoadMessage
 
     private val exceptionHandler = HandleException()
 
@@ -42,7 +42,7 @@ class ScheduleViewModel (
                 _schedules.value = it
             }.onFailure { e ->
                 val handledError = exceptionHandler.handleException(e as Exception)
-                _errorMessage.value = handledError.message
+                _errorLoadMessage.value = handledError.message
                 println("DEEBUG: gagal jadwal: ${handledError.message}")
             }
             _isLoading.value = false

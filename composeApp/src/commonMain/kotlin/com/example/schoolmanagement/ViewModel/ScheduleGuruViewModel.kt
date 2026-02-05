@@ -18,9 +18,8 @@ class ScheduleGuruViewModel (
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
-
+    private val _errorLoadSchedule = MutableStateFlow<String?>(null)
+    val errorLoadSchedule : StateFlow<String?> = _errorLoadSchedule
     private val exceptionHandler = HandleException()
 
     init {
@@ -30,15 +29,15 @@ class ScheduleGuruViewModel (
     fun loadSchedules(){
         viewModelScope.launch {
             _isLoading.value = true
-            _errorMessage.value = null
+            _errorLoadSchedule .value = null
 
             val result = getTeacherSchedulesUseCase.invoke()
             result.onSuccess { data ->
                 _schedules.value = data
             }.onFailure { e ->
                 val handledError = exceptionHandler.handleException(e as Exception)
-                _errorMessage.value = handledError.message
-                _errorMessage.value = e.message
+                _errorLoadSchedule .value = handledError.message
+                _errorLoadSchedule .value = e.message
             }
             _isLoading.value = false
         }

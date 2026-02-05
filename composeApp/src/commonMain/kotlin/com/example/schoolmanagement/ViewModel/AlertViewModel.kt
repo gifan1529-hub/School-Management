@@ -20,11 +20,17 @@ class AlertViewModel (
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    private val _isSuccess = MutableStateFlow(false)
-    val isSuccess: StateFlow<Boolean> = _isSuccess
+    private val _isCreateSuccess = MutableStateFlow(false)
+    val isCreateSuccess: StateFlow<Boolean> = _isCreateSuccess
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
+
+    private val _errorLoadMessage = MutableStateFlow<String?>(null)
+    val errorLoadMessage: StateFlow<String?> = _errorLoadMessage
+
+    private val _errorCreateMessage = MutableStateFlow<String?>(null)
+    val errorCreateMessage: StateFlow<String?> = _errorCreateMessage
 
     private val exceptionHandler = HandleException()
 
@@ -42,7 +48,7 @@ class AlertViewModel (
             }
             result.onFailure { e ->
                 val handledError = exceptionHandler.handleException(e as Exception)
-                _errorMessage.value = handledError.message
+                _errorLoadMessage.value = handledError.message
             }
             _isLoading.value = false
         }
@@ -51,7 +57,7 @@ class AlertViewModel (
     fun createAnnouncement(title: String, message: String, type: String, audience: String) {
         viewModelScope.launch {
             if (title.isBlank() || message.isBlank()) {
-                _errorMessage.value = "Judul dan Pesan wajib diisi"
+                _errorCreateMessage.value = "Judul dan Pesan wajib diisi"
                 return@launch
             }
 
@@ -59,17 +65,17 @@ class AlertViewModel (
             val result = postAnnouncementUC(title, message, type, audience)
 
             result.onSuccess {
-                _isSuccess.value = true
+                _isCreateSuccess.value = true
                 loadAnnouncements()
             }.onFailure { e ->
                 val handledError = exceptionHandler.handleException(e as Exception)
-                _errorMessage.value = handledError.message
+                _errorCreateMessage.value = handledError.message
             }
             _isLoading.value = false
         }
     }
 
     fun resetSuccessState() {
-        _isSuccess.value = false
+        _isCreateSuccess.value = false
     }
 }
