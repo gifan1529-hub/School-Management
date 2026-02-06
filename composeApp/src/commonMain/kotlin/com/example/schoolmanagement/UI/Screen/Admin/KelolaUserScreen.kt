@@ -304,6 +304,7 @@ fun KelolaUserScreen (
         },
         floatingActionButton = {
             FloatingActionButton(
+                modifier = Modifier.padding(end = 20.dp, bottom = 750.dp),
                 onClick = { showAddDialog = true },
                 containerColor = primaryBlue,
                 contentColor = Color.White
