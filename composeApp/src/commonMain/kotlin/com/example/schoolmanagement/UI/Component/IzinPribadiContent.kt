@@ -90,7 +90,7 @@ fun IzinPribadiContent(
                                     color = Color.Black
                                 )
                                 Text(
-                                    text = izin.reason,
+                                    text = izin.reason ?: "",
                                     fontSize = 13.sp,
                                     color = Color.Gray,
                                     maxLines = 2

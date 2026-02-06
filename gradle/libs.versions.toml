@@ -41,6 +41,7 @@ coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 qr-kit = { module = "network.chaintech:qr-kit", version.ref = "qr-kit" }
 moko-permissions = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko-permissions"}
+#sonner = { module = "io.github.dokar3:sonner", version = "<VERSION>" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

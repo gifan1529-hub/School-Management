@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class ReportSummary(
     val total: Int,
     val hadir: Int,
-    val alpa: Int
+    val alpa: Int,
 )

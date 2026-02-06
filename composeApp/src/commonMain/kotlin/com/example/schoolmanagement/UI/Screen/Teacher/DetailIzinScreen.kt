@@ -132,7 +132,7 @@ fun DetailIzinScreen (
                     title = "Alasan",
                     icon = Icons.Default.Schedule,
                     content = {
-                        Text(detail.reason, lineHeight = 20.sp)
+                        Text(detail.reason ?: "", lineHeight = 20.sp)
                     }
                 )
 

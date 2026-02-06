@@ -10,7 +10,7 @@ data class PermitData(
     val end_date: String,
     val timeIn: String,
     val timeOut: String,
-    val reason: String,
+    val reason: String? = null,
     val status: String,
     val user: UserData? = null
 )

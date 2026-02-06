@@ -73,6 +73,7 @@ class PermitViewModel(
     fun  submitPermit() {
         viewModelScope.launch {
             if (
+                _tipeIzin.value.isBlank() ||
                 _alasan.value.isBlank() ||
                 _jamMulai.value.isBlank() ||
                 _jamSelesai.value.isBlank() ||
@@ -81,7 +82,7 @@ class PermitViewModel(
             ) {
                 ToastHelper().Toast("Mohon isi semua data")
                 return@launch
-            } else {
+            }
                 _isLoading.value = true
                 val result = submitPermitUseCase.invoke(
                     type = _tipeIzin.value,
@@ -93,6 +94,7 @@ class PermitViewModel(
                 )
 
                 result.onSuccess {
+                    println("DEBUG PERMIT: berahsil submit izin")
                     _isSuccess.value = true
                 }.onFailure { e ->
                     val handledError = exceptionHandler.handleException(e as Exception)
@@ -100,7 +102,6 @@ class PermitViewModel(
                     _isSuccess.value = false
                 }
                 _isLoading.value = false
-            }
         }
     }
 
