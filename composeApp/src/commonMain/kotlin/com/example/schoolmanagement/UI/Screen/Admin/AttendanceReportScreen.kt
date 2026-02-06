@@ -75,7 +75,7 @@ fun AttendanceReportScreen (
     var statusExpanded by remember { mutableStateOf(false) }
 
     val classOptions = listOf("Semua Kelas", "10-IPA-3", "11-IPA-2", "12-IPA-1")
-    val statusOptions = listOf("Semua Status", "Present", "Late", "Absent")
+    val statusOptions = listOf("Semua Status", "Present", "Late", "Absent", "Not Present Yet")
 
     LaunchedEffect(selectedTabIndex, selectedClass, selectedStatus) {
         val role = if (selectedTabIndex == 0) "student" else "teacher"
@@ -169,10 +169,9 @@ fun AttendanceReportScreen (
                     ) {
                         AttendanceSummaryItem("Total", summary.total.toString(), primaryBlue)
                         AttendanceSummaryItem("Hadir", summary.hadir.toString(), Color(0xFF4CAF50))
-                        AttendanceSummaryItem("Alpa", summary.alpa.toString(), Color.Red)
+                        AttendanceSummaryItem("Alpa / Belom Absen", summary.alpa.toString(), Color.Red)
                     }
                 }
-
             }
 
             if (isLoading) {
@@ -208,6 +207,7 @@ fun AttendanceReportScreen (
                         primaryColor = when (item.status) {
                             "Present" -> Color(0xFF4CAF50)
                             "Late" -> Color(0xFFFFA500)
+                            "Not Present Yet" -> Color.Red
                             else -> Color.Red
                         },
                         timeIn = item.time_in,
