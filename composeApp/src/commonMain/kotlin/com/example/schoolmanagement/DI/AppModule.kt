@@ -3,6 +3,7 @@ package com.example.schoolmanagement.DI
 import com.example.schoolmanagement.Data.Impl.AnnouncmentRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.AttendanceReportImpl
 import com.example.schoolmanagement.Data.Impl.AttendanceRepositoryImpl
+import com.example.schoolmanagement.Data.Impl.GradeRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.HomeWorkRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.PermitRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.ScheduleRepositoryImpl
@@ -15,6 +16,7 @@ import com.example.schoolmanagement.Data.Remote.ApiService
 import com.example.schoolmanagement.Domain.Repository.AnnouncmentRepository
 import com.example.schoolmanagement.Domain.Repository.AttendanceReportRepository
 import com.example.schoolmanagement.Domain.Repository.AttendanceRepository
+import com.example.schoolmanagement.Domain.Repository.GradeRepository
 import com.example.schoolmanagement.Domain.Repository.HomeWorkRepository
 import com.example.schoolmanagement.Domain.Repository.PermitRepository
 import com.example.schoolmanagement.Domain.Repository.ScheduleRepository
@@ -30,6 +32,7 @@ import com.example.schoolmanagement.Domain.UseCase.GetAttendanceHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceReportUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceStatusUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceTrendUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetGradeSummaryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetPermitHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetScheduleUseCase
@@ -49,6 +52,7 @@ import com.example.schoolmanagement.Domain.UseCase.UpdateUserUseCase
 import com.example.schoolmanagement.ViewModel.AlertViewModel
 import com.example.schoolmanagement.ViewModel.AttendanceReportViewModel
 import com.example.schoolmanagement.ViewModel.AuthViewModel
+import com.example.schoolmanagement.ViewModel.GradeViewModel
 import com.example.schoolmanagement.ViewModel.HistoryViewModel
 import com.example.schoolmanagement.ViewModel.HomeAdminViewModel
 import com.example.schoolmanagement.ViewModel.HomeTeacherViewModel
@@ -80,7 +84,7 @@ val appModule = module {
     single <StatsRepository>{ StatsRepositoryImpl(get()) }
     single <AttendanceReportRepository>{ AttendanceReportImpl(get()) }
     single <UpdateUserRepository>{ UpdateUserRepositoryImpl(get()) }
-
+    single <GradeRepository>{ GradeRepositoryImpl(get()) }
 //    // Network
 //    single {
 //        HttpClient {
@@ -122,6 +126,7 @@ val appModule = module {
     factoryOf(::UpdateUserUseCase)
     factoryOf(::DeleteUserUseCase)
     factoryOf(::AddUserUseCase)
+    factoryOf(::GetGradeSummaryUseCase)
 
 
     viewModel { MarkAttendanceViewModel(get()) }
@@ -139,4 +144,5 @@ val appModule = module {
     viewModel { HomeAdminViewModel(get(), get()) }
     viewModel { AttendanceReportViewModel(get()) }
     viewModel { UpdateUserViewModel(get(), get(), get(), get()) }
+    viewModel { GradeViewModel(get()) }
 }

@@ -287,4 +287,11 @@ class ApiService(private val client: HttpClient) {
         }.body()
     }
 
+    suspend fun getGradeSummary(token: String): GradeSummaryResponse {
+        return client.get(ApiClient.getUrl("homework/summary")) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+        }.body()
+    }
 }
