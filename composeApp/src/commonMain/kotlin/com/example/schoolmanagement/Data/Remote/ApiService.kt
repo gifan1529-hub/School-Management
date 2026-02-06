@@ -248,6 +248,43 @@ class ApiService(private val client: HttpClient) {
                 append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
         }
             setBody(mapOf("grade" to grade))
-    }.body()
+        }.body()
     }
+
+    suspend fun updateUser(token: String, userId: Int, role: String): GenericResponse {
+        return client.patch(ApiClient.getUrl("users/$userId/role")) {
+            contentType(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            setBody(mapOf("role" to role))
+        }.body()
+    }
+
+    suspend fun getAllUsers(token: String, role: String? = null, search: String? = null): UserListResponse {
+        return client.get(ApiClient.getUrl("users")) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+            url {
+                role?.let { parameters.append("role", it) }
+                search?.let { parameters.append("search", it) }
+            }
+        }.body()
+    }
+
+    suspend fun deleteUser(token: String, userId: Int): GenericResponse {
+        return client.delete(ApiClient.getUrl("users/$userId")) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+        }.body()
+    }
+
+    suspend fun postUser(token: String, request: AddUserRequest): GenericResponse {
+        return client.post(ApiClient.getUrl("users")) {
+            contentType(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            setBody(request)
+        }.body()
+    }
+
 }

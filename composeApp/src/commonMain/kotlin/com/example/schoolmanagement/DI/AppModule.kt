@@ -7,6 +7,7 @@ import com.example.schoolmanagement.Data.Impl.HomeWorkRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.PermitRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.ScheduleRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.StatsRepositoryImpl
+import com.example.schoolmanagement.Data.Impl.UpdateUserRepositoryImpl
 import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Data.Remote.ApiClient
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkDetailUseCase
@@ -18,8 +19,12 @@ import com.example.schoolmanagement.Domain.Repository.HomeWorkRepository
 import com.example.schoolmanagement.Domain.Repository.PermitRepository
 import com.example.schoolmanagement.Domain.Repository.ScheduleRepository
 import com.example.schoolmanagement.Domain.Repository.StatsRepository
+import com.example.schoolmanagement.Domain.Repository.UpdateUserRepository
+import com.example.schoolmanagement.Domain.UseCase.AddUserUseCase
 import com.example.schoolmanagement.Domain.UseCase.DeleteHomeWork
+import com.example.schoolmanagement.Domain.UseCase.DeleteUserUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAdminStatsUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetAllUserUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAnnouncmentUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceReportUseCase
@@ -40,6 +45,7 @@ import com.example.schoolmanagement.Domain.UseCase.PostHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitHomeworkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitPermitUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdatePermitStatusUseCase
+import com.example.schoolmanagement.Domain.UseCase.UpdateUserUseCase
 import com.example.schoolmanagement.ViewModel.AlertViewModel
 import com.example.schoolmanagement.ViewModel.AttendanceReportViewModel
 import com.example.schoolmanagement.ViewModel.AuthViewModel
@@ -54,6 +60,7 @@ import com.example.schoolmanagement.ViewModel.ProfileViewModel
 import com.example.schoolmanagement.ViewModel.ScheduleGuruViewModel
 import com.example.schoolmanagement.ViewModel.ScheduleViewModel
 import com.example.schoolmanagement.ViewModel.SignIn
+import com.example.schoolmanagement.ViewModel.UpdateUserViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -72,7 +79,7 @@ val appModule = module {
     single <HomeWorkRepository>{ HomeWorkRepositoryImpl(get()) }
     single <StatsRepository>{ StatsRepositoryImpl(get()) }
     single <AttendanceReportRepository>{ AttendanceReportImpl(get()) }
-
+    single <UpdateUserRepository>{ UpdateUserRepositoryImpl(get()) }
 
 //    // Network
 //    single {
@@ -111,6 +118,10 @@ val appModule = module {
     factoryOf(::GetAttendanceTrendUseCase)
     factoryOf(::GetAttendanceReportUseCase)
     factoryOf(::GiveGradeUseCase)
+    factoryOf(::GetAllUserUseCase)
+    factoryOf(::UpdateUserUseCase)
+    factoryOf(::DeleteUserUseCase)
+    factoryOf(::AddUserUseCase)
 
 
     viewModel { MarkAttendanceViewModel(get()) }
@@ -127,4 +138,5 @@ val appModule = module {
     viewModel { HomeWorkViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { HomeAdminViewModel(get(), get()) }
     viewModel { AttendanceReportViewModel(get()) }
+    viewModel { UpdateUserViewModel(get(), get(), get(), get()) }
 }
