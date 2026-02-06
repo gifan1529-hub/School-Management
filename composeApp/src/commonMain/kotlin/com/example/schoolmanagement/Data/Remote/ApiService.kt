@@ -240,4 +240,14 @@ class ApiService(private val client: HttpClient) {
             }
         }.body()
     }
+
+    suspend fun giveGrade(token: String, submissionId: Int, grade: Int): GenericResponse {
+        return client.patch(ApiClient.getUrl("homework/submissions/${submissionId}/grade")){
+            contentType(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+        }
+            setBody(mapOf("grade" to grade))
+    }.body()
+    }
 }

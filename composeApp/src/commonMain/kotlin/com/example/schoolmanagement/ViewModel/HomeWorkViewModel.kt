@@ -6,6 +6,7 @@ import com.example.schoolmanagement.Data.Remote.HomeWorkResponse
 import com.example.schoolmanagement.Domain.UseCase.DeleteHomeWork
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkDetailUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkUseCase
+import com.example.schoolmanagement.Domain.UseCase.GiveGradeUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitHomeworkUseCase
 import com.example.schoolmanagement.Utils.HandleException
@@ -18,7 +19,8 @@ class HomeWorkViewModel (
     private val getHomeWorkUseCase: GetHomeWorkUseCase,
     private val postHomeWorkUseCase: PostHomeWorkUseCase,
     private val deleteHomeWorkUseCase: DeleteHomeWork,
-    private val getHomeWorkDetailUseCase: GetHomeWorkDetailUseCase
+    private val getHomeWorkDetailUseCase: GetHomeWorkDetailUseCase,
+    private val giveGradeUseCase: GiveGradeUseCase
 ): ViewModel() {
     private val _homeworkList = MutableStateFlow<List<HomeWorkResponse>>(emptyList())
     val homeworkList: StateFlow<List<HomeWorkResponse>> = _homeworkList
@@ -35,6 +37,9 @@ class HomeWorkViewModel (
     private val _isSubmitSuccess = MutableStateFlow(false)
     val isSubmitSuccess: StateFlow<Boolean> = _isSubmitSuccess
 
+    private val _isGradeSuccess = MutableStateFlow(false)
+    val isGradeSuccess: StateFlow<Boolean> = _isGradeSuccess
+
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
@@ -49,6 +54,9 @@ class HomeWorkViewModel (
 
     private val _errorDeleteHomework = MutableStateFlow<String?>(null)
     val errorDeleteHomeworks: StateFlow<String?> = _errorDeleteHomework
+
+    private val _errorGrade = MutableStateFlow<String?>(null)
+    val errorGrade: StateFlow<String?> = _errorGrade
 
     private val _selectedHomeworkDetail = MutableStateFlow<HomeWorkResponse?>(null)
     val selectedHomeworkDetail: StateFlow<HomeWorkResponse?> = _selectedHomeworkDetail
@@ -159,12 +167,28 @@ class HomeWorkViewModel (
         }
     }
 
+    fun giveGrade(submissionId: Int, grade: Int, homeworkId: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = giveGradeUseCase(submissionId, grade)
+            result.onSuccess {
+                _isGradeSuccess.value = true
+                loadHomeworkDetail(homeworkId)
+            }.onFailure { e ->
+                val handled = exceptionHandler.handleException(e as Exception)
+                _errorGrade.value = handled.message
+            }
+        }
+    }
+
     fun resetState() {
         _isSuccess.value = false
+        _isGradeSuccess.value = false
         _isAddSuccess.value = false
         _isSubmitSuccess.value = false
         _errorMessage.value = null
         _errorLoadHomeworks.value = null
+        _errorGrade.value = null
         _errorAddHomework.value = null
         _errorSubmitHomework.value = null
         _errorDeleteHomework.value = null

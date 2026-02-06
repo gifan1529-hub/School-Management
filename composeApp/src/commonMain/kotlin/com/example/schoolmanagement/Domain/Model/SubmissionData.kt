@@ -8,5 +8,6 @@ data class SubmissionData(
     val student_id: Int,
     val file: String,
     val created_at: String,
+    val grade: Int? = null,
     val student: StudentData? = null
 )

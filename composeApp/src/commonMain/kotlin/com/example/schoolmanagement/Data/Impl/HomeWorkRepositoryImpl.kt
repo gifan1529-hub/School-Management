@@ -60,4 +60,13 @@ class HomeWorkRepositoryImpl (
             Result.failure(exceptionHandler.handleException(e))
         }
     }
+
+    override suspend fun giveGrade(token: String, submissionId: Int, grade: Int): Result<Boolean> {
+        return try {
+            apiService.giveGrade(token, submissionId, grade)
+            Result.success(true)
+        } catch (e: Exception) {
+            Result.failure(exceptionHandler.handleException(e))
+        }
+    }
 }

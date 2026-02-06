@@ -14,4 +14,5 @@ interface  HomeWorkRepository {
         fileName: String
     ): Result<Boolean>
     suspend fun getHomeworkDetail(token: String, id: Int): Result<HomeWorkResponse>
+    suspend fun giveGrade(token: String, submissionId: Int, grade: Int): Result<Boolean>
 }

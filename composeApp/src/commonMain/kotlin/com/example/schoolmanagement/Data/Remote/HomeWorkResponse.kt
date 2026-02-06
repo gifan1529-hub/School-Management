@@ -16,6 +16,7 @@ data class HomeWorkResponse (
     val file: String? = null,
     val created_at: String,
     val updated_at: String,
+    val your_grade: Int? = null,
     val teacher: TeacherData? = null,
     val submissions: List<SubmissionData>? = emptyList()
 )

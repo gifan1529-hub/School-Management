@@ -29,6 +29,7 @@ fun TugasItem (
     title: String,
     deadline: String,
     status: String,
+    grade: Int? = null,
     onClick: () -> Unit
 ) {
     val primaryBlue = Color(0xFF0066FF)
