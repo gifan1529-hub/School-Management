@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
+import com.example.schoolmanagement.ViewModel.ActivityLogViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import com.example.schoolmanagement.getAttendanceStatus
 import com.example.schoolmanagement.getTodayDate
@@ -56,8 +57,11 @@ import schoolmanagement.composeapp.generated.resources.Res
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-    viewModel: HomeViewModel = koinViewModel()
+    viewModel: HomeViewModel = koinViewModel(),
+    logViewModel: ActivityLogViewModel = koinViewModel()
 ) {
+    val unreadCount by logViewModel.unreadCount.collectAsState()
+
     val Poppins = getPoppinsFontFamily()
 
     val isAlreadyAbsen by viewModel.isAlreadyAbsen.collectAsState()
@@ -90,6 +94,10 @@ fun HomeScreen(
     val lightGreen = Color(0xFFE8F5E9)
     val lightRed = Color(0xFFFFEBEE)
     val lightYellow = Color(0xFFFFF3E0)
+
+    LaunchedEffect(Unit) {
+        logViewModel.loadUnreadCount()
+    }
 
     PullToRefreshBox(
         isRefreshing = isRefreshing,
@@ -140,18 +148,44 @@ fun HomeScreen(
                             fontSize = 14.sp
                         )
                     }
-                    IconButton(
-                        onClick = {navController.navigate("activity")},
-                        modifier = Modifier
-                            .background(Color.White.copy(alpha = 0.2f), CircleShape)
-                    ){
-                        Icon(
-                            imageVector = Icons.Default.History,
-                            contentDescription = "History",
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
+                    Box {
+                        IconButton(
+                            onClick = { logViewModel.markAsRead()
+                                navController.navigate("activity") },
+                            modifier = Modifier
+                                .background(Color.White.copy(alpha = 0.2f), CircleShape)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.History,
+                                contentDescription = "History",
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp)
 
-                        )
+                            )
+                        }
+                        if (unreadCount > 0) {
+                            Surface(
+                                color = Color.Red,
+                                shape = CircleShape,
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .size(22.dp)
+                                    .offset(x = 2.dp, y = (-2).dp),
+                                border = BorderStroke(
+                                    1.5.dp,
+                                    primaryBlue
+                                )
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Text(
+                                        text = if (unreadCount > 9) "9+" else unreadCount.toString(),
+                                        color = Color.White,
+                                        fontSize = 9.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }

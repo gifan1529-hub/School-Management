@@ -1,6 +1,7 @@
 package com.example.schoolmanagement.UI.Screen.Admin
 
 import androidx.compose.animation.core.copy
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.forEach
@@ -27,6 +28,7 @@ import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.Class
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Person
@@ -36,6 +38,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -59,6 +62,7 @@ import com.example.schoolmanagement.UI.Component.AdminMenuCard
 import com.example.schoolmanagement.UI.Component.AttendanceTrendChart
 import com.example.schoolmanagement.UI.Component.StatsBox
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
+import com.example.schoolmanagement.ViewModel.ActivityLogViewModel
 import com.example.schoolmanagement.ViewModel.HomeAdminViewModel
 import com.example.schoolmanagement.getTodayDate
 import org.koin.compose.viewmodel.koinViewModel
@@ -67,10 +71,13 @@ import qrgenerator.qrkitpainter.rememberQrKitPainter
 @Composable
 fun HomeScreenAdmin (
     navController: NavController,
-    viewModel: HomeAdminViewModel = koinViewModel()
+    viewModel: HomeAdminViewModel = koinViewModel(),
+    logViewModel: ActivityLogViewModel = koinViewModel()
 ) {
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
+
+    val unreadCount by logViewModel.unreadCount.collectAsState()
 
     val stats by viewModel.stats.collectAsState()
     val error by viewModel.error.collectAsState()
@@ -101,7 +108,7 @@ fun HomeScreenAdmin (
             },
             title = {
                 Text(
-                    "QR Absensi Murid",
+                    "QR Absensi Guru",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp,
                     color = Color.Gray,
@@ -125,6 +132,10 @@ fun HomeScreenAdmin (
                 }
             }
         )
+    }
+
+    LaunchedEffect(Unit) {
+        logViewModel.loadUnreadCount()
     }
 
     PullToRefreshBox(
@@ -166,18 +177,47 @@ fun HomeScreenAdmin (
                             fontSize = 14.sp
                         )
                     }
-                    IconButton(
-                        onClick = {navController.navigate("activity")},
-                        modifier = Modifier
-                            .background(Color.White.copy(alpha = 0.2f), CircleShape)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.History,
-                            contentDescription = "History",
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
+                    Box {
+                        IconButton(
+                            onClick = { logViewModel.markAsRead()
+                                navController.navigate("activity") },
+                            modifier = Modifier
+                                .background(Color.White.copy(alpha = 0.2f), CircleShape)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.History,
+                                contentDescription = "History",
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp)
 
-                        )
+                            )
+                        }
+                        if (unreadCount > 0) {
+                            Surface(
+                                color = Color.Red,
+                                shape = CircleShape,
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .size(22.dp)
+                                    .offset(x = 2.dp, y = (-2).dp),
+                                border = BorderStroke(
+                                    1.5.dp,
+                                    primaryBlue
+                                )
+                            ) {
+                                Box(contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                    ) {
+                                    Text(
+                                        text = if (unreadCount > 9) "9+" else unreadCount.toString(),
+                                        color = Color.White,
+                                        fontSize = 9.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                }
+                            }
+                        }
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     IconButton(
@@ -273,6 +313,14 @@ fun HomeScreenAdmin (
                         Color(0xFFF44336)
                     ) {
                         navController.navigate("formalert")
+                    }
+                    AdminMenuCard(
+                        "Izin",
+                        "Izin murid dan siswa",
+                        Icons.Default.Email,
+                        primaryBlue
+                    ) {
+                        navController.navigate("izinadmin")
                     }
                 }
                 Spacer(Modifier.height(40.dp))

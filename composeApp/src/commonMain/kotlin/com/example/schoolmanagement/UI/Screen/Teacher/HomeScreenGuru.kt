@@ -37,6 +37,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +54,7 @@ import androidx.navigation.NavHostController
 import com.example.schoolmanagement.UI.Screen.Student.AttendanceBox
 import com.example.schoolmanagement.UI.Screen.Student.MenuCard
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
+import com.example.schoolmanagement.ViewModel.ActivityLogViewModel
 import com.example.schoolmanagement.ViewModel.HomeTeacherViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import com.example.schoolmanagement.getAttendanceStatus
@@ -64,8 +66,11 @@ import qrgenerator.qrkitpainter.rememberQrKitPainter
 @Composable
 fun HomeScreenGuru (
     navController: NavHostController,
-    viewModel: HomeTeacherViewModel = koinViewModel ()
+    viewModel: HomeTeacherViewModel = koinViewModel (),
+    logViewModel: ActivityLogViewModel = koinViewModel()
 ) {
+    val unreadCount by logViewModel.unreadCount.collectAsState()
+
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val isAlreadyAbsen by viewModel.isAlreadyAbsen.collectAsState()
     val isLoadingAbsen by viewModel.isLoadingAbsen.collectAsState()
@@ -134,6 +139,10 @@ fun HomeScreenGuru (
         )
     }
 
+    LaunchedEffect(Unit) {
+        logViewModel.loadUnreadCount()
+    }
+
     PullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = {viewModel.refreshData()},
@@ -159,7 +168,7 @@ fun HomeScreenGuru (
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
                     Column {
                         Text(
                             text = "Halo, $userName!",
@@ -179,7 +188,10 @@ fun HomeScreenGuru (
                         )
                     }
                     IconButton(
-                        onClick = {navController.navigate("activity")},
+                        onClick = {
+                            logViewModel.markAsRead()
+                            navController.navigate("activity")
+                        },
                         modifier = Modifier
                             .background(Color.White.copy(alpha = 0.2f), CircleShape)
                     ) {
@@ -192,18 +204,43 @@ fun HomeScreenGuru (
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
-                    IconButton(
-                        onClick = {showQrDialog = true},
-                        modifier = Modifier
-                            .background(Color.White.copy(alpha = 0.2f), CircleShape)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.QrCode,
-                            contentDescription = "QR",
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
+                    Box {
+                        IconButton(
+                            onClick = { showQrDialog = true },
+                            modifier = Modifier
+                                .background(Color.White.copy(alpha = 0.2f), CircleShape)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.QrCode,
+                                contentDescription = "QR",
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp)
 
-                        )
+                            )
+                        }
+                        if (unreadCount > 0) {
+                            Surface(
+                                color = Color.Red,
+                                shape = CircleShape,
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .size(22.dp)
+                                    .offset(x = 2.dp, y = (-2).dp),
+                                border = BorderStroke(
+                                    1.5.dp,
+                                    primaryBlue
+                                )
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Text(
+                                        text = if (unreadCount > 9) "9+" else unreadCount.toString(),
+                                        color = Color.White,
+                                        fontSize = 9.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }

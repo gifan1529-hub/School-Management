@@ -23,4 +23,22 @@ class ActivityLogRepositoryImpl (
             Result.failure(exceptionHandler.handleException(e))
         }
     }
+
+    override suspend fun getUnreadCount(token: String): Result<Int> {
+        return try {
+            val count = apiService.getUnreadActivity(token)
+            Result.success(count)
+        } catch (e: Exception) {
+            Result.failure(exceptionHandler.handleException(e))
+        }
+    }
+
+    override suspend fun markAllAsRead(token: String): Result<Boolean> {
+        return try {
+            apiService.markAllActivitiesAsRead(token)
+            Result.success(true)
+        } catch (e: Exception) {
+            Result.failure(exceptionHandler.handleException(e))
+        }
+    }
 }
