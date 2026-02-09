@@ -16,6 +16,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.schoolmanagement.UI.Screen.FormIzin
 import com.example.schoolmanagement.UI.Component.NavButton
+import com.example.schoolmanagement.UI.Screen.ActivityLogScreen
 import com.example.schoolmanagement.UI.Screen.Admin.AttendanceReportScreen
 import com.example.schoolmanagement.UI.Screen.Admin.HomeScreenAdmin
 import com.example.schoolmanagement.UI.Screen.Admin.KelolaUserScreen
@@ -24,6 +25,7 @@ import com.example.schoolmanagement.UI.Screen.SignIn
 import com.example.schoolmanagement.UI.Screen.AlertScreen
 import com.example.schoolmanagement.UI.Screen.FormAlert
 import com.example.schoolmanagement.UI.Screen.Student.DetailHomeWork
+import com.example.schoolmanagement.UI.Screen.Student.DetailNilaiScreen
 import com.example.schoolmanagement.UI.Screen.Student.HistoryAbsenScreen
 import com.example.schoolmanagement.UI.Screen.Student.HomeScreen
 import com.example.schoolmanagement.UI.Screen.Student.IzinScreen
@@ -131,6 +133,9 @@ fun App(
             }
             composable ("usermanage"){
                 KelolaUserScreen(navController)
+            }
+            composable ("activity"){
+                ActivityLogScreen(navController)
             }
         }
     }

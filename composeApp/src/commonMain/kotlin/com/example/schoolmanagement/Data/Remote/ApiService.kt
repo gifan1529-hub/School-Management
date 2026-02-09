@@ -294,4 +294,18 @@ class ApiService(private val client: HttpClient) {
             }
         }.body()
     }
+
+    suspend fun getMyActivities (token: String, page: Int = 1): ActivityLogResponse {
+        return client.get(ApiClient.getUrl("my-activities")) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+            url { parameters.append("page", page.toString())}
+        }.body()
+    }
+
+    suspend fun getAllActivities (token: String, page: Int = 1): ActivityLogResponse {
+        return client.get(ApiClient.getUrl("activity-logs")) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+            url { parameters.append("page", page.toString())}
+        }.body()
+    }
 }

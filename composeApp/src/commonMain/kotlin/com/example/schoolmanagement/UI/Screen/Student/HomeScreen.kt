@@ -14,16 +14,19 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,21 +40,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import com.example.schoolmanagement.getAttendanceStatus
 import com.example.schoolmanagement.getTodayDate
 import com.example.schoolmanagement.isLate
 import org.koin.compose.viewmodel.koinViewModel
+import schoolmanagement.composeapp.generated.resources.Res
 
 @Composable
 fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = koinViewModel()
 ) {
+    val Poppins = getPoppinsFontFamily()
+
     val isAlreadyAbsen by viewModel.isAlreadyAbsen.collectAsState()
     val isLoadingAbsen by viewModel.isLoadingAbsen.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -104,23 +112,45 @@ fun HomeScreen(
                     )
                     .padding(horizontal = 24.dp, vertical = 40.dp)
             ) {
-                Row {
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Column {
                         Text(
                             text = "Halo, $userName!",
                             color = Color.White,
                             fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.SemiBold
                         )
                         Text(
+                            fontFamily = Poppins,
                             text = "Kelas ${userKelas} • NISN: ${userNis}",
                             color = Color.White.copy(alpha = 0.8f),
+                            fontWeight = FontWeight.Normal,
                             fontSize = 14.sp
                         )
                         Text(
+                            fontFamily = Poppins,
                             text = "Role : $userRole",
+                            fontWeight = FontWeight.Normal,
                             color = Color.White.copy(alpha = 0.8f),
                             fontSize = 14.sp
+                        )
+                    }
+                    IconButton(
+                        onClick = {navController.navigate("activity")},
+                        modifier = Modifier
+                            .background(Color.White.copy(alpha = 0.2f), CircleShape)
+                    ){
+                        Icon(
+                            imageVector = Icons.Default.History,
+                            contentDescription = "History",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+
                         )
                     }
                 }
@@ -143,7 +173,8 @@ fun HomeScreen(
                     ) {
                         Text(
                             "Ringkasan Kehadiran",
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = Poppins,
                             fontSize = 16.sp,
                             modifier = Modifier
                                 .padding(end = 5.dp)
@@ -155,6 +186,7 @@ fun HomeScreen(
                             Text(
                                 text = getTodayDate(),
                                 color = Color.White,
+                                fontFamily = Poppins,
                                 fontSize = 12.sp,
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                             )
@@ -236,6 +268,7 @@ fun HomeScreen(
                         ) {
                             Text(
                                 fontSize = 12.sp,
+                                fontFamily = Poppins,
                                 color = when {
                                     isAlreadyAbsen && todayStatus == "Absent" -> Color.Red
                                     isAlreadyAbsen -> {
@@ -329,6 +362,7 @@ fun HomeScreen(
 
 @Composable
 fun AttendanceBox(label: String, value: String, color: Color, bgColor: Color, modifier: Modifier) {
+    val Poppins = getPoppinsFontFamily()
     Surface(
         modifier = modifier,
         color = bgColor,
@@ -338,8 +372,19 @@ fun AttendanceBox(label: String, value: String, color: Color, bgColor: Color, mo
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(value, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = color)
-            Text(label, fontSize = 14.sp, color = color.copy(alpha = 0.7f))
+            Text(
+                value,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = color,
+                fontFamily = Poppins,
+            )
+            Text(
+                label,
+                fontSize = 14.sp,
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Normal,
+                color = color.copy(alpha = 0.7f))
         }
     }
 }
@@ -351,6 +396,7 @@ fun MenuCard(
     modifier: Modifier,
     onClick: () -> Unit = {}
 ) {
+    val Poppins = getPoppinsFontFamily()
     Card(
         modifier = modifier.height(100.dp),
         shape = RoundedCornerShape(16.dp),
@@ -370,7 +416,7 @@ fun MenuCard(
                     RoundedCornerShape(8.dp)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(12.dp))
-            Text(title, fontWeight = FontWeight.Medium, fontSize = 14.sp)
+            Text(title, fontWeight = FontWeight.Medium,fontFamily = Poppins, fontSize = 14.sp)
         }
     }
 }

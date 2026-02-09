@@ -1,5 +1,6 @@
 package com.example.schoolmanagement.DI
 
+import com.example.schoolmanagement.Data.Impl.ActivityLogRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.AnnouncmentRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.AttendanceReportImpl
 import com.example.schoolmanagement.Data.Impl.AttendanceRepositoryImpl
@@ -13,6 +14,7 @@ import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Data.Remote.ApiClient
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkDetailUseCase
 import com.example.schoolmanagement.Data.Remote.ApiService
+import com.example.schoolmanagement.Domain.Repository.ActivityLogRepository
 import com.example.schoolmanagement.Domain.Repository.AnnouncmentRepository
 import com.example.schoolmanagement.Domain.Repository.AttendanceReportRepository
 import com.example.schoolmanagement.Domain.Repository.AttendanceRepository
@@ -25,6 +27,7 @@ import com.example.schoolmanagement.Domain.Repository.UpdateUserRepository
 import com.example.schoolmanagement.Domain.UseCase.AddUserUseCase
 import com.example.schoolmanagement.Domain.UseCase.DeleteHomeWork
 import com.example.schoolmanagement.Domain.UseCase.DeleteUserUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetActivityLogUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAdminStatsUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAllUserUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAnnouncmentUseCase
@@ -49,6 +52,7 @@ import com.example.schoolmanagement.Domain.UseCase.SubmitHomeworkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitPermitUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdatePermitStatusUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdateUserUseCase
+import com.example.schoolmanagement.ViewModel.ActivityLogViewModel
 import com.example.schoolmanagement.ViewModel.AlertViewModel
 import com.example.schoolmanagement.ViewModel.AttendanceReportViewModel
 import com.example.schoolmanagement.ViewModel.AuthViewModel
@@ -85,6 +89,7 @@ val appModule = module {
     single <AttendanceReportRepository>{ AttendanceReportImpl(get()) }
     single <UpdateUserRepository>{ UpdateUserRepositoryImpl(get()) }
     single <GradeRepository>{ GradeRepositoryImpl(get()) }
+    single < ActivityLogRepository>{ ActivityLogRepositoryImpl(get()) }
 //    // Network
 //    single {
 //        HttpClient {
@@ -127,6 +132,8 @@ val appModule = module {
     factoryOf(::DeleteUserUseCase)
     factoryOf(::AddUserUseCase)
     factoryOf(::GetGradeSummaryUseCase)
+    factoryOf(::GetActivityLogUseCase)
+
 
 
     viewModel { MarkAttendanceViewModel(get()) }
@@ -145,4 +152,5 @@ val appModule = module {
     viewModel { AttendanceReportViewModel(get()) }
     viewModel { UpdateUserViewModel(get(), get(), get(), get()) }
     viewModel { GradeViewModel(get()) }
+    viewModel { ActivityLogViewModel(get()) }
 }
