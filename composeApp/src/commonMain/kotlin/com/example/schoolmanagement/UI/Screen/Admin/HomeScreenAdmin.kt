@@ -1,6 +1,7 @@
 package com.example.schoolmanagement.UI.Screen.Admin
 
 import androidx.compose.animation.core.copy
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.forEach
 import androidx.compose.foundation.layout.Arrangement
@@ -29,16 +30,22 @@ import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.QrCode
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,9 +58,11 @@ import com.example.schoolmanagement.Domain.Model.ChartData
 import com.example.schoolmanagement.UI.Component.AdminMenuCard
 import com.example.schoolmanagement.UI.Component.AttendanceTrendChart
 import com.example.schoolmanagement.UI.Component.StatsBox
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.HomeAdminViewModel
 import com.example.schoolmanagement.getTodayDate
 import org.koin.compose.viewmodel.koinViewModel
+import qrgenerator.qrkitpainter.rememberQrKitPainter
 
 @Composable
 fun HomeScreenAdmin (
@@ -70,9 +79,52 @@ fun HomeScreenAdmin (
     val trendData by viewModel.trendData.collectAsState()
     val errorTrend by viewModel.errorTrend.collectAsState()
 
+    val Poppins = getPoppinsFontFamily()
+    var showQrDialog by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit){
         viewModel.loadStats()
         viewModel.loadAttendanceTrend()
+    }
+
+    if (showQrDialog) {
+        AlertDialog(
+            containerColor = Color.White,
+            onDismissRequest = { showQrDialog = false },
+            confirmButton = {
+                TextButton(onClick = { showQrDialog = false }) {
+                    Text(
+                        "Tutup",
+                        color = Color(0xFF0066FF)
+                    )
+                }
+            },
+            title = {
+                Text(
+                    "QR Absensi Murid",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 18.sp,
+                    color = Color.Gray,
+                    fontFamily = Poppins
+                )
+            },
+            text = {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("Minta guru scan QR ini untuk absen", fontSize = 12.sp, color = Color.Gray)
+                    Spacer(Modifier.height(16.dp))
+
+                    val painter = rememberQrKitPainter(
+                        data = "GURU-HADIR-2026"
+                    )
+
+                    Image(
+                        painter = painter,
+                        contentDescription = "QR Code",
+                        modifier = Modifier.size(250.dp)
+                    )
+                }
+            }
+        )
     }
 
     PullToRefreshBox(
@@ -122,6 +174,20 @@ fun HomeScreenAdmin (
                         Icon(
                             imageVector = Icons.Default.History,
                             contentDescription = "History",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    IconButton(
+                        onClick = {showQrDialog = true},
+                        modifier = Modifier
+                            .background(Color.White.copy(alpha = 0.2f), CircleShape)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.QrCode,
+                            contentDescription = "QR",
                             tint = Color.White,
                             modifier = Modifier.size(24.dp)
 
