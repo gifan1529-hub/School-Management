@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.ProfileViewModel
 import com.example.schoolmanagement.getTodayDate
 import org.koin.compose.viewmodel.koinViewModel
@@ -57,6 +58,7 @@ fun ProfileScreen (
     val userName by viewModel.userName.collectAsState()
     val userRole by viewModel.userRole.collectAsState()
 
+    val poppins = getPoppinsFontFamily()
 
     val primaryBlue = Color(0xFF0066FF)
     val red = Color(0xFFFF0000)
@@ -88,9 +90,10 @@ fun ProfileScreen (
                     Column {
                         Text(
                             text = "Profil & Settings",
+                            fontFamily = poppins,
                             color = Color.White,
                             fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
             }
@@ -124,11 +127,13 @@ fun ProfileScreen (
                         Column (modifier = Modifier.padding(start = 16.dp)) {
                             Text(
                                 "${userName}",
-                                fontWeight = FontWeight.Bold,
+                                fontFamily = poppins,
+                                fontWeight = FontWeight.SemiBold,
                                 fontSize = 18.sp,
                             )
                             Text(
                                 "${userRole}",
+                                fontFamily = poppins,
                                 fontSize = 14.sp,
                                 color = Color.Gray
                             )
@@ -182,6 +187,7 @@ fun ProfileScreen (
                         text = "Logout",
                         color = Color.White,
                         fontSize = 16.sp,
+                        fontFamily = poppins,
                         modifier = Modifier
                             .padding(horizontal = 12.dp, vertical = 4.dp)
                     )
@@ -193,6 +199,7 @@ fun ProfileScreen (
 
 @Composable
 fun ProfileInfoRow(icon: ImageVector, label: String, value: String, iconColor: Color) {
+    val poppins = getPoppinsFontFamily()
     Row(
         modifier = Modifier.padding(bottom = 20.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -207,8 +214,8 @@ fun ProfileInfoRow(icon: ImageVector, label: String, value: String, iconColor: C
             Icon(icon, contentDescription = null, tint = iconColor, modifier = Modifier.size(18.dp))
         }
         Column(modifier = Modifier.padding(start = 12.dp)) {
-            Text(label, fontSize = 11.sp, color = Color.Gray)
-            Text(value, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+            Text(label, fontSize = 11.sp,fontFamily = poppins, color = Color.Gray)
+            Text(value, fontSize = 14.sp,fontFamily = poppins, fontWeight = FontWeight.SemiBold)
         }
     }
 }

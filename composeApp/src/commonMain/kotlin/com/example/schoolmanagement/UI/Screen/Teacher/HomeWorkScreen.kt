@@ -58,6 +58,7 @@ import com.example.schoolmanagement.DI.ToastHelper
 import com.example.schoolmanagement.Domain.Model.HomeworkData
 import com.example.schoolmanagement.UI.Component.HomeworkTeacherItem
 import com.example.schoolmanagement.UI.Component.TimePickerDialog
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.HomeWorkViewModel
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -72,6 +73,8 @@ fun HomeWorkScreen (
     navController: NavHostController,
     viewModel: HomeWorkViewModel = koinViewModel()
 ) {
+    val poppins = getPoppinsFontFamily()
+
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
 
@@ -112,7 +115,7 @@ fun HomeWorkScreen (
                         showDatePicker = false
                         showTimePicker = true // lanjut munculin jam setelah tanggal dipilih
                     }
-                }) { Text("Lanjut Pilih Jam") }
+                }) { Text("Lanjut Pilih Jam", fontFamily = poppins,) }
             }
         ) {
             DatePicker(state = datePickerState)
@@ -129,7 +132,7 @@ fun HomeWorkScreen (
                     // Gabungkan Tanggal yang tadi dengan Jam baru
                     deadLine = "$deadLine $hour:$min"
                     showTimePicker = false
-                }) { Text("Selesai") }
+                }) { Text("Selesai", fontFamily = poppins,) }
             }
         ) {
             TimePicker(state = timePickerState)
@@ -169,6 +172,7 @@ fun HomeWorkScreen (
                 Text(
                     "Beri Tugas Murid",
                     color = Color.White,
+                    fontFamily = poppins,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -188,13 +192,13 @@ fun HomeWorkScreen (
                     elevation = CardDefaults.cardElevation(2.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Buat Tugas Baru", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text("Buat Tugas Baru", fontWeight = FontWeight.SemiBold,fontFamily = poppins, fontSize = 16.sp)
                         Spacer(Modifier.height(12.dp))
 
                         OutlinedTextField(
                             value = taskSubject,
                             onValueChange = { taskSubject = it },
-                            label = { Text("Mata Pelajaran") },
+                            label = { Text("Mata Pelajaran",fontFamily = poppins,) },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp)
                         )
@@ -203,7 +207,7 @@ fun HomeWorkScreen (
                         OutlinedTextField(
                             value = taskTitle,
                             onValueChange = { taskTitle = it },
-                            label = { Text("Deskripsi Tugas") },
+                            label = { Text("Deskripsi Tugas", fontFamily = poppins,) },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp)
                         )
@@ -215,7 +219,7 @@ fun HomeWorkScreen (
                                     value = selectedClass,
                                     onValueChange = { },
                                     readOnly = true,
-                                    label = { Text("Kelas") },
+                                    label = { Text("Kelas",fontFamily = poppins,) },
                                     shape = RoundedCornerShape(12.dp),
                                     modifier = Modifier.fillMaxWidth(),
                                     trailingIcon = {
@@ -227,7 +231,7 @@ fun HomeWorkScreen (
                                 Box(Modifier.matchParentSize().clickable { expanded = !expanded })
                                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                                     classOptions.forEach { cls ->
-                                        DropdownMenuItem(text = { Text(cls) }, onClick = { selectedClass = cls; expanded = false })
+                                        DropdownMenuItem(text = { Text(cls,fontFamily = poppins,) }, onClick = { selectedClass = cls; expanded = false })
                                     }
                                 }
                             }
@@ -237,7 +241,7 @@ fun HomeWorkScreen (
                                     readOnly = true,
                                     enabled = false,
                                     onValueChange = { deadLine = it },
-                                    label = { Text("Deadline (Tgl)") },
+                                    label = { Text("Deadline (Tgl)", fontFamily = poppins,) },
                                     modifier = Modifier
                                         .clickable { showDatePicker = true }
                                         .fillMaxWidth(),
@@ -272,14 +276,14 @@ fun HomeWorkScreen (
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = primaryBlue)
                         ) {
-                            Text("Bagikan Tugas")
+                            Text("Bagikan Tugas", fontFamily = poppins,)
                         }
                     }
                 }
             }
 
             item {
-                Text("Tugas Terkirim", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text("Tugas Terkirim",fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
             }
 
             items(homeworkList) { hw ->

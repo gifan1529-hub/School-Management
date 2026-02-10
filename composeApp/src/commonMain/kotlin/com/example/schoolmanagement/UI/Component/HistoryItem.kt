@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.schoolmanagement.Data.Remote.AttendanceRecord
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
     fun HistoryItem(item: AttendanceRecord) {
@@ -27,6 +28,8 @@ import com.example.schoolmanagement.Data.Remote.AttendanceRecord
             else -> Color(0xFFF44336)
         }
 
+        val poppins = getPoppinsFontFamily()
+    
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -40,12 +43,14 @@ import com.example.schoolmanagement.Data.Remote.AttendanceRecord
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         item.date,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = poppins,
                         fontSize = 16.sp
                     )
                     Text(
                         "Masuk: ${item.time_in.take(5)}",
                         color = Color.Gray,
+                        fontFamily = poppins,
                         fontSize = 13.sp
                     )
                 }
@@ -53,9 +58,10 @@ import com.example.schoolmanagement.Data.Remote.AttendanceRecord
                     Text(
                         text = item.status,
                         color = statusColor,
+                        fontFamily = poppins,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                         fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }

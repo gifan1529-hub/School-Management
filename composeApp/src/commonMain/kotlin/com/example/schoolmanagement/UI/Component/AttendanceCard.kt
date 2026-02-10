@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
 fun AttendanceCard(
@@ -32,6 +33,8 @@ fun AttendanceCard(
     timeIn: String,
     staus: String
 ) {
+    val poppins = getPoppinsFontFamily()
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -49,15 +52,15 @@ fun AttendanceCard(
                     .background(primaryColor.copy(alpha = 0.1f)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(name.take(1), color = primaryColor, fontWeight = FontWeight.Bold)
+                Text(name.take(1), fontFamily = poppins, color = primaryColor, fontWeight = FontWeight.SemiBold)
             }
 
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text(name, fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                 val labelWaktu = if (timeIn == "-") "Belum melakukan absen" else "Hadir jam $timeIn"
-                Text(labelWaktu, color = Color.Gray, fontSize = 12.sp)
+                Text(labelWaktu, fontFamily = poppins, color = Color.Gray, fontSize = 12.sp)
             }
 
             Surface(
@@ -67,9 +70,10 @@ fun AttendanceCard(
                 Text(
                     text = staus,
                     color = primaryColor,
+                    fontFamily = poppins,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }

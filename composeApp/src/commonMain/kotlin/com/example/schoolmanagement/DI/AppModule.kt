@@ -41,11 +41,13 @@ import com.example.schoolmanagement.Domain.UseCase.GetPermitHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetScheduleUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetTeacherDasboardUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetTeacherSchedulesUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetUnreadNotifActivityUseCase
 import com.example.schoolmanagement.Domain.UseCase.GiveGradeUseCase
 import com.example.schoolmanagement.Domain.UseCase.LoginUC
 import com.example.schoolmanagement.Domain.UseCase.SubmitAttendanceUC
 import com.example.schoolmanagement.Domain.UseCase.getDetailUserUC
 import com.example.schoolmanagement.Domain.UseCase.LogoutUseCase
+import com.example.schoolmanagement.Domain.UseCase.MarkAllNotificationUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostAnnouncmentUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitHomeworkUseCase
@@ -89,7 +91,8 @@ val appModule = module {
     single <AttendanceReportRepository>{ AttendanceReportImpl(get()) }
     single <UpdateUserRepository>{ UpdateUserRepositoryImpl(get()) }
     single <GradeRepository>{ GradeRepositoryImpl(get()) }
-    single < ActivityLogRepository>{ ActivityLogRepositoryImpl(get()) }
+    single <ActivityLogRepository>{ ActivityLogRepositoryImpl(get()) }
+
 //    // Network
 //    single {
 //        HttpClient {
@@ -133,6 +136,8 @@ val appModule = module {
     factoryOf(::AddUserUseCase)
     factoryOf(::GetGradeSummaryUseCase)
     factoryOf(::GetActivityLogUseCase)
+    factoryOf(::GetUnreadNotifActivityUseCase)
+    factoryOf(::MarkAllNotificationUseCase)
 
 
 
@@ -152,5 +157,5 @@ val appModule = module {
     viewModel { AttendanceReportViewModel(get()) }
     viewModel { UpdateUserViewModel(get(), get(), get(), get()) }
     viewModel { GradeViewModel(get()) }
-    viewModel { ActivityLogViewModel(get()) }
+    viewModel { ActivityLogViewModel(get(), get(), get()) }
 }

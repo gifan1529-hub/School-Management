@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
 fun TimePickerDialog (
@@ -23,6 +24,8 @@ fun TimePickerDialog (
     confirmButton: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
+    val poppins = getPoppinsFontFamily()
+
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
             shape = RoundedCornerShape(28.dp),
@@ -39,7 +42,7 @@ fun TimePickerDialog (
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    TextButton(onClick = onDismissRequest) { Text("Batal") }
+                    TextButton(onClick = onDismissRequest) { Text("Batal", fontFamily = poppins,) }
                     confirmButton()
                 }
             }

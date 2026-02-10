@@ -38,6 +38,7 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.schoolmanagement.UI.Component.IzinItem
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.PermitViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -47,6 +48,7 @@ fun IzinScreen  (
     viewModel : PermitViewModel = koinViewModel()
 ) {
     val primaryBlue = Color(0xFF0066FF)
+    val poppins = getPoppinsFontFamily()
 
     val myPermitHistory by viewModel.myPermitHistory.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -90,8 +92,9 @@ fun IzinScreen  (
                     Text(
                         text = "Permohonan Izin",
                         color = Color.White,
+                        fontFamily = poppins,
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
@@ -112,7 +115,8 @@ fun IzinScreen  (
                     ) {
                         Text(
                             text = "Riwayat Izin",
-                            fontWeight = FontWeight.Bold,
+                            fontFamily = poppins,
+                            fontWeight = FontWeight.SemiBold,
                             fontSize = 18.sp,
                             color = primaryBlue
                         )
@@ -125,7 +129,7 @@ fun IzinScreen  (
                             ),
                             shape = RoundedCornerShape(12.dp)
                         ) {
-                            Text("Buat Izin", fontSize = 12.sp)
+                            Text("Buat Izin", fontSize = 12.sp, fontFamily = poppins,)
                         }
                     }
 
@@ -137,7 +141,7 @@ fun IzinScreen  (
                         }
                     } else if (myPermitHistory.isEmpty()) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("Belum ada riwayat izin", color = Color.Gray)
+                            Text("Belum ada riwayat izin", color = Color.Gray, fontFamily = poppins,)
                         }
                     } else {
                         LazyColumn(

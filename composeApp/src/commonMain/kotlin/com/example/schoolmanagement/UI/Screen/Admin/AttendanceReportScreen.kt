@@ -49,6 +49,7 @@ import androidx.navigation.NavController
 import com.example.schoolmanagement.UI.Component.FilterDropdown
 import com.example.schoolmanagement.UI.Component.AttendanceCard
 import com.example.schoolmanagement.UI.Component.AttendanceSummaryItem
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.AttendanceReportViewModel
 import com.example.schoolmanagement.getTodayDate
 import org.koin.compose.viewmodel.koinViewModel
@@ -59,6 +60,8 @@ fun AttendanceReportScreen (
     navController: NavController,
     viewModel: AttendanceReportViewModel = koinViewModel()
 ) {
+    val poppins = getPoppinsFontFamily()
+
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
 
@@ -85,7 +88,7 @@ fun AttendanceReportScreen (
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Laporan Kehadiran", fontWeight = FontWeight.Bold) },
+                title = { Text("Laporan Kehadiran", fontWeight = FontWeight.SemiBold, fontFamily = poppins) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = null)
@@ -115,15 +118,17 @@ fun AttendanceReportScreen (
                 Tab(selected = selectedTabIndex == 0, onClick = { selectedTabIndex = 0 }) {
                     Text(
                         "Siswa",
+                        fontFamily = poppins,
                         modifier = Modifier.padding(16.dp),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
                 Tab(selected = selectedTabIndex == 1, onClick = { selectedTabIndex = 1 }) {
                     Text(
                         "Guru",
+                        fontFamily = poppins,
                         modifier = Modifier.padding(16.dp),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
@@ -181,7 +186,8 @@ fun AttendanceReportScreen (
             Text(
                 text = if (selectedTabIndex == 0) "Daftar Absensi Siswa" else "Daftar Absensi Guru",
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = poppins,
                 fontSize = 16.sp
             )
 
@@ -196,7 +202,7 @@ fun AttendanceReportScreen (
                             Modifier.fillMaxWidth().padding(40.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Tidak ada data ditemukan", color = Color.Gray)
+                            Text("Tidak ada data ditemukan", fontFamily = poppins, color = Color.Gray)
                         }
                     }
                 }

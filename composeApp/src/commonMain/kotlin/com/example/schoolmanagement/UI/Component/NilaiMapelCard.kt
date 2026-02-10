@@ -11,13 +11,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.automirrored.filled.Assignment
+import androidx.compose.material.icons.filled.Assignment
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,14 +28,15 @@ import androidx.compose.ui.unit.sp
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
-fun UserCard(
-    name: String,
-    idNumber: String,
-    subInfo: String,
-    onDelete: () -> Unit,
-    onEdit: () -> Unit
+fun NilaiMapelCard(
+    subject: String,
+    score: String,
+    grade: String,
+    status: String,
+    primaryColor: Color
 ) {
     val poppins = getPoppinsFontFamily()
+    val statusColor = if (status == "Done") Color(0xFF4CAF50) else Color.Red
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -51,28 +50,40 @@ fun UserCard(
         ) {
             Surface(
                 modifier = Modifier.size(48.dp),
-                shape = RoundedCornerShape(12.dp),
-                color = Color(0xFF0066FF).copy(alpha = 0.1f)
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                color = primaryColor.copy(alpha = 0.1f)
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(Icons.Default.Person, contentDescription = null, tint = Color(0xFF0066FF))
+                    Icon(Icons.Default.Assignment, contentDescription = null, tint = primaryColor)
                 }
             }
 
             Spacer(Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(name, fontFamily = poppins, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Text(idNumber, fontSize = 12.sp, color = Color.Gray)
-                Text(subInfo, fontSize = 12.sp, color = Color(0xFF0066FF))
+                Text(subject, fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                Text("Status: $status", fontFamily = poppins, color = statusColor, fontSize = 12.sp, fontWeight = FontWeight.Medium)
             }
 
-            Row {
-                IconButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(20.dp))
-                }
-                IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = null, tint = Color.Red, modifier = Modifier.size(20.dp))
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = score,
+                    fontFamily = poppins,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = primaryColor
+                )
+                Surface(
+                    color = Color.LightGray.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(4.dp)
+                ) {
+                    Text(
+                        text = "Grade $grade",
+                        fontFamily = poppins,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
             }
         }

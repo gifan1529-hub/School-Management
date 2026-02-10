@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
 fun AttendanceSummaryItem (
@@ -13,17 +14,21 @@ fun AttendanceSummaryItem (
     value: String,
     color: Color
 ) {
+    val poppins = getPoppinsFontFamily()
+
     Column {
         Text(
+            fontFamily = poppins,
             text = label,
             color = color.copy(alpha = 0.7f),
             fontSize = 12.sp
         )
         Text(
             text = value,
+            fontFamily = poppins,
             color = color,
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.SemiBold
         )
     }
 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
 fun TugasItem (
@@ -32,6 +33,7 @@ fun TugasItem (
     grade: Int? = null,
     onClick: () -> Unit
 ) {
+    val poppins = getPoppinsFontFamily()
     val primaryBlue = Color(0xFF0066FF)
     val (statusColor, statusBg, statusLabel) = when (status) {
         "Done" -> Triple(
@@ -59,8 +61,8 @@ fun TugasItem (
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = subject, fontSize = 12.sp, color = primaryBlue, fontWeight = FontWeight.Bold)
-            Text(text = title, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+            Text(text = subject, fontSize = 12.sp, fontFamily = poppins, color = primaryBlue, fontWeight = FontWeight.Bold)
+            Text(text = title, fontSize = 15.sp, fontFamily = poppins, fontWeight = FontWeight.SemiBold)
 
             Spacer(modifier = Modifier.height(4.dp))
 
@@ -71,7 +73,7 @@ fun TugasItem (
                     modifier = Modifier.size(14.dp),
                     tint = Color.Gray
                 )
-                Text(text = " Deadline: $deadline", fontSize = 12.sp, color = Color.Gray)
+                Text(text = " Deadline: $deadline", fontFamily = poppins, fontSize = 12.sp, color = Color.Gray)
             }
         }
 
@@ -83,7 +85,8 @@ fun TugasItem (
                 text = statusLabel,
                 color = statusColor,
                 fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
+                fontFamily = poppins,
+                fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
             )
         }

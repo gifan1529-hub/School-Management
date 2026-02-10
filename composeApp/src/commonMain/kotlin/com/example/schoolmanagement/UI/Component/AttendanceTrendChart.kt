@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.schoolmanagement.Domain.Model.ChartData
 import com.example.schoolmanagement.Domain.Model.TrendData
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.HomeAdminViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -39,6 +40,8 @@ fun AttendanceTrendChart(
     viewMode: HomeAdminViewModel = koinViewModel(),
     lineColor: Color = Color(0xFF0066FF)
 ) {
+    val poppins = getPoppinsFontFamily()
+
     val isLoading = viewMode.isLoading.value
 
     if (isLoading && data.isEmpty()) {
@@ -48,11 +51,11 @@ fun AttendanceTrendChart(
         return
     } else if (!isLoading && data.isEmpty()) {
         Box(modifier = Modifier.fillMaxWidth().height(150.dp), contentAlignment = Alignment.Center) {
-            Text("Belum ada data statistik", color = Color.Gray, fontSize = 12.sp)
+            Text("Belum ada data statistik", fontFamily = poppins, color = Color.Gray, fontSize = 12.sp)
         }
     } else {
     Column(modifier = modifier.padding(16.dp)) {
-        Text("Attendance Trend", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text("Attendance Trend", fontFamily = poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
         Spacer(Modifier.height(20.dp))
 
         Row(modifier = Modifier.fillMaxWidth().height(180.dp)) {
@@ -144,7 +147,7 @@ fun AttendanceTrendChart(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             data.forEach {
-                Text(it.label, fontSize = 10.sp, color = Color.Gray)
+                Text(it.label, fontFamily = poppins, fontSize = 10.sp, color = Color.Gray)
             }
         }
     }

@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.PermitViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -38,6 +39,8 @@ fun IzinMuridContent(
     navController: NavHostController,
     viewModel: PermitViewModel = koinViewModel()
 ) {
+    val poppins = getPoppinsFontFamily()
+
     val muridPermits by viewModel.muridPermitHistory .collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
@@ -51,6 +54,7 @@ fun IzinMuridContent(
         } else if (muridPermits.isEmpty()) {
             Text(
                 "Belum ada permohonan izin dari murid",
+                fontFamily = poppins,
                 modifier = Modifier.align(Alignment.Center),
                 color = Color.Gray
             )
@@ -63,7 +67,8 @@ fun IzinMuridContent(
                 item {
                     Text(
                         "Permohonan Izin Siswa",
-                        fontWeight = FontWeight.Bold,
+                        fontFamily = poppins,
+                        fontWeight = FontWeight.SemiBold,
                         color = Color.Gray,
                         fontSize = 14.sp
                     )
@@ -84,11 +89,13 @@ fun IzinMuridContent(
 
                                 Text(
                                     text = izin.user?.name ?: "Siswa",
-                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = poppins,
+                                    fontWeight = FontWeight.SemiBold,
                                     fontSize = 16.sp
                                 )
                                 Text(
                                     text = "${izin.type}: ${izin.reason}",
+                                    fontFamily = poppins,
                                     fontSize = 13.sp,
                                     color = Color.Gray
                                 )
@@ -96,6 +103,7 @@ fun IzinMuridContent(
                                 Text(
                                     text = "Periode: ${izin.start_date} s/d ${izin.end_date}",
                                     fontSize = 11.sp,
+                                    fontFamily = poppins,
                                     color = Color.LightGray
                                 )
                             }
@@ -113,7 +121,8 @@ fun IzinMuridContent(
                                         text = izin.status.uppercase(),
                                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                                         fontSize = 10.sp,
-                                        fontWeight = FontWeight.Bold,
+                                        fontFamily = poppins,
+                                        fontWeight = FontWeight.SemiBold,
                                         color = when (izin.status) {
                                             "approved" -> Color(0xFF4CAF50)
                                             "rejected" -> Color.Red
@@ -125,8 +134,9 @@ fun IzinMuridContent(
                                 if (izin.status == "pending") {
                                     Text(
                                         "Detail",
+                                        fontFamily = poppins,
                                         color = Color(0xFF0066FF),
-                                        fontWeight = FontWeight.Bold,
+                                        fontWeight = FontWeight.SemiBold,
                                         fontSize = 12.sp,
                                         modifier = Modifier
                                             .padding(top = 8.dp)

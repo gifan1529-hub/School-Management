@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.schoolmanagement.UI.Component.InfoCard
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.PermitViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -52,6 +53,8 @@ fun DetailIzinScreen (
 ) {
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
+
+    val poppins = getPoppinsFontFamily()
 
     val permitHistory by viewModel.muridPermitHistory.collectAsState()
     val detail = permitHistory.find { it.id == permitId }
@@ -68,7 +71,7 @@ fun DetailIzinScreen (
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detail Perizinan", fontWeight = FontWeight.Bold) },
+                title = { Text("Detail Perizinan", fontWeight = FontWeight.SemiBold, fontFamily = poppins,) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -92,7 +95,7 @@ fun DetailIzinScreen (
                 )
             } else if (detail == null) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Data tidak ditemukan")
+                Text("Data tidak ditemukan", fontFamily = poppins,)
             }
         } else {
             Column(
@@ -106,8 +109,8 @@ fun DetailIzinScreen (
                     title = "Informasi Murid",
                     icon = Icons.Default.Person,
                     content = {
-                        Text(detail.user?.name ?: "Siswa", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                        Text("Kelas: ${detail.user?.`class` ?: "-"}", color = Color.Gray)
+                        Text(detail.user?.name ?: "Siswa",fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                        Text("Kelas: ${detail.user?.`class` ?: "-"}",fontFamily = poppins, color = Color.Gray)
                     }
                 )
 
@@ -132,7 +135,7 @@ fun DetailIzinScreen (
                     title = "Alasan",
                     icon = Icons.Default.Schedule,
                     content = {
-                        Text(detail.reason ?: "", lineHeight = 20.sp)
+                        Text(detail.reason ?: "",fontFamily = poppins, lineHeight = 20.sp)
                     }
                 )
 
@@ -154,7 +157,7 @@ fun DetailIzinScreen (
                             shape = RoundedCornerShape(12.dp),
                             enabled = !isLoading
                         ) {
-                            Text("Tolak", fontWeight = FontWeight.Bold)
+                            Text("Tolak",fontFamily = poppins, fontWeight = FontWeight.SemiBold)
                         }
 
                         Button(
@@ -167,7 +170,7 @@ fun DetailIzinScreen (
                             shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
                             enabled = !isLoading
                         ) {
-                            Text("Setujui", fontWeight = FontWeight.Bold)
+                            Text("Setujui",fontFamily = poppins, fontWeight = FontWeight.SemiBold)
                         }
                     }
                 }
@@ -179,8 +182,9 @@ fun DetailIzinScreen (
 
 @Composable
 fun DetailRow(label: String, value: String) {
+    val poppins = getPoppinsFontFamily()
     Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(label, color = Color.Gray)
-        Text(value, fontWeight = FontWeight.Normal)
+        Text(label,fontFamily = poppins, color = Color.Gray)
+        Text(value,fontFamily = poppins, fontWeight = FontWeight.Normal)
     }
 }

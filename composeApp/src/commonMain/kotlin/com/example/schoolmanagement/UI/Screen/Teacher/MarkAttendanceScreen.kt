@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.schoolmanagement.UI.Component.AttendanceCard
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import com.example.schoolmanagement.ViewModel.MarkAttendanceViewModel
 import com.example.schoolmanagement.getTodayDate
@@ -60,6 +61,8 @@ fun MarkAttendanceScreen (
 ) {
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
+
+    val poppins = getPoppinsFontFamily()
 
 //    val selectedDate by viewModel.selectedDate.collectAsState()
 //    var showDatePicker by remember { mutableStateOf(false) }
@@ -112,9 +115,10 @@ fun MarkAttendanceScreen (
                     }
                     Text(
                         "Daftar Siswa Kelas",
+                        fontFamily = poppins,
                         color = Color.White,
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
 
@@ -166,7 +170,8 @@ fun MarkAttendanceScreen (
                 item {
                     Text(
                         "Sudah Hadir (${hadirList.size})",
-                        fontWeight = FontWeight.Bold,
+                        fontFamily = poppins,
+                        fontWeight = FontWeight.SemiBold,
                         color = Color(0xFF4CAF50),
                         fontSize = 14.sp,
                         modifier = Modifier.padding(bottom = 4.dp)
@@ -189,7 +194,8 @@ fun MarkAttendanceScreen (
                 item {
                     Text(
                         "Absent (${absent.size})",
-                        fontWeight = FontWeight.Bold,
+                        fontFamily = poppins,
+                        fontWeight = FontWeight.SemiBold,
                         color = Color.Red,
                         fontSize = 14.sp,
                         modifier = Modifier.padding(bottom = 4.dp)
@@ -211,7 +217,8 @@ fun MarkAttendanceScreen (
                 item {
                     Text(
                         "Belum Hadir (${belummHadir.size})",
-                        fontWeight = FontWeight.Bold,
+                        fontFamily = poppins,
+                        fontWeight = FontWeight.SemiBold,
                         color = Color.Red,
                         fontSize = 14.sp,
                         modifier = Modifier.padding(bottom = 4.dp)
@@ -232,8 +239,9 @@ fun MarkAttendanceScreen (
 
 @Composable
 fun AttendanceSummaryItem(label: String, value: String, color: Color) {
+    val poppins = getPoppinsFontFamily()
     Column {
-        Text(label, color = color.copy(alpha = 0.8f), fontSize = 12.sp)
-        Text(value, color = color, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        Text(label,fontFamily = poppins, color = color.copy(alpha = 0.8f), fontSize = 12.sp)
+        Text(value,fontFamily = poppins, color = color, fontSize = 16.sp, fontWeight = FontWeight.Bold)
     }
 }

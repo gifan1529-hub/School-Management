@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import com.example.schoolmanagement.Domain.Model.GradeData
 import com.example.schoolmanagement.UI.Component.LogItem
 import com.example.schoolmanagement.UI.Component.NilaiItem
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.ActivityLogViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -61,6 +62,8 @@ fun ActivityLogScreen (
 ) {
     val log by viewModel.logs.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+
+    val poppins =  getPoppinsFontFamily()
 
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
@@ -110,8 +113,9 @@ fun ActivityLogScreen (
                         Text(
                             text = "Activity Logs",
                             color = Color.White,
+                            fontFamily = poppins,
                             fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                     Spacer(modifier = Modifier.height(20.dp))
@@ -138,6 +142,7 @@ fun ActivityLogScreen (
                             "Belum ada aktivitas terbaru",
                             modifier = Modifier.fillMaxWidth().padding(top = 40.dp),
                             textAlign = TextAlign.Center,
+                            fontFamily = poppins,
                             color = Color.Gray
                         )
                     }

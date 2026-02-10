@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.schoolmanagement.UI.Component.ScheduleItem
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.ProfileViewModel
 import com.example.schoolmanagement.ViewModel.ScheduleViewModel
 import com.example.schoolmanagement.getTodaDayName
@@ -51,6 +52,8 @@ fun JadwalScreen  (
     val userClass by viewModel.userClass.collectAsState()
     val schedules by viewModel.schedules.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+
+    val poppins = getPoppinsFontFamily()
 
     val primaryBlue = Color(0xFF0066FF)
 
@@ -91,9 +94,10 @@ fun JadwalScreen  (
 
                     Text(
                         text = "Jadwal",
+                        fontFamily = poppins,
                         color = Color.White,
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
@@ -109,7 +113,8 @@ fun JadwalScreen  (
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "$todayName, ${getTodayDate()}",
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = poppins,
                         fontSize = 18.sp,
                         color = primaryBlue
                     )
@@ -118,6 +123,7 @@ fun JadwalScreen  (
 
                     Text(
                         text = userClass,
+                        fontFamily = poppins,
                         fontWeight = FontWeight.Normal,
                         fontSize = 13.sp,
                         color = Color.Black
@@ -139,7 +145,7 @@ fun JadwalScreen  (
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Tidak ada jadwal untuk hari $todayName", color = Color.Gray)
+                            Text("Tidak ada jadwal untuk hari $todayName", fontFamily = poppins, color = Color.Gray)
                         }
                     } else {
                         LazyColumn(

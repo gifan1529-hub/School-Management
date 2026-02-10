@@ -1,4 +1,4 @@
-package com.example.schoolmanagement.UI.Screen
+ package com.example.schoolmanagement.UI.Screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.schoolmanagement.UI.Component.TimePickerDialog
 import com.example.schoolmanagement.UI.Component.TipeIzinChip
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.PermitViewModel
 import com.example.schoolmanagement.getTodayDate
 import com.example.schoolmanagement.getTodayDateS
@@ -66,6 +67,8 @@ fun FormIzin (
     navController: NavController,
     viewModel: PermitViewModel = koinViewModel ()
 ) {
+    val poppins = getPoppinsFontFamily()
+
     val tanggal = getTodayDate()
     val tanggals = getTodayDateS()
 
@@ -104,10 +107,10 @@ fun FormIzin (
                         viewModel.onStartDateChange(date)
                     }
                     showDatePickerMulai = false
-                }) { Text("Pilih") }
+                }) { Text("Pilih", fontFamily = poppins,) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePickerMulai = false }) { Text("Batal") }
+                TextButton(onClick = { showDatePickerMulai = false }) { Text("Batal", fontFamily = poppins,) }
             }
         ) {
             DatePicker(state = datePickerStateMulai)
@@ -126,10 +129,10 @@ fun FormIzin (
                         viewModel.onEndDateChange(date)
                     }
                     showDatePickerSelesai = false
-                }) { Text("Pilih") }
+                }) { Text("Pilih", fontFamily = poppins,) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePickerSelesai = false }) { Text("Batal") }
+                TextButton(onClick = { showDatePickerSelesai = false }) { Text("Batal", fontFamily = poppins,) }
             }
         ) {
             DatePicker(state = datePickerStateSelesai)
@@ -144,7 +147,7 @@ fun FormIzin (
                     val time = "${timePickerStateMulai.hour.toString().padStart(2, '0')}:${timePickerStateMulai.minute.toString().padStart(2, '0')}"
                     viewModel.onTimeInChange(time)
                     showTimePickerMulai = false
-                }) { Text("Pilih") }
+                }) { Text("Pilih", fontFamily = poppins,) }
             }
         ) {
             TimePicker(state = timePickerStateMulai)
@@ -159,7 +162,7 @@ fun FormIzin (
                     val time = "${timePickerStateSelesai.hour.toString().padStart(2, '0')}:${timePickerStateSelesai.minute.toString().padStart(2, '0')}"
                     viewModel.onTimeOutChange(time)
                     showTimePickerSelesai = false
-                }) { Text("Pilih") }
+                }) { Text("Pilih", fontFamily = poppins,) }
             }
         ) {
             TimePicker(state = timePickerStateSelesai)
@@ -207,8 +210,9 @@ fun FormIzin (
                     Text(
                         text = "Form Permohonan Izin",
                         color = Color.White,
+                        fontFamily = poppins,
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
@@ -223,14 +227,14 @@ fun FormIzin (
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text("Pilih Alasan", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    Text("Pilih Alasan",fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         TipeIzinChip("Sakit", tipeIzin == "Sakit") { viewModel.onTipeChange("Sakit") }
                         TipeIzinChip("Izin", tipeIzin == "Izin") { viewModel.onTipeChange("Izin") }
                     }
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    Text("Waktu Izin", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    Text("Waktu Izin",fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -242,7 +246,7 @@ fun FormIzin (
                                 readOnly = true,
                                 enabled = false,
                                 modifier = Modifier.fillMaxWidth(),
-                                placeholder = { Text("Mulai") },
+                                placeholder = { Text("Mulai", fontFamily = poppins,) },
                                 shape = RoundedCornerShape(12.dp),
                                 singleLine = true,
                                 colors = OutlinedTextFieldDefaults.colors(
@@ -260,7 +264,7 @@ fun FormIzin (
                                 readOnly = true,
                                 enabled = false,
                                 modifier = Modifier.fillMaxWidth(),
-                                placeholder = { Text("Selesai") },
+                                placeholder = { Text("Selesai", fontFamily = poppins,) },
                                 shape = RoundedCornerShape(12.dp),
                                 singleLine = true,
                                 colors = OutlinedTextFieldDefaults.colors(
@@ -274,7 +278,7 @@ fun FormIzin (
                     }
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    Text("Tanggal Izin", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    Text("Tanggal Izin", fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -286,7 +290,7 @@ fun FormIzin (
                                 readOnly = true,
                                 enabled = false,
                                 modifier = Modifier.fillMaxWidth(),
-                                placeholder = { Text("Pilih Tanggal") },
+                                placeholder = { Text("Pilih Tanggal", fontFamily = poppins,) },
                                 shape = RoundedCornerShape(12.dp),
                                 singleLine = true,
                                 colors = OutlinedTextFieldDefaults.colors(
@@ -306,7 +310,7 @@ fun FormIzin (
                                 readOnly = true,
                                 enabled = false,
                                 modifier = Modifier.fillMaxWidth(),
-                                placeholder = { Text("Pilih Tanggal") },
+                                placeholder = { Text("Pilih Tanggal", fontFamily = poppins,) },
                                 shape = RoundedCornerShape(12.dp),
                                 singleLine = true,
                                 colors = OutlinedTextFieldDefaults.colors(
@@ -322,12 +326,12 @@ fun FormIzin (
                     }
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    Text("Detail Alasan", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    Text("Detail Alasan", fontWeight = FontWeight.SemiBold, fontFamily = poppins, fontSize = 14.sp)
                     OutlinedTextField(
                         value = alasan,
                         onValueChange = { viewModel.onReasonChange(it) },
                         modifier = Modifier.fillMaxWidth().height(120.dp),
-                        placeholder = { Text("Contoh: izin ga masuk ") },
+                        placeholder = { Text("Tulis alasan dengan lengkap ", fontFamily = poppins,) },
                         shape = RoundedCornerShape(12.dp)
                     )
 
@@ -335,7 +339,7 @@ fun FormIzin (
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.DateRange, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(18.dp))
-                        Text(" Tanggal: $tanggal", fontSize = 14.sp, color = Color.Gray)
+                        Text(" Tanggal: $tanggal", fontFamily = poppins, fontSize = 14.sp, color = Color.Gray)
                     }
 
                     Spacer(modifier = Modifier.height(30.dp))
@@ -344,6 +348,7 @@ fun FormIzin (
                         onClick = {
                             viewModel.submitPermit()
                         },
+                        enabled = !isLoading,
                         modifier = Modifier.fillMaxWidth().height(50.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = primaryBlue)
@@ -351,7 +356,7 @@ fun FormIzin (
                         if (isLoading) {
                             CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
                         } else {
-                            Text("Kirim Pengajuan", fontWeight = FontWeight.Bold, color = Color.White)
+                            Text("Kirim Pengajuan",fontFamily = poppins, fontWeight = FontWeight.Bold, color = Color.White)
                         }
                     }
                 }

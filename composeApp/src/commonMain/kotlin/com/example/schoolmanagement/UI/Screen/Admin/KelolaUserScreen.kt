@@ -57,6 +57,7 @@ import androidx.navigation.NavController
 import com.example.schoolmanagement.DI.ToastHelper
 import com.example.schoolmanagement.Data.Remote.AddUserRequest
 import com.example.schoolmanagement.UI.Component.UserCard
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.UpdateUserViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.text.contains
@@ -82,6 +83,7 @@ fun KelolaUserScreen (
     var userClass by remember { mutableStateOf("") }
     var nisn by remember { mutableStateOf("") }
 
+    val poppins = getPoppinsFontFamily()
 
     var showAddDialog by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
@@ -114,7 +116,7 @@ fun KelolaUserScreen (
         AlertDialog(
             containerColor = Color.White,
             onDismissRequest = { showAddDialog = false },
-            title = { Text("Tambah Pengguna Baru") },
+            title = { Text("Tambah Pengguna Baru",fontFamily = poppins,) },
             text = {
                 Column (verticalArrangement = Arrangement.spacedBy(8.dp)){
                     OutlinedTextField(
@@ -145,27 +147,27 @@ fun KelolaUserScreen (
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp)
                     )
-                    Text("Role:", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("Role:", fontSize = 14.sp,fontFamily = poppins, fontWeight = FontWeight.Bold)
                     Row(verticalAlignment = CenterVertically) {
                         RadioButton(
                             selected = role == "student",
                             onClick = { role = "student" },
                             colors = RadioButtonDefaults.colors(primaryBlue)
                         )
-                        Text("Siswa")
+                        Text("Siswa",fontFamily = poppins,)
                         Spacer(Modifier.padding(horizontal = 4.dp))
                         RadioButton(
                             selected = role == "teacher",
                             onClick = { role = "teacher" },
                             colors = RadioButtonDefaults.colors(primaryBlue)
                         )
-                        Text("Guru")
+                        Text("Guru",fontFamily = poppins,)
                     }
                     if (role == "student") {
                         OutlinedTextField(
                             value = userClass,
                             onValueChange = { userClass = it },
-                            label = { Text("Kelas (Contoh: 12-RPL-1)") },
+                            label = { Text("Kelas (Contoh: 12-RPL-1)",fontFamily = poppins,) },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp)
                         )
@@ -181,7 +183,7 @@ fun KelolaUserScreen (
                     containerColor = primaryBlue,
                     contentColor = Color.White
                 ),
-                ) { Text("Simpan") }
+                ) { Text("Simpan",fontFamily = poppins,) }
             },
             dismissButton = {
                 TextButton(onClick = {
@@ -190,7 +192,7 @@ fun KelolaUserScreen (
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = primaryBlue
                     ),
-                ) { Text("Batal") }
+                ) { Text("Batal",fontFamily = poppins,) }
             }
         )
     }
@@ -199,10 +201,10 @@ fun KelolaUserScreen (
         AlertDialog(
             containerColor = Color.White,
             onDismissRequest = { showEditDialog = false },
-            title = { Text("Ubah Role Pengguna", fontWeight = FontWeight.Bold) },
+            title = { Text("Ubah Role Pengguna", fontWeight = FontWeight.SemiBold, fontFamily = poppins,) },
             text = {
                 Column {
-                    Text("Pilih role baru untuk ${selectedUserForEdit?.second}:", fontSize = 14.sp)
+                    Text("Pilih role baru untuk ${selectedUserForEdit?.second}:", fontSize = 14.sp, fontFamily = poppins,)
                     Spacer(Modifier.height(12.dp))
                     listOf("admin", "teacher", "student").forEach { role ->
                         Row(
@@ -216,7 +218,7 @@ fun KelolaUserScreen (
                                 selected = selectedNewRole == role,
                                 onClick = { selectedNewRole = role }
                             )
-                            Text(role.replaceFirstChar { it.uppercase() })
+                            Text(role.replaceFirstChar { it.uppercase() },fontFamily = poppins,)
                         }
                     }
                 }
@@ -233,7 +235,7 @@ fun KelolaUserScreen (
                         containerColor = primaryBlue,
                         contentColor = Color.White
                     ),
-                ) { Text("Simpan") }
+                ) { Text("Simpan", fontFamily = poppins,) }
             },
             dismissButton = {
                 TextButton(
@@ -243,7 +245,7 @@ fun KelolaUserScreen (
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = primaryBlue
                     ),
-                ) { Text("Batal") }
+                ) { Text("Batal",fontFamily = poppins,) }
             }
         )
     }
@@ -252,7 +254,7 @@ fun KelolaUserScreen (
         AlertDialog(
             containerColor = Color.White,
             onDismissRequest = { showEditDialog = false },
-            title = { Text("Yakin Ingin Menghapus ${selectedUserForDelete?.second}?", fontWeight = FontWeight.Bold) },
+            title = { Text("Yakin Ingin Menghapus ${selectedUserForDelete?.second}?", fontWeight = FontWeight.SemiBold, fontFamily = poppins,) },
             confirmButton = {
                 Button(
                     onClick = {
@@ -265,7 +267,7 @@ fun KelolaUserScreen (
                         containerColor = primaryBlue,
                         contentColor = Color.White
                     ),
-                ) { Text("Hapus Saja") }
+                ) { Text("Hapus Saja", fontFamily = poppins,) }
             },
             dismissButton = {
                 TextButton(
@@ -275,7 +277,7 @@ fun KelolaUserScreen (
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = primaryBlue
                     ),
-                ) { Text("Batal") }
+                ) { Text("Batal", fontFamily = poppins,) }
             }
         )
     }
@@ -293,7 +295,7 @@ fun KelolaUserScreen (
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Kelola Pengguna", fontWeight = FontWeight.Bold) },
+                title = { Text("Kelola Pengguna", fontWeight = FontWeight.SemiBold, fontFamily = poppins,) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = null)
@@ -330,7 +332,7 @@ fun KelolaUserScreen (
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                        placeholder = { Text("Cari nama atau NISN...") },
+                        placeholder = { Text("Cari nama atau NISN...", fontFamily = poppins,) },
                         leadingIcon = { Icon(Icons.Default.Search, null) },
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true
@@ -350,12 +352,12 @@ fun KelolaUserScreen (
                         Tab(
                             selected = selectedTabIndex == 0,
                             onClick = { selectedTabIndex = 0 },
-                            text = { Text("Siswa", fontWeight = FontWeight.Bold) }
+                            text = { Text("Siswa", fontWeight = FontWeight.SemiBold,fontFamily = poppins,) }
                         )
                         Tab(
                             selected = selectedTabIndex == 1,
                             onClick = { selectedTabIndex = 1 },
-                            text = { Text("Guru", fontWeight = FontWeight.Bold) }
+                            text = { Text("Guru", fontWeight = FontWeight.SemiBold,fontFamily = poppins) }
                         )
                     }
                 }
@@ -379,6 +381,7 @@ fun KelolaUserScreen (
                     item {
                         Text(
                             "Tidak ada data pengguna",
+                            fontFamily = poppins,
                             modifier = Modifier.fillMaxWidth().padding(top = 40.dp),
                             textAlign = TextAlign.Center,
                             color = Color.Gray

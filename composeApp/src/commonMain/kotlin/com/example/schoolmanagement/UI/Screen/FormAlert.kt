@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.AlertViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -52,6 +53,8 @@ fun FormAlert (
 ) {
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
+
+    val poppins = getPoppinsFontFamily()
 
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
@@ -93,9 +96,10 @@ fun FormAlert (
                 }
                 Text(
                     text = "Buat Notifikasi Baru",
+                    fontFamily = poppins,
                     color = Color.White,
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }
@@ -106,7 +110,7 @@ fun FormAlert (
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Judul Notifikasi", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Text("Judul Notifikasi",fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
@@ -115,7 +119,7 @@ fun FormAlert (
                 shape = RoundedCornerShape(12.dp)
             )
 
-            Text("Pesan Notifikasi", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Text("Pesan Notifikasi",fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
             OutlinedTextField(
                 value = message,
                 onValueChange = { message = it },
@@ -124,7 +128,7 @@ fun FormAlert (
                 shape = RoundedCornerShape(12.dp)
             )
 
-            Text("Tipe Notifikasi", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Text("Tipe Notifikasi",fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
             Box {
                 OutlinedTextField(
                     value = selectedType.replaceFirstChar { it.uppercase() },
@@ -149,7 +153,7 @@ fun FormAlert (
                 ) {
                     typeOptions.forEach { type ->
                         DropdownMenuItem(
-                            text = { Text(type.replaceFirstChar { it.uppercase() }) },
+                            text = { Text(type.replaceFirstChar { it.uppercase() },fontFamily = poppins,) },
                             onClick = {
                                 selectedType = type
                                 expanded = false
@@ -159,7 +163,7 @@ fun FormAlert (
                 }
             }
 
-            Text("Tujuan Notifikasi", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Text("Tujuan Notifikasi", fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
             Box {
                 OutlinedTextField(
                     value = if (selectedAudience == "all") "Semua (Murid & Guru)" else if (selectedAudience == "student") "Murid" else "Guru",
@@ -184,7 +188,7 @@ fun FormAlert (
                 ) {
                     audienceOptions.forEach { option ->
                         DropdownMenuItem(
-                            text = { Text(if (option == "all") "Semua (Murid & Guru)" else if (option == "student") "Murid" else "Guru") },
+                            text = { Text(if (option == "all") "Semua (Murid & Guru)" else if (option == "student") "Murid" else "Guru", fontFamily = poppins,) },
                             onClick = {
                                 selectedAudience = option
                                 audienceExpanded = false
@@ -213,7 +217,7 @@ fun FormAlert (
                 } else {
                     Icon(Icons.Default.Notifications, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
-                    Text("Kirim Notifikasi", fontWeight = FontWeight.Bold)
+                    Text("Kirim Notifikasi", fontFamily = poppins, fontWeight = FontWeight.SemiBold)
                 }
             }
         }

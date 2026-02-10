@@ -102,6 +102,7 @@ fun HomeScreenAdmin (
                 TextButton(onClick = { showQrDialog = false }) {
                     Text(
                         "Tutup",
+                        fontFamily = Poppins,
                         color = Color(0xFF0066FF)
                     )
                 }
@@ -117,7 +118,7 @@ fun HomeScreenAdmin (
             },
             text = {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Minta guru scan QR ini untuk absen", fontSize = 12.sp, color = Color.Gray)
+                    Text("Minta guru scan QR ini untuk absen",fontFamily = Poppins, fontSize = 12.sp, color = Color.Gray)
                     Spacer(Modifier.height(16.dp))
 
                     val painter = rememberQrKitPainter(
@@ -169,10 +170,12 @@ fun HomeScreenAdmin (
                             text = "Panel Administrator",
                             color = Color.White,
                             fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = "Selamat Datang di EduTrack Admin",
+                            fontFamily = Poppins,
                             color = Color.White.copy(alpha = 0.8f),
                             fontSize = 14.sp
                         )
@@ -212,8 +215,9 @@ fun HomeScreenAdmin (
                                     Text(
                                         text = if (unreadCount > 9) "9+" else unreadCount.toString(),
                                         color = Color.White,
+                                        fontFamily = Poppins,
                                         fontSize = 9.sp,
-                                        fontWeight = FontWeight.Bold,
+                                        fontWeight = FontWeight.SemiBold,
                                     )
                                 }
                             }
@@ -251,8 +255,8 @@ fun HomeScreenAdmin (
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("Data Sekolah", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                            Text(getTodayDate(), color = primaryBlue, fontSize = 12.sp)
+                            Text("Data Sekolah",fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                            Text(getTodayDate(),fontFamily = Poppins, color = primaryBlue, fontSize = 12.sp)
                         }
 
                         Spacer(Modifier.height(16.dp))
@@ -282,7 +286,7 @@ fun HomeScreenAdmin (
 
                 Spacer(Modifier.height(24.dp))
 
-                Text("Manajemen Data", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text("Manajemen Data", fontWeight = FontWeight.SemiBold,fontFamily = Poppins, fontSize = 18.sp)
                 Spacer(Modifier.height(12.dp))
 
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -326,8 +330,9 @@ fun HomeScreenAdmin (
                 Spacer(Modifier.height(40.dp))
                 Text(
                     "Statistik Kehadiran Bulanan",
+                    fontFamily = Poppins,
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp
                 )
 

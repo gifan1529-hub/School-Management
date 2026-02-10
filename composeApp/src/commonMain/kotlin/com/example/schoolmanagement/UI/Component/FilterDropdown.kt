@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
 fun FilterDropdown(
@@ -28,6 +29,8 @@ fun FilterDropdown(
     options: List<String>,
     onSelect: (String) -> Unit
 ) {
+    val poppins = getPoppinsFontFamily()
+
     OutlinedCard(
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth().clickable { onExpandChange(true) }
@@ -43,7 +46,7 @@ fun FilterDropdown(
         DropdownMenu(expanded = expanded, onDismissRequest = { onExpandChange(false) }) {
             options.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option) },
+                    text = { Text(option, fontFamily = poppins,) },
                     onClick = {
                         onSelect(option)
                         onExpandChange(false)

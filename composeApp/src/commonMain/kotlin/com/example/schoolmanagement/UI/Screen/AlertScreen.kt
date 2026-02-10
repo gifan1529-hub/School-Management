@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.schoolmanagement.Domain.Model.AlertData
 import com.example.schoolmanagement.UI.Component.AlertCard
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.AlertViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
@@ -53,6 +54,8 @@ fun AlertScreen(
     val currentMoment = Clock.System.now()
     val now = currentMoment.toLocalDateTime(currentSystemDefault())
     val isMorningTime = now.hour in 6..16
+
+    val poppins = getPoppinsFontFamily()
 
     val alerts by alertViewModel.alerts.collectAsState()
     val isLoading by alertViewModel.isLoading.collectAsState()
@@ -106,6 +109,7 @@ fun AlertScreen(
                 Text(
                     text = "Alerts",
                     color = Color.White,
+                    fontFamily = poppins,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 16.dp)
@@ -127,7 +131,7 @@ fun AlertScreen(
                     }
                 } else if (!isLoading && alerts.isEmpty()) {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Belum ada notifikasi", color = Color.Gray)
+                        Text("Belum ada notifikasi",fontFamily = poppins, color = Color.Gray)
                     }
                 } else {
                     LazyColumn(

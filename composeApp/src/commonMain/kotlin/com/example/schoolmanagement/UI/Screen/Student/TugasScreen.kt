@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.schoolmanagement.UI.Component.TugasItem
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.HomeWorkViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -45,6 +46,8 @@ fun TugasScreen (
 ) {
     val homeworkList by viewModel.homeworkList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+
+    val poppins = getPoppinsFontFamily()
 
     val primaryBlue = Color(0xFF0066FF)
 
@@ -86,9 +89,10 @@ fun TugasScreen (
 
                     Text(
                         text = "Tugas",
+                        fontFamily = poppins,
                         color = Color.White,
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
@@ -104,7 +108,8 @@ fun TugasScreen (
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "Daftar Tugas Aktif",
-                        fontWeight = FontWeight.Bold,
+                        fontFamily = poppins,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 18.sp,
                         color = primaryBlue
                     )
@@ -117,7 +122,7 @@ fun TugasScreen (
                         }
                     } else if (homeworkList.isEmpty()) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("Tidak ada tugas untuk kelasmu", color = Color.Gray)
+                            Text("Tidak ada tugas untuk kelasmu",fontFamily = poppins, color = Color.Gray)
                         }
                     } else {
                         LazyColumn(

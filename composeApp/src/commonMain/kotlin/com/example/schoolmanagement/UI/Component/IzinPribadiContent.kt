@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.PermitViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.text.isEmpty
@@ -40,6 +41,8 @@ fun IzinPribadiContent(
     navController: NavHostController,
     viewModel: PermitViewModel = koinViewModel()
 ) {
+    val poppins = getPoppinsFontFamily()
+
     val permitHistory by viewModel.myPermitHistory.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
@@ -53,6 +56,7 @@ fun IzinPribadiContent(
         } else if (permitHistory.isEmpty()) {
             Text(
                 text = "Belum ada riwayat izin",
+                fontFamily = poppins,
                 modifier = Modifier.align(Alignment.Center),
                 color = Color.Gray
             )
@@ -65,7 +69,8 @@ fun IzinPribadiContent(
                 item {
                     Text(
                         "Riwayat Izin Anda",
-                        fontWeight = FontWeight.Bold,
+                        fontFamily = poppins,
+                        fontWeight = FontWeight.SemiBold,
                         color = Color.Gray,
                         fontSize = 14.sp
                     )
@@ -85,13 +90,15 @@ fun IzinPribadiContent(
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = izin.type,
-                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = poppins,
+                                    fontWeight = FontWeight.SemiBold,
                                     fontSize = 16.sp,
                                     color = Color.Black
                                 )
                                 Text(
                                     text = izin.reason ?: "",
                                     fontSize = 13.sp,
+                                    fontFamily = poppins,
                                     color = Color.Gray,
                                     maxLines = 2
                                 )
@@ -100,6 +107,7 @@ fun IzinPribadiContent(
                                     text = if (izin.start_date == izin.end_date) izin.start_date
                                     else "${izin.start_date} - ${izin.end_date}",
                                     fontSize = 11.sp,
+                                    fontFamily = poppins,
                                     color = Color.LightGray
                                 )
                             }
@@ -118,7 +126,8 @@ fun IzinPribadiContent(
                                     text = izin.status.replaceFirstChar { it.uppercase() },
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                                     fontSize = 10.sp,
-                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = poppins,
+                                    fontWeight = FontWeight.SemiBold,
                                     color = statusColor
                                 )
                             }

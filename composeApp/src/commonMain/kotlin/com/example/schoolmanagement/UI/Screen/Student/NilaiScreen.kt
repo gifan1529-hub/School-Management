@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,11 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.schoolmanagement.Domain.Model.GradeData
 import com.example.schoolmanagement.UI.Component.NilaiItem
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.GradeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -41,6 +44,8 @@ fun NilaiScreen (
 ) {
     val gradeData by viewModel.grades.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+
+    val poppins = getPoppinsFontFamily()
 
     val primaryBlue = Color(0xFF0066FF)
 
@@ -86,9 +91,10 @@ fun NilaiScreen (
 
                         Text(
                             text = "Nilai",
+                            fontFamily = poppins,
                             color = Color.White,
                             fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                     Spacer(modifier = Modifier.height(20.dp))
@@ -100,18 +106,21 @@ fun NilaiScreen (
                         Text(
                             gradeData?.semester_average ?: "0.0",
                             color = Color.White,
+                            fontFamily = poppins,
                             fontSize = 48.sp,
                             fontWeight = FontWeight.Black
                         )
                         Text(
                             "/ 100",
                             color = Color.White.copy(alpha = 0.7f),
+                            fontFamily = poppins,
                             fontSize = 16.sp,
                             modifier = Modifier.padding(bottom = 10.dp, start = 4.dp)
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         Text(
                             "Rata-rata Semester ini",
+                            fontFamily = poppins,
                             color = Color.White.copy(alpha = 0.9f),
                             fontSize = 14.sp,
                             modifier = Modifier.padding(bottom = 10.dp)
@@ -125,6 +134,28 @@ fun NilaiScreen (
                     .offset(y = (-20).dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                if (isLoading) {
+                    item {
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth(),
+                            color = primaryBlue
+                        )
+                    }
+                }
+
+                val subjects = gradeData?.subjects ?: emptyList()
+                if (subjects.isEmpty() && !isLoading) {
+                    item {
+                        Text(
+                            "Belum ada nilai yang tersimpan",
+                            fontFamily = poppins,
+                            modifier = Modifier.fillMaxWidth().padding(top = 40.dp),
+                            textAlign = TextAlign.Center,
+                            color = Color.Gray
+                        )
+                    }
+                }
+
                 items(gradeData?.subjects ?: emptyList()) { item ->
                     NilaiItem(
                         GradeData(

@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.schoolmanagement.DI.ToastHelper
 import com.example.schoolmanagement.DI.rememberLauncher
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.HomeWorkViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.collections.emptyList
@@ -68,6 +69,8 @@ fun SubmissionListScreen (
     homeworkId: Int,
     viewModel: HomeWorkViewModel = koinViewModel()
 ) {
+    val poppins  = getPoppinsFontFamily()
+
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
     val launcher = rememberLauncher()
@@ -85,12 +88,12 @@ fun SubmissionListScreen (
             title = { Text("Beri Nilai Murid", fontWeight = FontWeight.Bold) },
             text = {
                 Column {
-                    Text("Masukkan nilai antara 0 - 100", fontSize = 12.sp, color = Color.Gray)
+                    Text("Masukkan nilai antara 0 - 100",fontFamily = poppins, fontSize = 12.sp, color = Color.Gray)
                     Spacer(Modifier.height(8.dp))
                     OutlinedTextField(
                         value = gradeInput,
                         onValueChange = { if (it.all { char -> char.isDigit() } && it.length <= 3) gradeInput = it },
-                        label = { Text("Nilai") },
+                        label = { Text("Nilai",fontFamily = poppins,) },
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         shape = RoundedCornerShape(12.dp)
@@ -109,10 +112,10 @@ fun SubmissionListScreen (
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0066FF))
-                ) { Text("Simpan") }
+                ) { Text("Simpan", fontFamily = poppins,) }
             },
             dismissButton = {
-                TextButton(onClick = { showGradeDialog = false }) { Text("Batal") }
+                TextButton(onClick = { showGradeDialog = false }) { Text("Batal",fontFamily = poppins,) }
             }
         )
     }
@@ -124,7 +127,7 @@ fun SubmissionListScreen (
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Daftar Pengumpulan", fontWeight = FontWeight.Bold) },
+                title = { Text("Daftar Pengumpulan",fontFamily = poppins, fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -143,7 +146,7 @@ fun SubmissionListScreen (
             if (isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = primaryBlue)
             } else if (detail == null) {
-                Text("Gagal memuat data", modifier = Modifier.align(Alignment.Center))
+                Text("Gagal memuat data",fontFamily = poppins, modifier = Modifier.align(Alignment.Center))
             } else {
                 Column(modifier = Modifier.fillMaxSize()) {
                     Card(
@@ -152,15 +155,16 @@ fun SubmissionListScreen (
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text(text = detail?.subject ?: "", color = primaryBlue, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                            Text(text = detail?.title ?: "", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                            Text(text = detail?.subject ?: "",fontFamily = poppins, color = primaryBlue, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Text(text = detail?.title ?: "",fontFamily = poppins, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                             Spacer(Modifier.height(4.dp))
-                            Text(text = "Target Kelas: ${detail?.`class`}", fontSize = 13.sp, color = Color.Gray)
+                            Text(text = "Target Kelas: ${detail?.`class`}",fontFamily = poppins, fontSize = 13.sp, color = Color.Gray)
                         }
                     }
 
                     Text(
                         text = "Murid yang sudah mengumpulkan (${detail?.submissions?.size ?: 0})",
+                        fontFamily = poppins,
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp
@@ -176,7 +180,7 @@ fun SubmissionListScreen (
                         if (submissions.isEmpty()) {
                             item {
                                 Box(Modifier.fillMaxWidth().padding(top = 40.dp), contentAlignment = Alignment.Center) {
-                                    Text("Belum ada pengumpulan dari murid.", color = Color.Gray)
+                                    Text("Belum ada pengumpulan dari murid.", color = Color.Gray, fontFamily = poppins,)
                                 }
                             }
                         }
@@ -205,16 +209,18 @@ fun SubmissionListScreen (
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(
                                             text = sub.student?.name ?: "Unknown",
+                                            fontFamily = poppins,
                                             fontWeight = FontWeight.Bold,
                                             fontSize = 15.sp
                                         )
                                         Text(
                                             text = if (sub.grade != null) "Nilai: ${sub.grade}" else "Belum Dinilai",
+                                            fontFamily = poppins,
                                             color = if (sub.grade != null) Color(0xFF4CAF50) else Color.Red,
                                             fontSize = 13.sp,
                                             fontWeight = FontWeight.SemiBold
                                         )
-                                        Text(text = "Dikirim: ${sub.created_at.take(16)}", fontSize = 12.sp, color = Color.Gray)
+                                        Text(text = "Dikirim: ${sub.created_at.take(16)}", fontFamily = poppins, fontSize = 12.sp, color = Color.Gray)
                                     }
 
                                     IconButton(onClick = {

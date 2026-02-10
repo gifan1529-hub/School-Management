@@ -24,9 +24,18 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
-fun AdminMenuCard(title: String, subtitle: String, icon: ImageVector, color: Color, onClick: () -> Unit) {
+fun AdminMenuCard(
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    color: Color,
+    onClick: () -> Unit
+) {
+    val poppins = getPoppinsFontFamily()
+
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
@@ -47,8 +56,8 @@ fun AdminMenuCard(title: String, subtitle: String, icon: ImageVector, color: Col
             }
             Spacer(Modifier.width(16.dp))
             Column(Modifier.weight(1f)) {
-                Text(title, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                Text(subtitle, fontSize = 12.sp, color = Color.Gray)
+                Text(title, fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                Text(subtitle, fontFamily = poppins, fontSize = 12.sp, color = Color.Gray)
             }
             Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.LightGray)
         }

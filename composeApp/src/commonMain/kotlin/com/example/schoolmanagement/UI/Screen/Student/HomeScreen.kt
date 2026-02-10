@@ -81,6 +81,8 @@ fun HomeScreen(
 
     val telat = isLate()
 
+    val poppins = getPoppinsFontFamily()
+
     val total = (countHadir.toInt() + countTelat.toInt() + countAbsen.toInt())
     val progressValue = if (total > 0) countHadir.toFloat() / total.toFloat() else 0f
 
@@ -180,8 +182,9 @@ fun HomeScreen(
                                     Text(
                                         text = if (unreadCount > 9) "9+" else unreadCount.toString(),
                                         color = Color.White,
+                                        fontFamily = poppins,
                                         fontSize = 9.sp,
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.SemiBold
                                     )
                                 }
                             }

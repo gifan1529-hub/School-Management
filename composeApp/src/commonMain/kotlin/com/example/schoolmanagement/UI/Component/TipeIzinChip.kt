@@ -12,9 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
 fun TipeIzinChip(label: String, isSelected: Boolean, onSelect: () -> Unit) {
+    val poppins = getPoppinsFontFamily()
+
     Surface(
         modifier = Modifier.clickable { onSelect() },
         color = if (isSelected) Color(0xFF0066FF).copy(alpha = 0.1f) else Color.Transparent,
@@ -23,6 +26,7 @@ fun TipeIzinChip(label: String, isSelected: Boolean, onSelect: () -> Unit) {
     ) {
         Text(
             text = label,
+            fontFamily = poppins,
             fontSize = 14.sp,
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
             color = if (isSelected) Color(0xFF0066FF) else Color.Gray,

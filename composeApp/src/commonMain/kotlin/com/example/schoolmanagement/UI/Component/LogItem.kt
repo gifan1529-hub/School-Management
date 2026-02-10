@@ -35,9 +35,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.schoolmanagement.Domain.Model.LogData
 import com.example.schoolmanagement.UI.Screen.ActivityLog
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
 fun LogItem(log: LogData) {
+    val poppins = getPoppinsFontFamily()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,12 +101,14 @@ fun LogItem(log: LogData) {
                         Text(
                             text = log.module,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontFamily = poppins,
+                            fontWeight = FontWeight.SemiBold,
                             color = getLogColor(log.action)
                         )
                         Text(
                             text = log.created_at,
                             fontSize = 10.sp,
+                            fontFamily = poppins,
                             color = Color.Gray
                         )
                     }
@@ -111,6 +116,7 @@ fun LogItem(log: LogData) {
                     Text(
                         text = log.details,
                         fontSize = 14.sp,
+                        fontFamily = poppins,
                         fontWeight = FontWeight.Medium,
                         lineHeight = 18.sp
                     )
@@ -118,6 +124,7 @@ fun LogItem(log: LogData) {
                         Text(
                             text = "Oleh: ${it.name} (${it.role})",
                             fontSize = 11.sp,
+                            fontFamily = poppins,
                             color = Color.Gray,
                             modifier = Modifier.padding(top = 4.dp)
                         )

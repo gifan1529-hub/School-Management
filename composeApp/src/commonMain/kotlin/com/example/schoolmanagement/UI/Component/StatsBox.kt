@@ -15,9 +15,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
 fun StatsBox(label: String, value: String, icon: ImageVector, modifier: Modifier) {
+    val poppins = getPoppinsFontFamily()
+
     Surface(
         modifier = modifier,
         color = Color(0xFFF8FAFC),
@@ -25,8 +28,8 @@ fun StatsBox(label: String, value: String, icon: ImageVector, modifier: Modifier
     ) {
         Column(Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(icon, contentDescription = null, tint = Color(0xFF0066FF), modifier = Modifier.size(20.dp))
-            Text(value, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Text(label, fontSize = 10.sp, color = Color.Gray)
+            Text(value, fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+            Text(label, fontFamily = poppins, fontSize = 10.sp, color = Color.Gray)
         }
     }
 }

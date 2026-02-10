@@ -22,9 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
 fun ScheduleItemGuru(time: String, subject: String, teacher: String, `class`: String) {
+    val poppins = getPoppinsFontFamily()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -33,8 +36,8 @@ fun ScheduleItemGuru(time: String, subject: String, teacher: String, `class`: St
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.width(80.dp)) {
-            Text(time.split("-")[0], fontWeight = FontWeight.Bold, fontSize = 14.sp)
-            Text(time.split("-")[1], color = Color.Gray, fontSize = 12.sp)
+            Text(time.split("-")[0], fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+            Text(time.split("-")[1], fontFamily = poppins, color = Color.Gray, fontSize = 12.sp)
         }
 
         Box(modifier = Modifier.width(1.dp).height(70.dp).background(Color.LightGray))
@@ -42,17 +45,16 @@ fun ScheduleItemGuru(time: String, subject: String, teacher: String, `class`: St
         Spacer(modifier = Modifier.width(16.dp))
 
         Column {
-            Text(text = subject, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+            Text(text = subject, fontWeight = FontWeight.SemiBold, fontFamily = poppins, fontSize = 15.sp)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(Icons.Default.Person, null, Modifier.size(12.dp), Color.Gray)
-                Text(text = " $teacher", fontSize = 12.sp, color = Color.Gray)
+                Text(text = " $teacher", fontFamily = poppins, fontSize = 12.sp, color = Color.Gray)
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = " $`class`", fontSize = 12.sp, color = Color.Gray)
+                Text(text = " $`class`", fontFamily = poppins, fontSize = 12.sp, color = Color.Gray)
             }
-
         }
     }
 }

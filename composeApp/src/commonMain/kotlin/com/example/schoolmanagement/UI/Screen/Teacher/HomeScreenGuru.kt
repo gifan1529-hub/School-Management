@@ -69,6 +69,8 @@ fun HomeScreenGuru (
     viewModel: HomeTeacherViewModel = koinViewModel (),
     logViewModel: ActivityLogViewModel = koinViewModel()
 ) {
+    val poppins = getPoppinsFontFamily()
+
     val unreadCount by logViewModel.unreadCount.collectAsState()
 
     val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -107,6 +109,7 @@ fun HomeScreenGuru (
                 TextButton(onClick = { showQrDialog = false }) {
                     Text(
                         "Tutup",
+                        fontFamily = poppins,
                         color = Color(0xFF0066FF)
                     )
                 }
@@ -122,7 +125,7 @@ fun HomeScreenGuru (
             },
             text = {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Minta murid scan QR ini untuk absen", fontSize = 12.sp, color = Color.Gray)
+                    Text("Minta murid scan QR ini untuk absen",fontFamily = poppins, fontSize = 12.sp, color = Color.Gray)
                     Spacer(Modifier.height(16.dp))
 
                       val painter = rememberQrKitPainter(
@@ -173,17 +176,20 @@ fun HomeScreenGuru (
                         Text(
                             text = "Halo, $userName!",
                             color = Color.White,
+                            fontFamily = poppins,
                             fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = "Wali kelas : ${userKelas} ",
                             color = Color.White.copy(alpha = 0.8f),
+                            fontFamily = poppins,
                             fontSize = 14.sp
                         )
                         Text(
                             text = "Role : $userRole",
                             color = Color.White.copy(alpha = 0.8f),
+                            fontFamily = poppins,
                             fontSize = 14.sp
                         )
                     }
@@ -235,8 +241,9 @@ fun HomeScreenGuru (
                                     Text(
                                         text = if (unreadCount > 9) "9+" else unreadCount.toString(),
                                         color = Color.White,
+                                        fontFamily = poppins,
                                         fontSize = 9.sp,
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.SemiBold
                                     )
                                 }
                             }
@@ -262,7 +269,8 @@ fun HomeScreenGuru (
                     ) {
                         Text(
                             "Ringkasan Kehadiran",
-                            fontWeight = FontWeight.Bold,
+                            fontFamily = poppins,
+                            fontWeight = FontWeight.SemiBold,
                             fontSize = 16.sp,
                             modifier = Modifier
                                 .padding(end = 5.dp)
@@ -273,6 +281,7 @@ fun HomeScreenGuru (
                         ) {
                             Text(
                                 text = getTodayDate(),
+                                fontFamily = poppins,
                                 color = Color.White,
                                 fontSize = 12.sp,
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
@@ -317,7 +326,7 @@ fun HomeScreenGuru (
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Persentase Kehadiran", fontSize = 14.sp, color = Color.Gray)
+                        Text("Persentase Kehadiran", fontSize = 14.sp, fontFamily = poppins, color = Color.Gray)
 
                         Surface(
                             color = when {
@@ -355,6 +364,7 @@ fun HomeScreenGuru (
                         ) {
                             Text(
                                 fontSize = 12.sp,
+                                fontFamily = poppins,
                                 color = when {
                                     isAlreadyAbsen && todayStatus == "Absent" -> Color.Red
                                     isAlreadyAbsen -> {
@@ -391,8 +401,9 @@ fun HomeScreenGuru (
             }
             Text(
                 "Quick Actions",
+                fontFamily = poppins,
                 modifier = Modifier.padding(horizontal = 24.dp),
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 fontSize = 18.sp
             )
 

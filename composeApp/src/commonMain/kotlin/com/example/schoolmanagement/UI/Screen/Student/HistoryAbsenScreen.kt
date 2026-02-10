@@ -27,10 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.schoolmanagement.UI.Component.HistoryItem
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.HistoryViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -41,6 +43,8 @@ fun HistoryAbsenScreen (
 ) {
     val history by viewModel.history.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+
+    val poppins = getPoppinsFontFamily()
 
     val primaryBlue = Color(0xFF0066FF)
 
@@ -79,20 +83,34 @@ fun HistoryAbsenScreen (
                     Text(
                         text = "Attendance History",
                         color = Color.White,
+                        fontFamily = poppins,
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
             if (isLoading){
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = Color(0xFF0066FF))
             }
+
+
             LazyColumn (
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
                     .offset(y = (-30).dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ){
+                if (!isLoading && history.isEmpty()) {
+                    item {
+                        Text(
+                            "Belum ada absen yang tersimpan",
+                            fontFamily = poppins,
+                            modifier = Modifier.fillMaxWidth().padding(top = 40.dp),
+                            textAlign = TextAlign.Center,
+                            color = Color.Gray
+                        )
+                    }
+                }
                 items(history) { item ->
                     HistoryItem(item)
                 }

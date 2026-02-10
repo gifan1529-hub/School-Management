@@ -19,6 +19,7 @@ import com.example.schoolmanagement.UI.Component.NavButton
 import com.example.schoolmanagement.UI.Screen.ActivityLogScreen
 import com.example.schoolmanagement.UI.Screen.Admin.AttendanceReportScreen
 import com.example.schoolmanagement.UI.Screen.Admin.HomeScreenAdmin
+import com.example.schoolmanagement.UI.Screen.Admin.IzinScreenAdmin
 import com.example.schoolmanagement.UI.Screen.Admin.KelolaUserScreen
 import com.example.schoolmanagement.UI.Screen.ScannerScreen
 import com.example.schoolmanagement.UI.Screen.SignIn
@@ -136,6 +137,9 @@ fun App(
             }
             composable ("activity"){
                 ActivityLogScreen(navController)
+            }
+            composable ("izinadmin"){
+                IzinScreenAdmin(navController)
             }
         }
     }

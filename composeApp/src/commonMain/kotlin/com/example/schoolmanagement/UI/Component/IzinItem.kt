@@ -16,9 +16,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
-    @Composable
+@Composable
     fun IzinItem(title: String, date: String, status: String) {
+        val poppins = getPoppinsFontFamily()
+
         val statusColor = when (status) {
             "Approved" -> Color(0xFF4CAF50)
             "Rejected" -> Color(0xFFF44336)
@@ -33,8 +36,8 @@ import androidx.compose.ui.unit.sp
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = title, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                Text(text = date, fontSize = 12.sp, color = Color.Gray)
+                Text(text = title, fontWeight = FontWeight.SemiBold, fontFamily = poppins, fontSize = 15.sp)
+                Text(text = date, fontSize = 12.sp, fontFamily = poppins, color = Color.Gray)
             }
 
             Surface(
@@ -46,7 +49,8 @@ import androidx.compose.ui.unit.sp
                     color = statusColor,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold
+                    fontFamily = poppins,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }

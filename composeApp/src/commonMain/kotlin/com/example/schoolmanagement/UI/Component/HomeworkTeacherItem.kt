@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.schoolmanagement.Domain.Model.HomeworkData
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
 fun HomeworkTeacherItem(
@@ -35,6 +36,8 @@ fun HomeworkTeacherItem(
     onClick: () -> Unit,
     onDelete: () -> Unit
 ) {
+    val poppins = getPoppinsFontFamily()
+
     Card(
         modifier = Modifier
             .clickable { onClick() }
@@ -59,8 +62,8 @@ fun HomeworkTeacherItem(
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(data.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Text("Kelas: ${data.targetClass} • DL: ${data.deadline}", fontSize = 12.sp, color = Color.Gray)
+                Text(data.title, fontWeight = FontWeight.SemiBold, fontFamily = poppins, fontSize = 16.sp)
+                Text("Kelas: ${data.targetClass} • DL: ${data.deadline}", fontFamily = poppins, fontSize = 12.sp, color = Color.Gray)
             }
 
             Surface(
@@ -69,10 +72,11 @@ fun HomeworkTeacherItem(
             ) {
                 Text(
                     data.status,
+                    fontFamily = poppins,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     fontSize = 10.sp,
                     color = if (data.status == "Terkirim") Color(0xFF4CAF50) else Color.Gray,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }

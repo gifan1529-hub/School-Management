@@ -51,6 +51,7 @@ import androidx.navigation.NavController
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.example.schoolmanagement.DI.readFileBytes
 import com.example.schoolmanagement.UI.Component.InfoCard
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.HomeWorkViewModel
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -64,6 +65,8 @@ fun DetailHomeWork (
 ) {
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
+
+    val poppins = getPoppinsFontFamily()
 
     var showFilePicker by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -99,7 +102,7 @@ fun DetailHomeWork (
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detail Tugas", fontWeight = FontWeight.Bold) },
+                title = { Text("Detail Tugas", fontWeight = FontWeight.SemiBold, fontFamily = poppins,) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -121,6 +124,7 @@ fun DetailHomeWork (
                 Text(
                     "Tugas tidak ditemukan (ID: $homeworkId)",
                     modifier = Modifier.align(Alignment.Center),
+                    fontFamily = poppins,
                     color = Color.Gray
                 )
             } else {
@@ -135,7 +139,7 @@ fun DetailHomeWork (
                         icon = Icons.Default.Title,
                         title = "Mata Pelajaran: ${detail.subject}",
                         content = {
-                            Text(detail.title, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                            Text(detail.title, fontWeight = FontWeight.SemiBold, fontFamily = poppins, fontSize = 20.sp)
                         }
                     )
 
@@ -158,6 +162,7 @@ fun DetailHomeWork (
                         content = {
                             Text(
                                 detail.description,
+                                fontFamily = poppins,
                                 fontSize = 14.sp,
                                 lineHeight = 22.sp,
                                 color = Color.DarkGray
@@ -175,13 +180,13 @@ fun DetailHomeWork (
                                     .padding(16.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text("Tugas Sudah Dikumpulkan ✅", color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
+                                Text("Tugas Sudah Dikumpulkan ✅", color = Color(0xFF4CAF50), fontWeight = FontWeight.SemiBold, fontFamily = poppins,)
                                 if (detail.your_grade != null) {
                                     Spacer(Modifier.height(8.dp))
-                                    Text("Nilai Kamu:", fontSize = 12.sp, color = Color.Gray)
-                                    Text("${detail.your_grade ?: "-"}", fontSize = 32.sp, fontWeight = FontWeight.ExtraBold, color = primaryBlue)
+                                    Text("Nilai Kamu:", fontSize = 12.sp, fontFamily = poppins, color = Color.Gray)
+                                    Text("${detail.your_grade ?: "-"}",fontFamily = poppins, fontSize = 32.sp, fontWeight = FontWeight.ExtraBold, color = primaryBlue)
                                 } else {
-                                    Text("Menunggu Penilaian Guru", fontSize = 12.sp, color = Color.Gray)
+                                    Text("Menunggu Penilaian Guru",fontFamily = poppins, fontSize = 12.sp, color = Color.Gray)
                                 }
                             }
                         }
@@ -194,6 +199,7 @@ fun DetailHomeWork (
                                 Text(
                                     "Batas waktu pengumpulan telah berakhir",
                                     color = Color.Red,
+                                    fontFamily = poppins,
                                     modifier = Modifier.padding(16.dp),
                                     textAlign = TextAlign.Center
                                 )
@@ -210,7 +216,7 @@ fun DetailHomeWork (
                                 if (isLoading) {
                                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                                 } else {
-                                    Text("Pilih File & Kumpulkan", fontWeight = FontWeight.Bold)
+                                    Text("Pilih File & Kumpulkan", fontFamily = poppins, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
@@ -223,12 +229,13 @@ fun DetailHomeWork (
 
 @Composable
 private fun DetailRow(label: String, value: String) {
+    val poppins = getPoppinsFontFamily()
     Row(
         Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(label, color = Color.Gray)
-        Text(value, fontWeight = FontWeight.Normal, color = Color.Black)
+        Text(label, color = Color.Gray, fontFamily = poppins,)
+        Text(value, fontWeight = FontWeight.Normal,fontFamily = poppins, color = Color.Black)
     }
 }

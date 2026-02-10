@@ -37,8 +37,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+
 import com.example.schoolmanagement.DI.ToastHelper
 import com.example.schoolmanagement.Domain.UseCase.LoginResult
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.SignIn
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -51,6 +53,8 @@ fun SignIn(
     navController: NavHostController,
     viewModel: SignIn = koinViewModel()
 ) {
+    val poppins = getPoppinsFontFamily()
+
     var selectedRole by remember { mutableStateOf("Student") }
     val roles = listOf("Teacher","Student","Admin")
 
@@ -104,12 +108,14 @@ fun SignIn(
 
                 Text(
                     text = "EduTrack",
+                    fontFamily = poppins,
                     color = Color.White,
                     fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = "Smart School Management",
+                    fontFamily = poppins,
                     color = Color.White.copy(alpha = 0.8f),
                     fontSize = 14.sp
                 )
@@ -132,6 +138,7 @@ fun SignIn(
                         Text(
                             text = "Login as",
                             fontWeight = FontWeight.SemiBold,
+                            fontFamily = poppins,
                             color = Color.Black,
                             modifier = Modifier.padding(bottom = 12.dp)
                         )
@@ -161,9 +168,10 @@ fun SignIn(
                                 ) {
                                     Text(
                                         text = role,
+                                        fontFamily = poppins,
                                         color = if (isSelected) Color.White else Color.Gray,
                                         fontSize = 12.sp,
-                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
                                     )
                                 }
                             }
@@ -171,12 +179,12 @@ fun SignIn(
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        Text("Email", fontWeight = FontWeight.Medium, fontSize = 14.sp)
+                        Text("Email", fontWeight = FontWeight.Medium,fontFamily = poppins, fontSize = 14.sp)
                         TextField(
                             value = uiState.emailValue,
                             onValueChange = { viewModel.onEmailChange(it) },
                             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                            placeholder = { Text("Enter your email", color = Color.Gray) },
+                            placeholder = { Text("Enter your email",fontFamily = poppins, color = Color.Gray) },
                             singleLine = true,
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = lightGray,
@@ -189,12 +197,12 @@ fun SignIn(
 
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        Text("Password", fontWeight = FontWeight.Medium, fontSize = 14.sp)
+                        Text("Password",fontFamily = poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp)
                         TextField(
                             value = uiState.passwordValue,
                             onValueChange = { viewModel.onPasswordChange(it) },
                             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                            placeholder = { Text("Enter your password", color = Color.Gray) },
+                            placeholder = { Text("Enter your password",fontFamily = poppins, color = Color.Gray) },
                             visualTransformation = PasswordVisualTransformation(),
                             singleLine = true,
                             colors = TextFieldDefaults.colors(
@@ -218,13 +226,14 @@ fun SignIn(
                             shape = RoundedCornerShape(18.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = primaryBlue)
                         ) {
-                            Text("Login", color = Color.White, fontWeight = FontWeight.Bold)
+                            Text("Login",fontFamily = poppins, color = Color.White, fontWeight = FontWeight.SemiBold)
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Text(
                             text = "Forgot Password?",
+                            fontFamily = poppins,
                             modifier = Modifier.align(Alignment.CenterHorizontally).clickable { },
                             color = primaryBlue,
                             fontSize = 14.sp,

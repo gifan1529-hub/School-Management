@@ -21,9 +21,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
 fun InfoCard(title: String, icon: ImageVector, content: @Composable () -> Unit) {
+    val poppins = getPoppinsFontFamily()
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -34,7 +37,7 @@ fun InfoCard(title: String, icon: ImageVector, content: @Composable () -> Unit) 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(icon, null, tint = Color(0xFF0066FF), modifier = Modifier.size(20.dp))
                 Spacer(Modifier.width(8.dp))
-                Text(title, fontWeight = FontWeight.Bold, color = Color.Gray, fontSize = 14.sp)
+                Text(title, fontWeight = FontWeight.SemiBold, fontFamily = poppins, color = Color.Gray, fontSize = 14.sp)
             }
             Divider(Modifier.padding(vertical = 12.dp), thickness = 0.5.dp, color = Color.LightGray)
             content()

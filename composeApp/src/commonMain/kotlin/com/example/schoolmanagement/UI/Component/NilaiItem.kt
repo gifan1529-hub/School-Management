@@ -16,10 +16,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.schoolmanagement.Domain.Model.GradeData
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
 fun NilaiItem(data: GradeData) {
     val statusColor = if (data.nilai >= 75) Color(0xFF4CAF50) else Color(0xFFFFA500)
+    val poppins = getPoppinsFontFamily()
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -33,19 +35,21 @@ fun NilaiItem(data: GradeData) {
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(data.subject, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Text("Status: ${data.status}", color = statusColor, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                Text("Status: ${data.status}", fontFamily = poppins, color = statusColor, fontSize = 12.sp, fontWeight = FontWeight.Medium)
             }
 
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     text = data.nilai.toString(),
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.ExtraBold,
+                    fontFamily = poppins,
+                    fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
                 Text(
                     text = "Grade: ${data.grade}",
                     fontSize = 12.sp,
+                    fontFamily = poppins,
                     color = Color.Gray
                 )
             }

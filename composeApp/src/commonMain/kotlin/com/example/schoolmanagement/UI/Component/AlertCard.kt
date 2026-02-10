@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
 fun AlertCard (
@@ -36,6 +37,8 @@ fun AlertCard (
     onClick: () -> Unit,
     type: String = "info"
 ) {
+    val poppins = getPoppinsFontFamily()
+
     val accentColor = when (type) {
         "warning" -> Color(0xFFFFA000)
         "urgent" -> Color(0xFFD32F2F)
@@ -87,7 +90,8 @@ fun AlertCard (
                 ) {
                         Text(
                             text = title,
-                            fontWeight = FontWeight.Bold,
+                            fontFamily = poppins,
+                            fontWeight = FontWeight.SemiBold,
                             fontSize = 15.sp,
                             color = Color(0xFF1A1A1A),
                             modifier = Modifier.weight(1f)
@@ -95,6 +99,7 @@ fun AlertCard (
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = time,
+                        fontFamily = poppins,
                         fontSize = 11.sp,
                         color = Color.Gray
                     )
@@ -104,6 +109,7 @@ fun AlertCard (
 
                 Text(
                     text = message,
+                    fontFamily = poppins,
                     fontSize = 13.sp,
                     color = Color.Gray,
                     lineHeight = 18.sp
