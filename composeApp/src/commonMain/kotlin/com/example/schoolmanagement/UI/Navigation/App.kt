@@ -28,6 +28,7 @@ import com.example.schoolmanagement.UI.Screen.Admin.KelolaUserScreen
 import com.example.schoolmanagement.UI.Screen.ScannerScreen
 import com.example.schoolmanagement.UI.Screen.SignIn
 import com.example.schoolmanagement.UI.Screen.AlertScreen
+import com.example.schoolmanagement.UI.Screen.EditProfileScreen
 import com.example.schoolmanagement.UI.Screen.FormAlert
 import com.example.schoolmanagement.UI.Screen.Student.DetailHomeWork
 import com.example.schoolmanagement.UI.Screen.Student.DetailNilaiScreen
@@ -166,6 +167,9 @@ fun App(
                 }
                 composable("izinadmin") {
                     IzinScreenAdmin(navController)
+                }
+                composable ("editprofile"){
+                    EditProfileScreen(navController)
                 }
             }
             CustomToast(

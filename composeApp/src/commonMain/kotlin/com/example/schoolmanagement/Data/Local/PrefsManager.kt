@@ -123,4 +123,20 @@ class PrefsManager (
             kelas = getClass.first()
         )
     }
+
+    suspend fun saveUserName(name: String) {
+        dataStore.edit { it[KEY_NAME] = name }
+    }
+
+    suspend fun saveUserPhone(phone: String) {
+        dataStore.edit { it[PHONE] = phone }
+    }
+
+    suspend fun saveClass(kelas: String) {
+        dataStore.edit { it[CLASS] = kelas }
+    }
+
+    suspend fun saveNisn(nis: String) {
+        dataStore.edit { it[NISN] = nis }
+    }
 }

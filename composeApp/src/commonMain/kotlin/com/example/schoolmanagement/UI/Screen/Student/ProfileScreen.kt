@@ -22,12 +22,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -136,6 +139,21 @@ fun ProfileScreen (
                                 fontFamily = poppins,
                                 fontSize = 14.sp,
                                 color = Color.Gray
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+                        IconButton(
+                            onClick = { navController.navigate("editprofile") },
+                            modifier = Modifier
+                                .background(Color(0xFF0066FF), CircleShape)
+                                .size(30.dp)
+                        ){
+                            Icon(
+                                imageVector = Icons.Default.EditNote,
+                                contentDescription = "Edit Profile",
+                                modifier = Modifier.size(20.dp),
+                                tint = Color.White,
                             )
                         }
                     }

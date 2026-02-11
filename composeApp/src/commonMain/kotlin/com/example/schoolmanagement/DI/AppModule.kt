@@ -9,6 +9,7 @@ import com.example.schoolmanagement.Data.Impl.HomeWorkRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.PermitRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.ScheduleRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.StatsRepositoryImpl
+import com.example.schoolmanagement.Data.Impl.UpdateProfileRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.UpdateUserRepositoryImpl
 import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Data.Remote.ApiClient
@@ -23,6 +24,7 @@ import com.example.schoolmanagement.Domain.Repository.HomeWorkRepository
 import com.example.schoolmanagement.Domain.Repository.PermitRepository
 import com.example.schoolmanagement.Domain.Repository.ScheduleRepository
 import com.example.schoolmanagement.Domain.Repository.StatsRepository
+import com.example.schoolmanagement.Domain.Repository.UpdateProfileRepository
 import com.example.schoolmanagement.Domain.Repository.UpdateUserRepository
 import com.example.schoolmanagement.Domain.UseCase.AddUserUseCase
 import com.example.schoolmanagement.Domain.UseCase.DeleteHomeWork
@@ -53,6 +55,7 @@ import com.example.schoolmanagement.Domain.UseCase.PostHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitHomeworkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitPermitUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdatePermitStatusUseCase
+import com.example.schoolmanagement.Domain.UseCase.UpdateProfileUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdateUserUseCase
 import com.example.schoolmanagement.ViewModel.ActivityLogViewModel
 import com.example.schoolmanagement.ViewModel.AlertViewModel
@@ -92,6 +95,7 @@ val appModule = module {
     single <UpdateUserRepository>{ UpdateUserRepositoryImpl(get()) }
     single <GradeRepository>{ GradeRepositoryImpl(get()) }
     single <ActivityLogRepository>{ ActivityLogRepositoryImpl(get()) }
+    single <UpdateProfileRepository>{ UpdateProfileRepositoryImpl(get()) }
 
 //    // Network
 //    single {
@@ -138,6 +142,7 @@ val appModule = module {
     factoryOf(::GetActivityLogUseCase)
     factoryOf(::GetUnreadNotifActivityUseCase)
     factoryOf(::MarkAllNotificationUseCase)
+    factoryOf(::UpdateProfileUseCase)
 
 
 
@@ -146,7 +151,7 @@ val appModule = module {
     viewModel { SignIn(get(), get(), get())  }
     viewModel { HomeViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { AuthViewModel(get()) }
-    viewModel { ProfileViewModel(get(), get()) }
+    viewModel { ProfileViewModel(get(), get(), get()) }
     viewModel { ScheduleViewModel(get(), get()) }
     viewModel { HistoryViewModel(get()) }
     viewModel { ScheduleGuruViewModel(get()) }

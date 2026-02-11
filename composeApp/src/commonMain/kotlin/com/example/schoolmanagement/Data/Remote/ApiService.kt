@@ -321,4 +321,14 @@ class ApiService(private val client: HttpClient) {
             headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
         }.body()
     }
+
+    suspend fun updateProfile(token: String, request: UpdateProfileRequest): UpdateProfileResponse {
+        return client.post(ApiClient.getUrl("user/update-profile")) {
+            contentType(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+            setBody(request)
+        }.body()
+    }
 }

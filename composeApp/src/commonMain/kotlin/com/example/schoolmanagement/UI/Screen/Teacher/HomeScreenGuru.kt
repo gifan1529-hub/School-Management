@@ -193,32 +193,18 @@ fun HomeScreenGuru (
                             fontSize = 14.sp
                         )
                     }
-                    IconButton(
-                        onClick = {
-                            logViewModel.markAsRead()
-                            navController.navigate("activity")
-                        },
-                        modifier = Modifier
-                            .background(Color.White.copy(alpha = 0.2f), CircleShape)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.History,
-                            contentDescription = "History",
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
-
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
                     Box {
                         IconButton(
-                            onClick = { showQrDialog = true },
+                            onClick = {
+                                logViewModel.markAsRead()
+                                navController.navigate("activity")
+                            },
                             modifier = Modifier
                                 .background(Color.White.copy(alpha = 0.2f), CircleShape)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.QrCode,
-                                contentDescription = "QR",
+                                imageVector = Icons.Default.History,
+                                contentDescription = "History",
                                 tint = Color.White,
                                 modifier = Modifier.size(24.dp)
 
@@ -247,6 +233,22 @@ fun HomeScreenGuru (
                                     )
                                 }
                             }
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Box {
+                        IconButton(
+                            onClick = { showQrDialog = true },
+                            modifier = Modifier
+                                .background(Color.White.copy(alpha = 0.2f), CircleShape)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.QrCode,
+                                contentDescription = "QR",
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp)
+
+                            )
                         }
                     }
                 }
