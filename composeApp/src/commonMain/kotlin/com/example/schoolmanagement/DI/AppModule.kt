@@ -4,6 +4,7 @@ import com.example.schoolmanagement.Data.Impl.ActivityLogRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.AnnouncmentRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.AttendanceReportImpl
 import com.example.schoolmanagement.Data.Impl.AttendanceRepositoryImpl
+import com.example.schoolmanagement.Data.Impl.AuthRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.GradeRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.HomeWorkRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.PermitRepositoryImpl
@@ -19,6 +20,7 @@ import com.example.schoolmanagement.Domain.Repository.ActivityLogRepository
 import com.example.schoolmanagement.Domain.Repository.AnnouncmentRepository
 import com.example.schoolmanagement.Domain.Repository.AttendanceReportRepository
 import com.example.schoolmanagement.Domain.Repository.AttendanceRepository
+import com.example.schoolmanagement.Domain.Repository.AuthRepository
 import com.example.schoolmanagement.Domain.Repository.GradeRepository
 import com.example.schoolmanagement.Domain.Repository.HomeWorkRepository
 import com.example.schoolmanagement.Domain.Repository.PermitRepository
@@ -39,6 +41,7 @@ import com.example.schoolmanagement.Domain.UseCase.GetAttendanceStatusUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceTrendUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetGradeSummaryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetMyGradesUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetPermitHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetScheduleUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetTeacherDasboardUseCase
@@ -54,6 +57,7 @@ import com.example.schoolmanagement.Domain.UseCase.PostAnnouncmentUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitHomeworkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitPermitUseCase
+import com.example.schoolmanagement.Domain.UseCase.UpdateFcmTokenUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdatePermitStatusUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdateProfileUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdateUserUseCase
@@ -78,6 +82,7 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import qrgenerator.qrkitpainter.location
+import kotlin.coroutines.EmptyCoroutineContext.get
 
 expect val platformModule: org.koin.core.module.Module
 
@@ -96,6 +101,8 @@ val appModule = module {
     single <GradeRepository>{ GradeRepositoryImpl(get()) }
     single <ActivityLogRepository>{ ActivityLogRepositoryImpl(get()) }
     single <UpdateProfileRepository>{ UpdateProfileRepositoryImpl(get()) }
+    single <AuthRepository>{ AuthRepositoryImpl(get()) }
+
 
 //    // Network
 //    single {
@@ -143,12 +150,14 @@ val appModule = module {
     factoryOf(::GetUnreadNotifActivityUseCase)
     factoryOf(::MarkAllNotificationUseCase)
     factoryOf(::UpdateProfileUseCase)
+    factoryOf(::UpdateFcmTokenUseCase)
+    factoryOf(::GetMyGradesUseCase)
 
 
 
     viewModel { MarkAttendanceViewModel(get()) }
     viewModel { HomeTeacherViewModel(get(), get(), get(), get(), get()) }
-    viewModel { SignIn(get(), get(), get())  }
+    viewModel { SignIn(get(), get(), get(), get())  }
     viewModel { HomeViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { AuthViewModel(get()) }
     viewModel { ProfileViewModel(get(), get(), get()) }
@@ -161,6 +170,6 @@ val appModule = module {
     viewModel { HomeAdminViewModel(get(), get()) }
     viewModel { AttendanceReportViewModel(get()) }
     viewModel { UpdateUserViewModel(get(), get(), get(), get()) }
-    viewModel { GradeViewModel(get()) }
+    viewModel { GradeViewModel(get(), get()) }
     viewModel { ActivityLogViewModel(get(), get(), get()) }
 }

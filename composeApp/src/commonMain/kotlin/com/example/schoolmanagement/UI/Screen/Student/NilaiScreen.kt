@@ -49,13 +49,6 @@ fun NilaiScreen (
 
     val primaryBlue = Color(0xFF0066FF)
 
-    val daftarNilai = listOf(
-        GradeData("Matematika", 88, "A", "Tuntas"),
-        GradeData("Bahasa Inggris", 92, "A", "Tuntas"),
-        GradeData("Pemrograman Mobile", 70, "C", "Perbaikan"),
-        GradeData("Fisika", 80, "B", "Tuntas")
-    )
-
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -162,8 +155,9 @@ fun NilaiScreen (
                             subject = item.subject,
                             nilai = item.score.toDouble().toInt(),
                             grade = item.grade,
-                            status = item.status
-                        )
+                            status = item.status,
+                        ),
+                        onCardClick = { navController.navigate("detailnilai/${item.subject}") }
                     )
                 }
             }

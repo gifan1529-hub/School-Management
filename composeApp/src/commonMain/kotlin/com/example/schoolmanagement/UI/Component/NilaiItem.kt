@@ -19,7 +19,7 @@ import com.example.schoolmanagement.Domain.Model.GradeData
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable
-fun NilaiItem(data: GradeData) {
+fun NilaiItem(data: GradeData, onCardClick: () -> Unit) {
     val statusColor = if (data.nilai >= 75) Color(0xFF4CAF50) else Color(0xFFFFA500)
     val poppins = getPoppinsFontFamily()
 
@@ -27,6 +27,7 @@ fun NilaiItem(data: GradeData) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
+        onClick = onCardClick,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(

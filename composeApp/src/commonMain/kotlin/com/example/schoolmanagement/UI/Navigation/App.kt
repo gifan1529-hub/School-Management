@@ -4,12 +4,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -171,6 +174,10 @@ fun App(
                 composable ("editprofile"){
                     EditProfileScreen(navController)
                 }
+                composable("detailnilai/{subject}") { backStackEntry ->
+                    val subject = backStackEntry.arguments?.getString("subject") ?: ""
+                    DetailNilaiScreen(navController, subjectName = subject)
+                }
             }
             CustomToast(
                 message = globalToastMessage,
@@ -209,10 +216,18 @@ fun MainPagerScreen (
             userScrollEnabled = true
         ) { page ->
             when (page) {
-                1 -> when (userRole) {
-                    "student" -> HomeScreen(navController)
-                    "teacher" -> HomeScreenGuru(navController)
-                    "admin" -> HomeScreenAdmin(navController)
+                1 -> {
+                    println("DEBUG: Current Role in Pager: $userRole")
+                    when (userRole) {
+                        "student" -> HomeScreen(navController)
+                        "teacher" -> HomeScreenGuru(navController)
+                        "admin" -> HomeScreenAdmin(navController)
+                        else -> {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator(color = Color(0xFF0066FF))
+                            }
+                        }
+                    }
                 }
                 0 -> AlertScreen(navController)
                 2 -> ProfileScreen(navController)

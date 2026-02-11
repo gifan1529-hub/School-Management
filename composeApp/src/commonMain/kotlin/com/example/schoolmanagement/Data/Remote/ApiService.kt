@@ -11,6 +11,7 @@ import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
@@ -330,5 +331,22 @@ class ApiService(private val client: HttpClient) {
             }
             setBody(request)
         }.body()
+    }
+
+    suspend fun sendFcmToken(token: String, fcmToken: String): GenericResponse {
+        return client.post(ApiClient.getUrl("fcm-token")) {
+            contentType(ContentType.Application.Json)
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+            setBody(mapOf("token" to fcmToken, "device_type" to "android"))
+        }.body()
+    }
+
+    suspend fun getMyGrades(token: String, subject: String? = null): MyGradeResponse {
+        val response =  client.get(ApiClient.getUrl("my-grades")) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+            url { subject?.let { parameters.append("subject", it) } }
+        }
+        println("DEBUG JSON DARI LARAVEL: ${response.bodyAsText()}")
+        return response.body()
     }
 }
