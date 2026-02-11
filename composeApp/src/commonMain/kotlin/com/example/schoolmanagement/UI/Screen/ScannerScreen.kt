@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.schoolmanagement.DI.Location
 import com.example.schoolmanagement.DI.ToastHelper
+import com.example.schoolmanagement.UI.Component.CustomToast
+import com.example.schoolmanagement.UI.Component.ToastType
 import com.example.schoolmanagement.Utils.HandleException
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import com.example.schoolmanagement.getAttendanceStatus
@@ -55,6 +57,10 @@ fun ScannerScreen (
     navController: NavHostController,
     viewModel: HomeViewModel = koinViewModel()
 ) {
+    var showToast by remember { mutableStateOf(false) }
+    var toastMessage by remember { mutableStateOf("") }
+    var toastType by remember { mutableStateOf(ToastType.INFO) }
+
     val exceptionHandler = remember { HandleException() }
 
     val locationHelper : Location = koinInject ()
@@ -129,13 +135,20 @@ fun ScannerScreen (
                                                         "Absent" -> "Waduh, Kamu Alpa (Sudah lewat jam 11)!"
                                                         else -> "Mantap! Kamu Hadir jam $timeNow"
                                                     }
-                                                    ToastHelper().Toast(pesan)
+                                                    toastMessage = pesan
+                                                    toastType = if (status == "Late") { ToastType.ERROR
+                                                    } else if (status == "Absent") { ToastType.SUCCESS
+                                                    } else if (status == "Present") { ToastType.SUCCESS
+                                                    } else TODO()
+                                                    showToast = true
                                                     println("Scanner Result: $qrCode | Loc: ${cord.first}, ${cord.second}")
                                                 } else if (errorByVM != null){
                                                     ToastHelper().Toast(errorByVM)
                                                     isScanningActive = true
                                                 } else {
-                                                    ToastHelper().Toast("Gagal Absen : Data Tidak Valid")
+                                                    toastMessage = "Gagal Absen : Data Tidak Valid"
+                                                    toastType = ToastType.ERROR
+                                                    showToast = true
                                                     isScanningActive = true
                                                 }
                                             } catch (e: Exception) {
@@ -144,7 +157,9 @@ fun ScannerScreen (
                                                 isScanningActive = true
                                             }
                                     } else {
-                                        ToastHelper().Toast("Gagal mendapatkan lokasi. Pastikan GPS aktif!")
+                                        toastMessage = "Gagal mendapatkan lokasi. Pastikan GPS aktif!"
+                                        toastType = ToastType.ERROR
+                                        showToast = true
                                         isScanningActive = true
                                     }
                                 }
@@ -231,5 +246,10 @@ fun ScannerScreen (
                 tint = Color.White
             )
         }
+        CustomToast(
+            message = toastMessage,
+            isVisible = showToast,
+            onDismiss = { showToast = false }
+        )
     }
 }

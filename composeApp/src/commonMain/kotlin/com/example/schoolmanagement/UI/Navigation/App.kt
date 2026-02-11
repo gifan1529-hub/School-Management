@@ -1,5 +1,6 @@
 package com.example.schoolmanagement.UI.Navigation
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -7,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
@@ -14,8 +16,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.schoolmanagement.UI.Component.CustomToast
 import com.example.schoolmanagement.UI.Screen.FormIzin
 import com.example.schoolmanagement.UI.Component.NavButton
+import com.example.schoolmanagement.UI.Component.ToastType
 import com.example.schoolmanagement.UI.Screen.ActivityLogScreen
 import com.example.schoolmanagement.UI.Screen.Admin.AttendanceReportScreen
 import com.example.schoolmanagement.UI.Screen.Admin.HomeScreenAdmin
@@ -54,93 +58,122 @@ fun App(
 ) {
     val authViewModel: AuthViewModel = koinViewModel()
 
+    var showGlobalToast by remember { mutableStateOf(false) }
+    var globalToastMessage by remember { mutableStateOf("") }
+    var globalToastType by remember { mutableStateOf(ToastType.INFO) }
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    LaunchedEffect(navBackStackEntry) {
+        // Cek apakah ada titipan pesan "toast_message"
+        val message = navController.currentBackStackEntry?.savedStateHandle?.get<String>("toast_message")
+        val type = navController.currentBackStackEntry?.savedStateHandle?.get<ToastType>("toast_type")
+
+        if (message != null) {
+            globalToastMessage = message
+            globalToastType = type ?: ToastType.INFO
+            showGlobalToast = true
+
+            // Langsung hapus biar gak muncul lagi pas back-back-an
+            navController.currentBackStackEntry?.savedStateHandle?.remove<String>("toast_message")
+            navController.currentBackStackEntry?.savedStateHandle?.remove<ToastType>("toast_type")
+        }
+    }
+
     MaterialTheme {
-        NavHost(
-            navController = navController,
-            startDestination = "signin",
-            modifier = modifier.fillMaxSize()
-        ){
-            composable("signin") {
-                LaunchedEffect(Unit) {
-                    if (authViewModel.isLoggedIn()) {
-                        navController.navigate("home") {
-                            popUpTo("signin") { inclusive = true }
+        Box(modifier = Modifier.fillMaxSize()) {
+            NavHost(
+                navController = navController,
+                startDestination = "signin",
+                modifier = modifier.fillMaxSize()
+            ) {
+                composable("signin") {
+                    LaunchedEffect(Unit) {
+                        if (authViewModel.isLoggedIn()) {
+                            navController.navigate("home") {
+                                popUpTo("signin") { inclusive = true }
+                            }
                         }
                     }
+                    SignIn(navController)
                 }
-                SignIn(navController)
+                composable("home") {
+                    MainPagerScreen(navController)
+                }
+                composable("profile") {
+                    ProfileScreen(navController)
+                }
+                composable("scanner") {
+                    ScannerScreen(navController)
+                }
+                composable("alert") {
+                    AlertScreen(navController)
+                }
+                composable("jadwal") {
+                    JadwalScreen(navController)
+                }
+                composable("tugas") {
+                    TugasScreen(navController)
+                }
+                composable("izin") {
+                    IzinScreen(navController)
+                }
+                composable("formizin") {
+                    FormIzin(navController)
+                }
+                composable("absenHistory") {
+                    HistoryAbsenScreen(navController)
+                }
+                composable("nilai") {
+                    NilaiScreen(navController)
+                }
+                composable("siswahadir") {
+                    MarkAttendanceScreen(navController)
+                }
+                composable("izinguru") {
+                    IzinScreenGuru(navController)
+                }
+                composable("jadwalngajar") {
+                    JadwalMengajarScreen(navController)
+                }
+                composable("homework") {
+                    HomeWorkScreen(navController)
+                }
+                composable("detailIzin/{id}") { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+                    DetailIzinScreen(navController, id)
+                }
+                composable("formalert") {
+                    FormAlert(navController)
+                }
+                composable("detailtugas/{id}") { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+                    DetailHomeWork(navController, homeworkId = id)
+                }
+                composable("attendancereport") {
+                    AttendanceReportScreen(navController)
+                }
+                composable("detailtugasguru/{id}") { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+                    SubmissionListScreen(navController, homeworkId = id)
+                }
+                composable("usermanage") {
+                    KelolaUserScreen(navController)
+                }
+                composable("activity") {
+                    ActivityLogScreen(navController)
+                }
+                composable("izinadmin") {
+                    IzinScreenAdmin(navController)
+                }
             }
-            composable("home") {
-                MainPagerScreen(navController)
-            }
-            composable("profile") {
-                ProfileScreen(navController)
-            }
-            composable("scanner") {
-                ScannerScreen(navController)
-            }
-            composable("alert") {
-                AlertScreen(navController)
-            }
-            composable("jadwal"){
-                JadwalScreen(navController)
-            }
-            composable ("tugas"){
-                TugasScreen(navController)
-            }
-            composable("izin") {
-                IzinScreen(navController)
-            }
-            composable("formizin"){
-                FormIzin(navController)
-            }
-            composable("absenHistory"){
-                HistoryAbsenScreen(navController)
-            }
-            composable("nilai"){
-                NilaiScreen(navController)
-            }
-            composable("siswahadir"){
-                MarkAttendanceScreen(navController)
-            }
-            composable ("izinguru"){
-                IzinScreenGuru(navController)
-            }
-            composable ("jadwalngajar"){
-                JadwalMengajarScreen(navController)
-            }
-            composable("homework") {
-                HomeWorkScreen(navController)
-            }
-            composable("detailIzin/{id}") { backStackEntry ->
-                val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
-                DetailIzinScreen(navController, id)
-            }
-            composable("formalert"){
-                FormAlert(navController)
-            }
-            composable("detailtugas/{id}") { backStackEntry ->
-                val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
-                DetailHomeWork(navController, homeworkId = id)
-            }
-            composable("attendancereport"){
-                AttendanceReportScreen(navController)
-            }
-            composable("detailtugasguru/{id}"){ backStackEntry ->
-                val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
-                SubmissionListScreen(navController, homeworkId = id)
-            }
-            composable ("usermanage"){
-                KelolaUserScreen(navController)
-            }
-            composable ("activity"){
-                ActivityLogScreen(navController)
-            }
-            composable ("izinadmin"){
-                IzinScreenAdmin(navController)
-            }
+            CustomToast(
+                message = globalToastMessage,
+                isVisible = showGlobalToast,
+                type = globalToastType,
+                onDismiss = { showGlobalToast = false }
+            )
         }
     }
 }

@@ -58,7 +58,7 @@ fun CustomToast(
             contentAlignment = Alignment.TopCenter
         ) {
             Surface(
-                color = Color.White, // Warna gelap estetik
+                color = Color.White,
                 shape = RoundedCornerShape(24.dp),
                 tonalElevation = 4.dp,
                 modifier = Modifier.padding(horizontal = 16.dp)

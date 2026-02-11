@@ -20,9 +20,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.schoolmanagement.UI.Component.CustomToast
 import com.example.schoolmanagement.UI.Component.IzinItem
 import com.example.schoolmanagement.UI.Component.IzinMuridContent
 import com.example.schoolmanagement.UI.Component.IzinPribadiContent
+import com.example.schoolmanagement.UI.Component.ToastType
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 
 @Composable

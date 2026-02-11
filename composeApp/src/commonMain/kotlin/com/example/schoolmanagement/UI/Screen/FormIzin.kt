@@ -50,8 +50,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.schoolmanagement.UI.Component.CustomToast
 import com.example.schoolmanagement.UI.Component.TimePickerDialog
 import com.example.schoolmanagement.UI.Component.TipeIzinChip
+import com.example.schoolmanagement.UI.Component.ToastType
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.PermitViewModel
 import com.example.schoolmanagement.getTodayDate
@@ -72,11 +74,16 @@ fun FormIzin (
     val tanggal = getTodayDate()
     val tanggals = getTodayDateS()
 
+    var showToast by remember { mutableStateOf(false) }
+    var toastMessage by remember { mutableStateOf("") }
+    var toastType by remember { mutableStateOf(ToastType.INFO) }
+
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F5F5)
 
     val isLoading by viewModel.isLoading.collectAsState()
     val isSuccess by viewModel.isSuccess.collectAsState()
+    val isError by viewModel.errorSubmitMessage.collectAsState()
 
     val tipeIzin by viewModel.tipeIzin.collectAsState()
     val tanggalMulai by viewModel.tanggalMulai.collectAsState()
@@ -171,7 +178,17 @@ fun FormIzin (
 
     LaunchedEffect(isSuccess) {
         if (isSuccess) {
+            navController.previousBackStackEntry?.savedStateHandle?.set("toast_message", "Permohonan Izin Berhasil Dikirim!")
+            navController.previousBackStackEntry?.savedStateHandle?.set("toast_type", ToastType.SUCCESS)
             navController.popBackStack()
+        }
+    }
+
+    LaunchedEffect(isError) {
+        if (isError != null) {
+            toastMessage = "Gagal membuat izin, Masalah koneksi"
+            toastType = ToastType.ERROR
+            showToast = true
         }
     }
 
@@ -362,5 +379,11 @@ fun FormIzin (
                 }
             }
         }
+        CustomToast(
+            message = toastMessage,
+            type = toastType,
+            isVisible = showToast,
+            onDismiss = { showToast = false }
+        )
     }
 }

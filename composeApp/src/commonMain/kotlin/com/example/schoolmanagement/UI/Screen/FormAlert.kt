@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.schoolmanagement.UI.Component.ToastType
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.AlertViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -56,7 +57,12 @@ fun FormAlert (
 
     val poppins = getPoppinsFontFamily()
 
+    var showToast by remember { mutableStateOf(false) }
+    var toastMessage by remember { mutableStateOf("") }
+    var toastType by remember { mutableStateOf(ToastType.INFO) }
+
     val isLoading by viewModel.isLoading.collectAsState()
+    val isSuccess by viewModel.isCreateSuccess.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     var title by remember { mutableStateOf("") }
@@ -70,12 +76,15 @@ fun FormAlert (
     val audienceOptions = listOf("all", "teacher", "student")
 
 
-//    LaunchedEffect(isSuccess) {
-//        if (isSuccess) {
-//            viewModel.resetSuccessState()
-//            navController.popBackStack()
-//        }
-//    }
+    LaunchedEffect(isSuccess) {
+        if (isSuccess) {
+            toastMessage = "Berhasil membuat alert"
+            toastType = ToastType.SUCCESS
+            showToast = true
+            viewModel.resetSuccessState()
+            navController.popBackStack()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -203,7 +212,7 @@ fun FormAlert (
             Button(
                 onClick = {
                     viewModel.createAnnouncement(title, message, selectedType, selectedAudience)
-                    navController.popBackStack()
+//                    navController.popBackStack()
                 },
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 shape = RoundedCornerShape(12.dp),

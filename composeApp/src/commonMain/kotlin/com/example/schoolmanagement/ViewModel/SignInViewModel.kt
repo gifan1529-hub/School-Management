@@ -1,5 +1,8 @@
 package com.example.schoolmanagement.ViewModel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.schoolmanagement.DI.ToastHelper
@@ -31,6 +34,8 @@ class SignIn (
 
     private val _eventFlow = MutableSharedFlow<LoginResult>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    var toastMessage by mutableStateOf<String?>(null)
 
     fun onEmailChange(email: String) {
         _uiState.update { it.copy(emailValue = email) }
@@ -71,6 +76,7 @@ class SignIn (
                     } else {
                         _eventFlow.emit(LoginResult.Error("Role tidak sesuai"))
                         ToastHelper().Toast("Role Kamu bukan $selectedRole")
+                        toastMessage = "Role Kamu bukan $selectedRole"
                     }
 
                     println("Profil : $token ${userProfile.id} ${userProfile.email}")

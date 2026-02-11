@@ -72,6 +72,9 @@ class PermitViewModel(
 
     fun  submitPermit() {
         viewModelScope.launch {
+            _isSuccess.value = false
+            _errorSubmitMessage.value = null
+
             if (
                 _tipeIzin.value.isBlank() ||
                 _alasan.value.isBlank() ||
@@ -97,8 +100,10 @@ class PermitViewModel(
                     println("DEBUG PERMIT: berahsil submit izin")
                     _isSuccess.value = true
                 }.onFailure { e ->
+                    println("DEBUG PERMIT: gagal submit izin")
                     val handledError = exceptionHandler.handleException(e as Exception)
                     _errorSubmitMessage.value = handledError.message
+//                    ToastHelper().Toast(handledError.message)
                     _isSuccess.value = false
                 }
                 _isLoading.value = false

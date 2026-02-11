@@ -40,6 +40,8 @@ import androidx.navigation.NavHostController
 
 import com.example.schoolmanagement.DI.ToastHelper
 import com.example.schoolmanagement.Domain.UseCase.LoginResult
+import com.example.schoolmanagement.UI.Component.CustomToast
+import com.example.schoolmanagement.UI.Component.ToastType
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.SignIn
 import org.jetbrains.compose.resources.painterResource
@@ -53,6 +55,10 @@ fun SignIn(
     navController: NavHostController,
     viewModel: SignIn = koinViewModel()
 ) {
+    var showToast by remember { mutableStateOf(false) }
+    var toastMessage by remember { mutableStateOf("") }
+    var toastType by remember { mutableStateOf(ToastType.INFO) }
+
     val poppins = getPoppinsFontFamily()
 
     var selectedRole by remember { mutableStateOf("Student") }
@@ -71,9 +77,13 @@ fun SignIn(
                     }
                 } else if (result is LoginResult.Error) {
                     println("Error: ${result.message}")
-                    ToastHelper().Toast("Isi Email dan Password yang benar")
+                    toastMessage = "Isi Email dan Password dengan benar"
+                    toastType = ToastType.ERROR
+                    showToast = true
                 } else if (result is LoginResult.Failure) {
-                    ToastHelper().Toast("Email atau Password Salah")
+                    toastMessage = "Email atau Password Salah"
+                    toastType = ToastType.ERROR
+                    showToast = true
                     println("Masalah Koneksi: ${result.error.message}")
                 }
             }
@@ -242,5 +252,11 @@ fun SignIn(
                     }
                 }
             }
+            CustomToast(
+                message = toastMessage,
+                type = toastType,
+                isVisible = showToast,
+                onDismiss = { showToast = false }
+            )
         }
     }

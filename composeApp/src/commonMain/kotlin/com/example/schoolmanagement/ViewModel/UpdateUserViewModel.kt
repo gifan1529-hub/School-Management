@@ -1,5 +1,8 @@
 package com.example.schoolmanagement.ViewModel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.schoolmanagement.DI.ToastHelper
@@ -46,6 +49,8 @@ class UpdateUserViewModel (
     val errorDeleteMessage: StateFlow<String?> = _errorDeleteMessage
 
     private val exceptionHandler = HandleException()
+
+    var toastMessage by mutableStateOf<String?>(null)
 
     init {
         loadAllUsers()

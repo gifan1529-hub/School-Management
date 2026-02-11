@@ -1,4 +1,4 @@
-package com.example.schoolmanagement.UI.Component
+package com.example.schoolmanagement.Domain.Model
 
 import kotlinx.serialization.Serializable
 

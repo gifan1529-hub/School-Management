@@ -177,7 +177,7 @@ fun HomeScreenGuru (
                             text = "Halo, $userName!",
                             color = Color.White,
                             fontFamily = poppins,
-                            fontSize = 24.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(

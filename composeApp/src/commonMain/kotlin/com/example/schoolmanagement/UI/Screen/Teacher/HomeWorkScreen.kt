@@ -58,6 +58,7 @@ import com.example.schoolmanagement.DI.ToastHelper
 import com.example.schoolmanagement.Domain.Model.HomeworkData
 import com.example.schoolmanagement.UI.Component.HomeworkTeacherItem
 import com.example.schoolmanagement.UI.Component.TimePickerDialog
+import com.example.schoolmanagement.UI.Component.ToastType
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.HomeWorkViewModel
 import kotlinx.datetime.Instant
@@ -93,6 +94,9 @@ fun HomeWorkScreen (
     val errorDelete by viewModel.errorDeleteHomeworks.collectAsState()
     val errorAdd by viewModel.errorAddHomeworks.collectAsState()
 
+    var showToast by remember { mutableStateOf(false) }
+    var toastMessage by remember { mutableStateOf("") }
+    var toastType by remember { mutableStateOf(ToastType.INFO) }
 
     var taskTitle by remember { mutableStateOf("") }
     var taskDesc by remember { mutableStateOf("") }
@@ -149,6 +153,9 @@ fun HomeWorkScreen (
             taskDesc = ""
             taskSubject = ""
             viewModel.resetState()
+            toastMessage = "Berhasil menambahkan tugas"
+            toastType = ToastType.SUCCESS
+            showToast = true
         }
     }
 
