@@ -27,10 +27,10 @@ class PermitRepositoryImpl(
         }
     }
 
-    override suspend fun submitPermit(token: String, request: PermitRequest): Result<PermitResponse> {
+    override suspend fun submitPermit(token: String, request: PermitRequest): Result<Boolean> {
         return try {
             val response = apiService.postPermit(token, request)
-            Result.success(response)
+            Result.success(true)
         } catch (e: Exception) {
             Result.failure(handleException(e))
         }

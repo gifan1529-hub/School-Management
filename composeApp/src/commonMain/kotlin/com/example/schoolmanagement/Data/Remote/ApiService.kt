@@ -88,7 +88,7 @@ class ApiService(private val client: HttpClient) {
         }.body()
     }
 
-    suspend fun postPermit(token: String, request: PermitRequest): PermitResponse {
+    suspend fun postPermit(token: String, request: PermitRequest): SubmitPermitResponse {
         return client.post(ApiClient.getUrl("permits")) {
             contentType(ContentType.Application.Json)
             headers {
@@ -306,6 +306,19 @@ class ApiService(private val client: HttpClient) {
         return client.get(ApiClient.getUrl("activity-logs")) {
             headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
             url { parameters.append("page", page.toString())}
+        }.body()
+    }
+
+    suspend fun getUnreadActivity (token: String): Int{
+        val response: Map<String, Int> = client.get(ApiClient.getUrl("activity-logs/unread-count")) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+        }.body()
+        return response["unread_count"] ?: 0
+    }
+
+    suspend fun markAllActivitiesAsRead(token: String): GenericResponse {
+        return client.post(ApiClient.getUrl("activity-logs/mark-as-read")) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
         }.body()
     }
 }
