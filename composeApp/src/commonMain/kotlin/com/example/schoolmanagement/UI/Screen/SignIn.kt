@@ -28,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,11 +45,13 @@ import com.example.schoolmanagement.UI.Component.CustomToast
 import com.example.schoolmanagement.UI.Component.ToastType
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.SignIn
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import schoolmanagement.composeapp.generated.resources.Res
 import schoolmanagement.composeapp.generated.resources.school
 import schoolmanagement.composeapp.generated.resources.sekoah
+
 
 @Composable
 fun SignIn(
@@ -59,6 +62,8 @@ fun SignIn(
     var toastMessage by remember { mutableStateOf("") }
     var toastType by remember { mutableStateOf(ToastType.INFO) }
 
+    val scope = rememberCoroutineScope()
+
     val poppins = getPoppinsFontFamily()
 
     var selectedRole by remember { mutableStateOf("Student") }
@@ -66,12 +71,19 @@ fun SignIn(
 
     val uiState by viewModel.uiState.collectAsState()
 
-        val primaryBlue = Color(0xFF0066FF)
-        val lightGray = Color(0xFFF5F5F5)
+    val primaryBlue = Color(0xFF0066FF)
+    val lightGray = Color(0xFFF5F5F5)
 
         LaunchedEffect(viewModel.eventFlow) {
             viewModel.eventFlow.collect { result ->
                 if (result is LoginResult.Success) {
+                            val helper = com.example.schoolmanagement.DI.FcmHelper()
+                            val fcmToken = helper.getFcmToken()
+                            val userToken = result.token
+                            if (fcmToken != null && userToken.isNotEmpty()) {
+                                viewModel.sendFcmToken(fcmToken)
+                                println("DEBUG FCM: Token berhasil dikirim!")
+                            }
                     navController.navigate("home") {
                         popUpTo("signin") { inclusive = true }
                     }

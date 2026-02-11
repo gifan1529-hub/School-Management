@@ -5,9 +5,10 @@ import com.example.schoolmanagement.Data.Remote.LoginRequest
 import com.example.schoolmanagement.Data.Remote.LoginResponse
 
 sealed class LoginResult {
-    data class Success(val response: LoginResponse) : LoginResult()
+    data class Success(val response: LoginResponse, val token: String) : LoginResult()
     data class Error(val message: String) : LoginResult()
     data class Failure(val error: Exception) : LoginResult()
+
 }
 
 class LoginUC (
@@ -20,7 +21,10 @@ class LoginUC (
         return try {
             val response = apiService.login(LoginRequest(email, password))
 
-            LoginResult.Success(response)
+            LoginResult.Success(
+                response = response,
+                token = response.accessToken
+            )
         } catch (e: Exception) {
             LoginResult.Failure(e)
         }

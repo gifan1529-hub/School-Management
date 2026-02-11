@@ -42,6 +42,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,9 +58,11 @@ import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.ActivityLogViewModel
 import com.example.schoolmanagement.ViewModel.HomeTeacherViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
+import com.example.schoolmanagement.ViewModel.SignIn
 import com.example.schoolmanagement.getAttendanceStatus
 import com.example.schoolmanagement.getTodayDate
 import com.example.schoolmanagement.isLate
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import qrgenerator.qrkitpainter.rememberQrKitPainter
 
@@ -67,6 +70,7 @@ import qrgenerator.qrkitpainter.rememberQrKitPainter
 fun HomeScreenGuru (
     navController: NavHostController,
     viewModel: HomeTeacherViewModel = koinViewModel (),
+    fcm: SignIn = koinViewModel(),
     logViewModel: ActivityLogViewModel = koinViewModel()
 ) {
     val poppins = getPoppinsFontFamily()
@@ -80,6 +84,8 @@ fun HomeScreenGuru (
     val userName by viewModel.userName.collectAsState()
     val userRole by viewModel.userRole.collectAsState()
     val userKelas by viewModel.userClass.collectAsState()
+
+    val scope = rememberCoroutineScope()
 
     val countHadir by viewModel.countHadir.collectAsState()
     val countTelat by viewModel.countTelat.collectAsState()
@@ -144,6 +150,21 @@ fun HomeScreenGuru (
 
     LaunchedEffect(Unit) {
         logViewModel.loadUnreadCount()
+        scope.launch {
+            try {
+                println("DEBUG FCM: Mencoba ambil token")
+                val helper = com.example.schoolmanagement.DI.FcmHelper()
+                val token = helper.getFcmToken()
+                if (token != null) {
+                    println("DEBUG FCM: Token dapet! -> $token")
+                    fcm.sendFcmToken(token)
+                } else {
+                    println("DEBUG FCM: Token NULL! Cek google-services.json")
+                }
+            } catch (e: Exception) {
+                println("DEBUG FCM CRASH: ${e.message}")
+            }
+        }
     }
 
     PullToRefreshBox(

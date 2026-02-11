@@ -10,11 +10,13 @@ import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Data.Remote.ApiService
 import com.example.schoolmanagement.Domain.UseCase.LoginResult
 import com.example.schoolmanagement.Domain.UseCase.LoginUC
+import com.example.schoolmanagement.Domain.UseCase.UpdateFcmTokenUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -27,6 +29,7 @@ data class SignInUiState(
 class SignIn (
     private val apiService: ApiService,
     private val loginUC: LoginUC,
+    private val updateFcmTokenUC: UpdateFcmTokenUseCase,
     private val prefsManager: PrefsManager
 ): ViewModel() {
     private val _uiState = MutableStateFlow(SignInUiState())
@@ -87,6 +90,16 @@ class SignIn (
                 _eventFlow.emit(result)
             }
             _uiState.update { it.copy(isLoading = false) }
+        }
+    }
+
+    fun sendFcmToken(fcmToken: String) {
+        viewModelScope.launch {
+            updateFcmTokenUC(fcmToken).onSuccess {
+                println("DEBUG FCM: BERHASIL KIRIM TOKEN KE LARAVEL -> $fcmToken")
+            }.onFailure { e ->
+                println("DEBUG FCM: Gagal lapor token: ${e.message}")
+            }
         }
     }
 }
