@@ -58,6 +58,13 @@ class ProfileViewModel (
             initialValue = "Role"
         )
 
+    val userAddress: StateFlow<String> = prefsManager.getUserAddress
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = "Role"
+        )
+
     fun logout() {
         viewModelScope.launch {
             logoutUC()

@@ -73,7 +73,8 @@ class SignIn (
                             role = userProfile.role,
                             nisn = userProfile.nisn,
                             kelas = userProfile.kelas,
-                            phone = userProfile.phone
+                            phone = userProfile.phone,
+                            address = userProfile.address
                         )
                         _eventFlow.emit(result)
                     } else {

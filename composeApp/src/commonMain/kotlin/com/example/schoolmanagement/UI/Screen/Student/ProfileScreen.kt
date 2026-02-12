@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -60,6 +61,7 @@ fun ProfileScreen (
     val userEmail by viewModel.userEmail.collectAsState()
     val userName by viewModel.userName.collectAsState()
     val userRole by viewModel.userRole.collectAsState()
+    val userAddress by viewModel.userAddress.collectAsState()
 
     val poppins = getPoppinsFontFamily()
 
@@ -178,6 +180,11 @@ fun ProfileScreen (
                         Icons.Default.AccountCircle,
                         "Role", "${userRole}",
                         Color.Magenta
+                    )
+                    ProfileInfoRow(
+                        Icons.Default.Home,
+                        "Address", "${userAddress}",
+                        Color.Blue
                     )
                 }
             }

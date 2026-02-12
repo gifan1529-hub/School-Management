@@ -7,5 +7,6 @@ data class UserDetails(
     val isAlreadyAbsen : Boolean,
     val phone : String,
     val nisn : String,
-    val kelas : String
+    val kelas : String,
+    val address : String,
 )

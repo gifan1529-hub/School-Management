@@ -27,6 +27,7 @@ class PrefsManager (
         private val NISN = stringPreferencesKey("nisn")
         private val CLASS = stringPreferencesKey("class")
         private val PHONE = stringPreferencesKey("phone")
+        private val ADDRESS = stringPreferencesKey("address")
     }
 
     suspend fun createLoginSession(
@@ -38,7 +39,8 @@ class PrefsManager (
         role: String,
         nisn: String?,
         kelas: String?,
-        phone: String?
+        phone: String?,
+        address: String?
     ) {
         dataStore.edit { prefs ->
             prefs[IS_LOGGED_IN] = true
@@ -51,6 +53,7 @@ class PrefsManager (
             prefs[NISN] = nisn ?: ""
             prefs[CLASS] = kelas ?: ""
             prefs[PHONE] = phone ?: ""
+            prefs[ADDRESS] = address ?: ""
         }
         println("DEBUG PREFS: Saving NISN: $nisn, Kelas: $kelas, Phone: $phone")
     }
@@ -89,6 +92,10 @@ class PrefsManager (
         prefs[KEY_ROLE] ?: "User"
     }
 
+    val getUserAddress: Flow<String> = dataStore.data.map { prefs ->
+        prefs[ADDRESS] ?: "User"
+    }
+
     suspend fun isLoggedIn(): Boolean {
         return dataStore.data.map { it[IS_LOGGED_IN] ?: false }.first()
     }
@@ -120,7 +127,8 @@ class PrefsManager (
             isAlreadyAbsen = getAbsenStatus.first(),
             phone = getUserPhone.first(),
             nisn = getNis.first(),
-            kelas = getClass.first()
+            kelas = getClass.first(),
+            address = getUserAddress.first()
         )
     }
 
@@ -134,6 +142,10 @@ class PrefsManager (
 
     suspend fun saveClass(kelas: String) {
         dataStore.edit { it[CLASS] = kelas }
+    }
+
+    suspend fun saveAddress(address: String) {
+        dataStore.edit { it[ADDRESS] = address }
     }
 
     suspend fun saveNisn(nis: String) {

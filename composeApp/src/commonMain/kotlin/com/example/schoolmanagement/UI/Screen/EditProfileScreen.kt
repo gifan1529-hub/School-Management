@@ -58,11 +58,10 @@ fun EditProfileScreen (
 
     val userName by viewModel.userName.collectAsState()
     val userPhone by viewModel.userPhone.collectAsState()
-    val userEmail by viewModel.userEmail.collectAsState()
+    val userAddress by viewModel.userAddress.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
     var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
 
@@ -79,6 +78,7 @@ fun EditProfileScreen (
     LaunchedEffect(userName) {
         name = userName
         phone = userPhone
+        address = userAddress
     }
 
     Scaffold(
