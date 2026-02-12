@@ -33,6 +33,7 @@ import com.example.schoolmanagement.Domain.UseCase.DeleteHomeWork
 import com.example.schoolmanagement.Domain.UseCase.DeleteUserUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetActivityLogUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAdminStatsUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetAdminTeacherScheduleUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAllUserUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAnnouncmentUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceHistoryUseCase
@@ -62,6 +63,7 @@ import com.example.schoolmanagement.Domain.UseCase.UpdatePermitStatusUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdateProfileUseCase
 import com.example.schoolmanagement.Domain.UseCase.UpdateUserUseCase
 import com.example.schoolmanagement.ViewModel.ActivityLogViewModel
+import com.example.schoolmanagement.ViewModel.AdminTeacherViewModel
 import com.example.schoolmanagement.ViewModel.AlertViewModel
 import com.example.schoolmanagement.ViewModel.AttendanceReportViewModel
 import com.example.schoolmanagement.ViewModel.AuthViewModel
@@ -102,7 +104,6 @@ val appModule = module {
     single <ActivityLogRepository>{ ActivityLogRepositoryImpl(get()) }
     single <UpdateProfileRepository>{ UpdateProfileRepositoryImpl(get()) }
     single <AuthRepository>{ AuthRepositoryImpl(get()) }
-
 
 //    // Network
 //    single {
@@ -152,7 +153,7 @@ val appModule = module {
     factoryOf(::UpdateProfileUseCase)
     factoryOf(::UpdateFcmTokenUseCase)
     factoryOf(::GetMyGradesUseCase)
-
+    factoryOf(::GetAdminTeacherScheduleUseCase)
 
 
     viewModel { MarkAttendanceViewModel(get()) }
@@ -172,4 +173,5 @@ val appModule = module {
     viewModel { UpdateUserViewModel(get(), get(), get(), get()) }
     viewModel { GradeViewModel(get(), get()) }
     viewModel { ActivityLogViewModel(get(), get(), get()) }
+    viewModel { AdminTeacherViewModel(get()) }
 }

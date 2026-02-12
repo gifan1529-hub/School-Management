@@ -48,4 +48,18 @@ class ScheduleRepositoryImpl (
             Result.failure(handleException(e))
         }
     }
+
+    override suspend fun getAdminTeacherSchedule(token: String, teacherId: Int?): Result<List<ScheduleItem>> {
+        return try {
+            val response = apiService.getAdminTeacherSchedule(token, teacherId)
+
+            if (response.data != null) {
+                Result.success(response.data)
+            } else {
+                Result.failure(Exception("Jadwal mengajar tidak ditemukan"))
+            }
+        } catch (e: Exception) {
+            Result.failure(handleException(e))
+        }
+    }
 }

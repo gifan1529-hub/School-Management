@@ -48,6 +48,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,6 +67,7 @@ import com.example.schoolmanagement.ViewModel.ActivityLogViewModel
 import com.example.schoolmanagement.ViewModel.HomeAdminViewModel
 import com.example.schoolmanagement.ViewModel.SignIn
 import com.example.schoolmanagement.getTodayDate
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import qrgenerator.qrkitpainter.rememberQrKitPainter
 
@@ -73,10 +75,13 @@ import qrgenerator.qrkitpainter.rememberQrKitPainter
 fun HomeScreenAdmin (
     navController: NavController,
     viewModel: HomeAdminViewModel = koinViewModel(),
+    fcm: SignIn = koinViewModel(),
     logViewModel: ActivityLogViewModel = koinViewModel()
 ) {
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
+
+    val scope = rememberCoroutineScope()
 
     val unreadCount by logViewModel.unreadCount.collectAsState()
 
@@ -93,6 +98,21 @@ fun HomeScreenAdmin (
     LaunchedEffect(Unit){
         viewModel.loadStats()
         viewModel.loadAttendanceTrend()
+        scope.launch {
+            try {
+                println("DEBUG FCM: Mencoba ambil token")
+                val helper = com.example.schoolmanagement.DI.FcmHelper()
+                val token = helper.getFcmToken()
+                if (token != null) {
+                    println("DEBUG FCM: Token dapet! -> $token")
+                    fcm.sendFcmToken(token)
+                } else {
+                    println("DEBUG FCM: Token NULL! Cek google-services.json")
+                }
+            } catch (e: Exception) {
+                println("DEBUG FCM CRASH: ${e.message}")
+            }
+        }
     }
 
     if (showQrDialog) {
@@ -303,7 +323,7 @@ fun HomeScreenAdmin (
                         "Jadwal Pelajaran", "Atur jam mengajar guru", Icons.Default.DateRange,
                         Color(0xFF4CAF50)
                     ) {
-                        // navController.navigate("manage_schedule")
+                        navController.navigate("adminjadwal")
                     }
                     AdminMenuCard(
                         "Laporan Absensi",

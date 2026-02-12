@@ -27,6 +27,7 @@ import com.example.schoolmanagement.UI.Screen.ActivityLogScreen
 import com.example.schoolmanagement.UI.Screen.Admin.AttendanceReportScreen
 import com.example.schoolmanagement.UI.Screen.Admin.HomeScreenAdmin
 import com.example.schoolmanagement.UI.Screen.Admin.IzinScreenAdmin
+import com.example.schoolmanagement.UI.Screen.Admin.JadwalPelajaranGuru
 import com.example.schoolmanagement.UI.Screen.Admin.KelolaUserScreen
 import com.example.schoolmanagement.UI.Screen.ScannerScreen
 import com.example.schoolmanagement.UI.Screen.SignIn
@@ -177,6 +178,9 @@ fun App(
                 composable("detailnilai/{subject}") { backStackEntry ->
                     val subject = backStackEntry.arguments?.getString("subject") ?: ""
                     DetailNilaiScreen(navController, subjectName = subject)
+                }
+                composable("adminjadwal"){
+                    JadwalPelajaranGuru(navController)
                 }
             }
             CustomToast(

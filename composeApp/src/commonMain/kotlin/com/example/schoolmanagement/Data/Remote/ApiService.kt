@@ -375,12 +375,54 @@ class ApiService(private val client: HttpClient) {
         return response.body()
     }
 
-    suspend fun getAdminTeacherSchedule(token: String, teacherId: Int): ScheduleResponse {
-        return client.get(ApiClient.getUrl("admin/teacher-schedules")) {
+    suspend fun getAdminTeacherSchedule(token: String, teacherId: Int? = null): ScheduleResponse {
+        return client.get(ApiClient.getUrl("admin/teacher-schedule")) {
             headers {append(HttpHeaders.Authorization, "Bearer ${token.trim()}")}
             url {
                 teacherId?.let { parameters.append("teacher_id", it.toString()) }
             }
+        }.body()
+    }
+
+    suspend fun getMaterials(token: String): MaterialListResponse {
+        return client.get(ApiClient.getUrl("materials")) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+        }.body()
+    }
+
+    suspend fun postMaterial(
+        token: String,
+        title: String,
+        description: String,
+        subject: String,
+        className: String,
+        type: String,
+        fileBytes: ByteArray? = null,
+        fileName: String? = null,
+        linkContent: String? = null
+    ): GenericResponse {
+        return client.submitFormWithBinaryData(
+            url = ApiClient.getUrl("materials"),
+            formData = formData {
+                append("title", title)
+                append("description", description)
+                append("subject", subject)
+                append("class", className)
+                append("type", type)
+
+                if (type == "file" || type == "video") {
+                    fileBytes?.let {
+                        append("file", it, Headers.build {
+                            append(HttpHeaders.ContentType, "application/octet-stream")
+                            append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
+                        })
+                    }
+                } else {
+                    append("content", linkContent ?: "")
+                }
+            }
+        ) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
         }.body()
     }
 }
