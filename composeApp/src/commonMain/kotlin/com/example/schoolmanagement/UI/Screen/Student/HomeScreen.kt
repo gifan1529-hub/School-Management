@@ -337,7 +337,7 @@ fun HomeScreen(
                                 },
                                 text = when {
                                     isAlreadyAbsen && todayStatus == "Absent" -> "Sudah Alpha"
-                                    getAttendanceStatus() == "Absent" -> "Sudah Alpa"
+                                    getAttendanceStatus() == "Absent" -> "Sudah Alpha"
                                     // kalo udah absen, bakal ngecek si user absenya talat atau ngga
                                     isAlreadyAbsen -> {
                                         if (todayStatus == "Late") "Telat Absen" else "Sudah Absen"

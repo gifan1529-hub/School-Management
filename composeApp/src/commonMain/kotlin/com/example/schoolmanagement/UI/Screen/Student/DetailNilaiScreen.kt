@@ -101,6 +101,11 @@ fun DetailNilaiScreen (
             )
         }
     ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(lightGray)
+        ) {
         if (isLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(color = primaryBlue)
@@ -111,7 +116,9 @@ fun DetailNilaiScreen (
             }
         } else {
             LazyColumn(
-                modifier = Modifier.padding(paddingValues).fillMaxSize(),
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -132,7 +139,12 @@ fun DetailNilaiScreen (
                                 modifier = Modifier.size(45.dp)
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.Assignment, null, tint = primaryBlue, modifier = Modifier.size(20.dp))
+                                    Icon(
+                                        Icons.Default.Assignment,
+                                        null,
+                                        tint = primaryBlue,
+                                        modifier = Modifier.size(20.dp)
+                                    )
                                 }
                             }
 
@@ -156,12 +168,19 @@ fun DetailNilaiScreen (
                                     fontFamily = poppins,
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = if (item.grade == "Belum Dinilai") Color(0xFFFF4500) else Color(0xFF4CAF50)
+                                    color = if (item.grade == "Belum Dinilai") Color(0xFFFF4500) else Color(
+                                        0xFF4CAF50
+                                    )
                                 )
                             }
 
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("Nilai", fontFamily = poppins, fontSize = 10.sp, color = Color.Gray)
+                                Text(
+                                    "Nilai",
+                                    fontFamily = poppins,
+                                    fontSize = 10.sp,
+                                    color = Color.Gray
+                                )
                                 Text(
                                     text = item.grade,
                                     fontFamily = poppins,
@@ -175,11 +194,12 @@ fun DetailNilaiScreen (
                 }
             }
         }
-        CustomToast(
-            message = toastMessage,
-            type = toastType,
-            isVisible = showToast,
-            onDismiss = { showToast = false }
-        )
+        }
     }
+    CustomToast(
+        message = toastMessage,
+        type = toastType,
+        isVisible = showToast,
+        onDismiss = { showToast = false }
+    )
 }
