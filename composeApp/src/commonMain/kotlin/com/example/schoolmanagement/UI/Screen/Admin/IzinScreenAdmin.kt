@@ -2,21 +2,32 @@ package com.example.schoolmanagement.UI.Screen.Admin
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,9 +41,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.schoolmanagement.UI.Component.IzinGuruContent
+import com.example.schoolmanagement.UI.Component.IzinItem
 import com.example.schoolmanagement.UI.Component.IzinMuridContent
+import com.example.schoolmanagement.UI.Component.IzinMuridContentAdmin
 import com.example.schoolmanagement.UI.Component.IzinPribadiContent
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
+import com.example.schoolmanagement.ViewModel.PermitViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun IzinScreenAdmin(
@@ -41,10 +57,10 @@ fun IzinScreenAdmin(
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
 
-    val poppins = getPoppinsFontFamily()
-
     var selectedTab by remember { mutableStateOf(0) }
     val tabs = listOf("Izin Guru", "Izin Murid")
+
+    val poppins = getPoppinsFontFamily()
 
     Column(
         modifier = Modifier
@@ -70,7 +86,7 @@ fun IzinScreenAdmin(
                         fontFamily = poppins,
                         color = Color.White,
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
 
@@ -110,26 +126,11 @@ fun IzinScreenAdmin(
 
         Box(modifier = Modifier.fillMaxSize()) {
             if (selectedTab == 0) {
-                // izin pribadi
-                IzinPribadiContent(navController)
+                // ngeliat izin guru
+                IzinGuruContent(navController)
             } else {
                 // untuk ngeliat izin murid
-                IzinMuridContent(navController)
-            }
-
-            // Floating Action Button untuk buat izin baru (Hanya muncul di Tab Izin Saya)
-            if (selectedTab == 0) {
-                FloatingActionButton(
-                    onClick = { navController.navigate("formizin") },
-                    containerColor = primaryBlue,
-                    contentColor = Color.White,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(bottom = 50.dp, end = 20.dp),
-                    shape = RoundedCornerShape(20.dp)
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Tambah Izin")
-                }
+                IzinMuridContentAdmin(navController)
             }
         }
     }

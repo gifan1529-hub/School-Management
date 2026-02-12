@@ -26,20 +26,28 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil3.compose.AsyncImage
+import com.example.schoolmanagement.UI.Component.CustomToast
 import com.example.schoolmanagement.UI.Component.InfoCard
+import com.example.schoolmanagement.UI.Component.ToastType
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.PermitViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -54,13 +62,30 @@ fun DetailIzinScreen (
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F7FA)
 
+    var isImageVisible by remember { mutableStateOf(false)}
+
+    var showToast by remember { mutableStateOf(false) }
+    var toastMessage by remember { mutableStateOf("") }
+    var toastType by remember { mutableStateOf(ToastType.INFO) }
+
     val poppins = getPoppinsFontFamily()
 
+    val guruHistory by viewModel.guruPermitHistory.collectAsState()
     val permitHistory by viewModel.muridPermitHistory.collectAsState()
-    val detail = permitHistory.find { it.id == permitId }
+
+    // buat nyari id nya ada di mana aja
+    val detail = remember(permitHistory, guruHistory) {
+        permitHistory.find { it.id == permitId }
+            ?: guruHistory.find { it.id == permitId }
+    }
+
+    LaunchedEffect(detail) {
+        println("DEBUG FOTO: URL-nya adalah -> ${detail?.image}")
+    }
 
     val isLoading by viewModel.isLoading.collectAsState()
     val isSuccess by viewModel.isSuccess.collectAsState()
+    val isUpdateSuccess by viewModel.isUpdateSuccess.collectAsState()
 
     LaunchedEffect(Unit) {
         if (permitHistory.isEmpty()) {
@@ -68,10 +93,22 @@ fun DetailIzinScreen (
         }
     }
 
+    LaunchedEffect(isUpdateSuccess) {
+        if (isUpdateSuccess) {
+            navController.previousBackStackEntry?.savedStateHandle?.set("toast_message", "Berhasil Update Permohonan Izin")
+            navController.previousBackStackEntry?.savedStateHandle?.set("toast_type", ToastType.SUCCESS)
+            navController.popBackStack()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detail Perizinan", fontWeight = FontWeight.SemiBold, fontFamily = poppins,) },
+                title = { Text(
+                    "Detail Perizinan",
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = poppins
+                ) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -82,11 +119,12 @@ fun DetailIzinScreen (
                 )
             )
         }
-    ) { _ ->
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(lightGray)
+                .padding(paddingValues)
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
@@ -95,7 +133,7 @@ fun DetailIzinScreen (
                 )
             } else if (detail == null) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Data tidak ditemukan", fontFamily = poppins,)
+                Text("Data tidak ditemukan", fontFamily = poppins)
             }
         } else {
             Column(
@@ -103,14 +141,23 @@ fun DetailIzinScreen (
                     .fillMaxSize()
                     .background(lightGray)
                     .verticalScroll(rememberScrollState())
-                    .padding(top = 120.dp, start = 20.dp, end = 20.dp)
+                    .padding(horizontal = 20.dp, vertical = 16.dp),
             ) {
                 InfoCard(
                     title = "Informasi Murid",
                     icon = Icons.Default.Person,
                     content = {
-                        Text(detail.user?.name ?: "Siswa",fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
-                        Text("Kelas: ${detail.user?.`class` ?: "-"}",fontFamily = poppins, color = Color.Gray)
+                        Text(
+                            detail.user?.name ?: "Siswa",
+                            fontFamily = poppins,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 18.sp
+                        )
+                        Text(
+                            "Kelas: ${detail.user?.`class` ?: "-"}",
+                            fontFamily = poppins,
+                            color = Color.Gray
+                        )
                     }
                 )
 
@@ -135,9 +182,57 @@ fun DetailIzinScreen (
                     title = "Alasan",
                     icon = Icons.Default.Schedule,
                     content = {
-                        Text(detail.reason ?: "",fontFamily = poppins, lineHeight = 20.sp)
+                        Text(detail.reason ?: "", fontFamily = poppins, lineHeight = 20.sp)
                     }
                 )
+
+                Spacer(Modifier.height(16.dp))
+
+                if (!detail.image.isNullOrBlank()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "Bukti Lampiran",
+                            fontFamily = poppins,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 14.sp
+                        )
+                        TextButton(onClick = { isImageVisible = !isImageVisible }) {
+                            Text(
+                                if (isImageVisible) "Sembunyikan" else "Lihat Foto",
+                                color = primaryBlue,
+                                fontFamily = poppins,
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                    if (isImageVisible) {
+                        AsyncImage(
+                            model = detail.image,
+                            contentDescription = "Bukti Izin",
+                            onError = { println("DEBUG FOTO: Gagal load karena ${it.result.throwable}") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color.White),
+                            contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                        )
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp)
+                            .background(Color.LightGray.copy(alpha = 0.2f), RoundedCornerShape(12.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Tidak ada lampiran foto", color = Color.Gray, fontFamily = poppins, fontSize = 12.sp)
+                    }
+                }
 
                 Spacer(Modifier.height(32.dp))
 
@@ -150,7 +245,6 @@ fun DetailIzinScreen (
                         Button(
                             onClick = {
                                 viewModel.updatePermitStatus(detail.id, "rejected")
-                                navController.popBackStack()
                             },
                             modifier = Modifier.weight(1f).height(50.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336)),
@@ -163,11 +257,10 @@ fun DetailIzinScreen (
                         Button(
                             onClick = {
                                 viewModel.updatePermitStatus(detail.id, "approved")
-                                navController.popBackStack()
                             },
                             modifier = Modifier.weight(1f).height(50.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                            shape = RoundedCornerShape(12.dp),
                             enabled = !isLoading
                         ) {
                             Text("Setujui",fontFamily = poppins, fontWeight = FontWeight.SemiBold)
@@ -176,6 +269,12 @@ fun DetailIzinScreen (
                 }
                 }
             }
+            CustomToast(
+                message = toastMessage,
+                type = toastType,
+                isVisible = showToast,
+                onDismiss = { showToast = false }
+            )
         }
     }
 }

@@ -27,9 +27,29 @@ class PermitRepositoryImpl(
         }
     }
 
-    override suspend fun submitPermit(token: String, request: PermitRequest): Result<Boolean> {
+    override suspend fun submitPermit(
+        token: String,
+        type: String,
+        startDate: String,
+        endDate: String,
+        reason: String,
+        timeIn: String,
+        timeOut: String,
+        fileBytes: ByteArray?,
+        fileName: String?
+    ): Result<Boolean> {
         return try {
-            val response = apiService.postPermit(token, request)
+            val response = apiService.postPermit(
+                token,
+                type,
+                startDate,
+                endDate,
+                reason,
+                timeIn,
+                timeOut,
+                fileBytes,
+                fileName
+            )
             Result.success(true)
         } catch (e: Exception) {
             Result.failure(handleException(e))

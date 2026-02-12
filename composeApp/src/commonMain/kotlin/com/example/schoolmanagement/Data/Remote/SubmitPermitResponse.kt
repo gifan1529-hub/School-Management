@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SubmitPermitResponse (
-    val message: String,
-    val data: PermitData
+    val message: String = "",
+    val data: PermitData? = null
 )

@@ -16,21 +16,24 @@ class SubmitPermitUseCase (
         endDate: String,
         reason: String,
         tIn: String,
-        tOut: String
+        tOut: String,
+        fileBytes: ByteArray?,
+        fileName: String?
     ): Result<Boolean> {
         return try {
             val token = prefsManager.getAuthToken.first() ?: ""
 
-            val request = PermitRequest(
+            val result = repository.submitPermit(
+                token,
                 type = type,
-                start_date = startDate,
-                end_date = endDate,
+                startDate = startDate,
+                endDate = endDate,
                 timeIn = tIn,
                 timeOut = tOut,
                 reason = reason,
+                fileBytes = fileBytes,
+                fileName = fileName
             )
-
-            val result = repository.submitPermit(token, request)
             if (result.isSuccess) {
                 Result.success(true)
             } else {

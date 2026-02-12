@@ -89,13 +89,38 @@ class ApiService(private val client: HttpClient) {
         }.body()
     }
 
-    suspend fun postPermit(token: String, request: PermitRequest): SubmitPermitResponse {
-        return client.post(ApiClient.getUrl("permits")) {
-            contentType(ContentType.Application.Json)
+    suspend fun postPermit(
+        token: String,
+        type: String,
+        startDate: String,
+        endDate: String,
+        reason: String,
+        timeIn: String,
+        timeOut: String,
+        fileBytes: ByteArray?,
+        fileName: String?
+    ): SubmitPermitResponse {
+        return client.submitFormWithBinaryData(
+            url = ApiClient.getUrl("permits"),
+            formData = formData {
+                append("type", type)
+                append("start_date", startDate)
+                append("end_date", endDate)
+                append("reason", reason)
+                append("timeIn", timeIn)
+                append("timeOut", timeOut)
+
+                if (fileBytes != null && fileName != null) {
+                    append("image", fileBytes, Headers.build {
+                        append(HttpHeaders.ContentType, "image/jpeg")
+                        append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
+                    })
+                }
+            }
+        ) {
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
             }
-            setBody(request)
         }.body()
     }
 
@@ -348,5 +373,14 @@ class ApiService(private val client: HttpClient) {
         }
         println("DEBUG JSON DARI LARAVEL: ${response.bodyAsText()}")
         return response.body()
+    }
+
+    suspend fun getAdminTeacherSchedule(token: String, teacherId: Int): ScheduleResponse {
+        return client.get(ApiClient.getUrl("admin/teacher-schedules")) {
+            headers {append(HttpHeaders.Authorization, "Bearer ${token.trim()}")}
+            url {
+                teacherId?.let { parameters.append("teacher_id", it.toString()) }
+            }
+        }.body()
     }
 }

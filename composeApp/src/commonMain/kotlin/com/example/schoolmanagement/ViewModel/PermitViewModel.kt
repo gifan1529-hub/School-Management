@@ -40,11 +40,23 @@ class PermitViewModel(
     private val _jamSelesai = MutableStateFlow("")
     val jamSelesai: StateFlow<String> = _jamSelesai
 
+    private val _fileName = MutableStateFlow("")
+    val fileName: StateFlow<String> = _fileName
+
+    private val _fileBytes = MutableStateFlow<ByteArray?>(null)
+    val fileBytes: StateFlow<ByteArray?> = _fileBytes
+
     private val _alasan = MutableStateFlow("")
     val alasan: StateFlow<String> = _alasan
 
     private val _myPermitHistory = MutableStateFlow<List<PermitData>>(emptyList())
     val  myPermitHistory: StateFlow<List<PermitData>> = _myPermitHistory
+
+    private val _guruPermitHistory = MutableStateFlow<List<PermitData>>(emptyList())
+    val guruPermitHistory: StateFlow<List<PermitData>> = _guruPermitHistory
+
+    private val _allMuridPermitHistory = MutableStateFlow<List<PermitData>>(emptyList())
+    val allMuridPermitHistory: StateFlow<List<PermitData>> = _allMuridPermitHistory
 
     private val _muridPermitHistory = MutableStateFlow<List<PermitData>>(emptyList())
     val muridPermitHistory: StateFlow<List<PermitData>> = _muridPermitHistory
@@ -54,6 +66,9 @@ class PermitViewModel(
 
     private val _isSuccess = MutableStateFlow(false)
     val isSuccess: StateFlow<Boolean> = _isSuccess
+
+    private val _isUpdateSuccess = MutableStateFlow(false)
+    val isUpdateSuccess: StateFlow<Boolean> = _isUpdateSuccess
 
     private val _errorSubmitMessage = MutableStateFlow<String?>(null)
     val errorSubmitMessage: StateFlow<String?> = _errorSubmitMessage
@@ -69,8 +84,12 @@ class PermitViewModel(
     fun onTimeInChange(time: String) { _jamMulai.value = time }
     fun onTimeOutChange(time: String) { _jamSelesai.value = time }
     fun onReasonChange(text: String) { _alasan.value = text }
+    fun onFileSelected(name: String, bytes: ByteArray) {
+        _fileName.value = name
+        _fileBytes.value = bytes
+    }
 
-    fun  submitPermit() {
+    fun submitPermit() {
         viewModelScope.launch {
             _isSuccess.value = false
             _errorSubmitMessage.value = null
@@ -93,7 +112,9 @@ class PermitViewModel(
                     endDate = _tanggalSelesai.value,
                     reason = _alasan.value,
                     tIn = _jamMulai.value,
-                    tOut = _jamSelesai.value
+                    tOut = _jamSelesai.value,
+                    fileName = _fileName.value,
+                    fileBytes = _fileBytes.value
                 )
 
                 result.onSuccess {
@@ -103,6 +124,7 @@ class PermitViewModel(
                     println("DEBUG PERMIT: gagal submit izin")
                     val handledError = exceptionHandler.handleException(e as Exception)
                     _errorSubmitMessage.value = handledError.message
+                    println("DEBUG PERMIT: ${handledError.message}")
 //                    ToastHelper().Toast(handledError.message)
                     _isSuccess.value = false
                 }
@@ -114,13 +136,19 @@ class PermitViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             val token = prefsManager.getAuthToken.first() ?: ""
+            val role = prefsManager.getUserRole.first()
+
             repository.getPermits(token, all = false).onSuccess {
                 _myPermitHistory.value = it
             }
-            val role = prefsManager.getUserRole.first()
-            if (role.lowercase() == "teacher") {
-                repository.getPermits(token, all = true).onSuccess {
-                    _muridPermitHistory.value = it
+            if (role.lowercase() == "teacher" || role.lowercase() == "admin") {
+                repository.getPermits(token, all = true).onSuccess { allData ->
+                    if (role.lowercase() == "admin") {
+                        _guruPermitHistory.value = allData.filter { it.user?.role?.lowercase() == "teacher" }
+                        _allMuridPermitHistory.value = allData.filter { it.user?.role?.lowercase() == "student" }
+                    } else {
+                        _muridPermitHistory.value = allData
+                    }
                 }
             }
             _isLoading.value = false
@@ -130,15 +158,16 @@ class PermitViewModel(
     fun updatePermitStatus(permitId: Int, newStatus: String){
         viewModelScope.launch {
             _isLoading.value = true
+            _isUpdateSuccess.value = false
             val result = updatePermitStatusUC.invoke(permitId, newStatus)
 
             result.onSuccess {
-                _isSuccess.value = true
+                _isUpdateSuccess.value = true
                 loadPermitHistory()
             }.onFailure { e ->
                 val handledError = exceptionHandler.handleException(e as Exception)
                 _errorUpdateMessage.value = handledError.message
-                _isSuccess.value = false
+                _isUpdateSuccess.value = false
             }
             _isLoading.value = false
         }

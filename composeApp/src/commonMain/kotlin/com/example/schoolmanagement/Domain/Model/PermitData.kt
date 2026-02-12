@@ -12,5 +12,6 @@ data class PermitData(
     val timeOut: String,
     val reason: String? = null,
     val status: String,
-    val user: UserData? = null
+    val user: UserData? = null,
+    val image: String? = null
 )

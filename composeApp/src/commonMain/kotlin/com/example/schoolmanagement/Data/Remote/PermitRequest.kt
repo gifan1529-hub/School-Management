@@ -10,5 +10,6 @@ data class PermitRequest (
     val timeOut: String,
     val reason: String,
     val start_date: String,
-    val end_date: String
+    val end_date: String,
+    val image: String? = null
 )

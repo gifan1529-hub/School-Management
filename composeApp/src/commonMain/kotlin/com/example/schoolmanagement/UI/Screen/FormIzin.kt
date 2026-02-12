@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -42,14 +43,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.darkrockstudios.libraries.mpfilepicker.FilePicker
+import com.example.schoolmanagement.DI.readFileBytes
 import com.example.schoolmanagement.UI.Component.CustomToast
 import com.example.schoolmanagement.UI.Component.TimePickerDialog
 import com.example.schoolmanagement.UI.Component.TipeIzinChip
@@ -58,6 +63,7 @@ import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.PermitViewModel
 import com.example.schoolmanagement.getTodayDate
 import com.example.schoolmanagement.getTodayDateS
+import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.Instant
@@ -81,6 +87,9 @@ fun FormIzin (
     val primaryBlue = Color(0xFF0066FF)
     val lightGray = Color(0xFFF5F5F5)
 
+    var showFilePicker by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
     val isLoading by viewModel.isLoading.collectAsState()
     val isSuccess by viewModel.isSuccess.collectAsState()
     val isError by viewModel.errorSubmitMessage.collectAsState()
@@ -91,6 +100,8 @@ fun FormIzin (
     val jamMulai by viewModel.jamMulai.collectAsState()
     val jamSelesai by viewModel.jamSelesai.collectAsState()
     val alasan by viewModel.alasan.collectAsState("sakit")
+    val fileName by viewModel.fileName.collectAsState()
+
 
     var showTimePickerMulai by remember { mutableStateOf(false) }
     var showTimePickerSelesai by remember { mutableStateOf(false) }
@@ -101,6 +112,21 @@ fun FormIzin (
     val timePickerStateSelesai = rememberTimePickerState(initialHour = 10, initialMinute = 0, is24Hour = true)
     val datePickerStateMulai = rememberDatePickerState()
     val datePickerStateSelesai = rememberDatePickerState()
+
+    FilePicker(
+        show = showFilePicker,
+        fileExtensions = listOf("gif", "jpeg", "png", "jpg"))
+    { platformFile ->
+        showFilePicker = false
+        platformFile?.let { file ->
+            scope.launch {
+                val bytes = file.readFileBytes()
+                if (bytes != null) {
+                    viewModel.onFileSelected(file.path.split("/").last(), bytes)
+                }
+            }
+        }
+    }
 
     if (showDatePickerMulai) {
         DatePickerDialog(
@@ -351,6 +377,36 @@ fun FormIzin (
                         placeholder = { Text("Tulis alasan dengan lengkap ", fontFamily = poppins,) },
                         shape = RoundedCornerShape(12.dp)
                     )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Text("Lampiran Bukti (Foto / Dokumen)", fontFamily = poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                        OutlinedTextField(
+                            value = fileName,
+                            onValueChange = { },
+                            readOnly = true,
+                            enabled = false,
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text("Pilih file", fontFamily = poppins,) },
+                            shape = RoundedCornerShape(12.dp),
+                            singleLine = true,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                disabledTextColor = Color.Black,
+                                disabledBorderColor = primaryBlue,
+                                disabledPlaceholderColor = Color.Gray,
+                                disabledLabelColor = primaryBlue
+                            ),
+                            trailingIcon = {
+                                IconButton(onClick = { showFilePicker = true }) {
+                                    Icon(
+                                        imageVector = Icons.Default.AttachFile,
+                                        contentDescription = null,
+                                        tint = primaryBlue
+                                    )
+                                }
+                            }
+                        )
+
 
                     Spacer(modifier = Modifier.height(20.dp))
 
