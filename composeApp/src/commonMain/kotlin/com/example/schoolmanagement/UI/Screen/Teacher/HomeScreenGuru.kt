@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.History
@@ -470,6 +471,19 @@ fun HomeScreenGuru (
                         Icons.Default.Email,
                         Modifier.weight(1f),
                         onClick = {navController.navigate("izinguru") }
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    MenuCard(
+                        "Materi",
+                        Icons.Default.AutoStories,
+                        Modifier.weight(1f),
+                        onClick = {navController.navigate("materigurus")  }
                     )
                 }
             }

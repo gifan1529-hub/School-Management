@@ -40,15 +40,19 @@ import com.example.schoolmanagement.UI.Screen.Student.HistoryAbsenScreen
 import com.example.schoolmanagement.UI.Screen.Student.HomeScreen
 import com.example.schoolmanagement.UI.Screen.Student.IzinScreen
 import com.example.schoolmanagement.UI.Screen.Student.JadwalScreen
+import com.example.schoolmanagement.UI.Screen.Student.MaterialScreen
 import com.example.schoolmanagement.UI.Screen.Student.NilaiScreen
 import com.example.schoolmanagement.UI.Screen.Student.ProfileScreen
 import com.example.schoolmanagement.UI.Screen.Student.TugasScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.DetailIzinScreen
+import com.example.schoolmanagement.UI.Screen.Teacher.FormMateriGuruScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.HomeScreenGuru
 import com.example.schoolmanagement.UI.Screen.Teacher.HomeWorkScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.IzinScreenGuru
 import com.example.schoolmanagement.UI.Screen.Teacher.JadwalMengajarScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.MarkAttendanceScreen
+import com.example.schoolmanagement.UI.Screen.Teacher.MaterialScreenGuru
+
 import com.example.schoolmanagement.UI.Screen.Teacher.SubmissionListScreen
 import com.example.schoolmanagement.ViewModel.AuthViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
@@ -181,6 +185,15 @@ fun App(
                 }
                 composable("adminjadwal"){
                     JadwalPelajaranGuru(navController)
+                }
+                composable("materiguru"){
+                    FormMateriGuruScreen(navController)
+                }
+                composable("materi"){
+                    MaterialScreen(navController)
+                }
+                composable("materigurus"){
+                    MaterialScreenGuru(navController)
                 }
             }
             CustomToast(
