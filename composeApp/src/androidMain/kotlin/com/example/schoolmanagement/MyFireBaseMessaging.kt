@@ -40,7 +40,7 @@ class MyFirebaseMessaging : FirebaseMessagingService() {
             .setContentTitle(title)
             .setContentText(body)
             .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
             .build()
 
         notificationManager.notify(System.currentTimeMillis().toInt(), notification)
