@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.QrCode
@@ -484,6 +485,12 @@ fun HomeScreenGuru (
                         Icons.Default.AutoStories,
                         Modifier.weight(1f),
                         onClick = {navController.navigate("materigurus")  }
+                    )
+                    MenuCard(
+                        "Pelanggaran",
+                        Icons.Default.Gavel,
+                        Modifier.weight(1f),
+                        onClick = {navController.navigate("pelanggaran")  }
                     )
                 }
             }

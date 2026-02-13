@@ -36,6 +36,7 @@ import com.example.schoolmanagement.UI.Screen.EditProfileScreen
 import com.example.schoolmanagement.UI.Screen.FormAlert
 import com.example.schoolmanagement.UI.Screen.Student.DetailHomeWork
 import com.example.schoolmanagement.UI.Screen.Student.DetailNilaiScreen
+import com.example.schoolmanagement.UI.Screen.Student.DetailPelanggaranScreen
 import com.example.schoolmanagement.UI.Screen.Student.HistoryAbsenScreen
 import com.example.schoolmanagement.UI.Screen.Student.HomeScreen
 import com.example.schoolmanagement.UI.Screen.Student.IzinScreen
@@ -44,14 +45,18 @@ import com.example.schoolmanagement.UI.Screen.Student.MaterialScreen
 import com.example.schoolmanagement.UI.Screen.Student.NilaiScreen
 import com.example.schoolmanagement.UI.Screen.Student.ProfileScreen
 import com.example.schoolmanagement.UI.Screen.Student.TugasScreen
+import com.example.schoolmanagement.UI.Screen.Student.ViolationMuridScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.DetailIzinScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.FormMateriGuruScreen
+import com.example.schoolmanagement.UI.Screen.Teacher.FormViolation
 import com.example.schoolmanagement.UI.Screen.Teacher.HomeScreenGuru
 import com.example.schoolmanagement.UI.Screen.Teacher.HomeWorkScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.IzinScreenGuru
 import com.example.schoolmanagement.UI.Screen.Teacher.JadwalMengajarScreen
+import com.example.schoolmanagement.UI.Screen.Teacher.ListPelanggaranMurid
 import com.example.schoolmanagement.UI.Screen.Teacher.MarkAttendanceScreen
 import com.example.schoolmanagement.UI.Screen.Teacher.MaterialScreenGuru
+import com.example.schoolmanagement.UI.Screen.Teacher.PelanggaranScreenGuru
 
 import com.example.schoolmanagement.UI.Screen.Teacher.SubmissionListScreen
 import com.example.schoolmanagement.ViewModel.AuthViewModel
@@ -194,6 +199,26 @@ fun App(
                 }
                 composable("materigurus"){
                     MaterialScreenGuru(navController)
+                }
+                composable("pelanggaran"){
+                    PelanggaranScreenGuru(navController)
+                }
+                composable ("listpelanggaran/{studentId}/{studentName}"){ backStack ->
+                    val id = backStack.arguments?.getString("studentId")?.toInt() ?: 0
+                    val name = backStack.arguments?.getString("studentName") ?: ""
+                    ListPelanggaranMurid(navController, name, id)
+                }
+                composable ("formpelanggaran/{studentId}/{studentName}"){ backStack ->
+                    val id = backStack.arguments?.getString("studentId")?.toInt() ?: 0
+                    val name = backStack.arguments?.getString("studentName") ?: ""
+                    FormViolation(navController, id, name)
+                }
+                composable("violationmurid"){
+                    ViolationMuridScreen(navController)
+                }
+                composable("detailviolation/{violationId}") { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("violationId")?.toInt() ?: 0
+                    DetailPelanggaranScreen(navController, id)
                 }
             }
             CustomToast(

@@ -425,4 +425,40 @@ class ApiService(private val client: HttpClient) {
             headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
         }.body()
     }
+
+    suspend fun getViolations(token: String): ViolationListResponse {
+        return client.get(ApiClient.getUrl("violations")) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+        }.body()
+    }
+
+    suspend fun postViolation(
+        token: String,
+        studentId: Int,
+        name: String,
+        category: String,
+        points: Int,
+        description: String?,
+        imageBytes: ByteArray?,
+        imageName: String?
+    ): GenericResponse {
+        return client.submitFormWithBinaryData(
+            url = ApiClient.getUrl("violations"),
+            formData = formData {
+                append("student_id", studentId)
+                append("violation_name", name)
+                append("category", category)
+                append("points", points)
+                append("description", description ?: "")
+                imageBytes?.let {
+                    append("image", it, Headers.build {
+                        append(HttpHeaders.ContentType, "image/jpeg")
+                        append(HttpHeaders.ContentDisposition, "filename=\"$imageName\"")
+                    })
+                }
+            }
+        ) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+        }.body()
+    }
 }

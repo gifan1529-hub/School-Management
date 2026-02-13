@@ -13,6 +13,7 @@ import com.example.schoolmanagement.Data.Impl.ScheduleRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.StatsRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.UpdateProfileRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.UpdateUserRepositoryImpl
+import com.example.schoolmanagement.Data.Impl.ViolationRepositoryImpl
 import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Data.Remote.ApiClient
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkDetailUseCase
@@ -30,6 +31,7 @@ import com.example.schoolmanagement.Domain.Repository.ScheduleRepository
 import com.example.schoolmanagement.Domain.Repository.StatsRepository
 import com.example.schoolmanagement.Domain.Repository.UpdateProfileRepository
 import com.example.schoolmanagement.Domain.Repository.UpdateUserRepository
+import com.example.schoolmanagement.Domain.Repository.ViolationRepository
 import com.example.schoolmanagement.Domain.UseCase.AddUserUseCase
 import com.example.schoolmanagement.Domain.UseCase.DeleteHomeWork
 import com.example.schoolmanagement.Domain.UseCase.DeleteUserUseCase
@@ -52,6 +54,7 @@ import com.example.schoolmanagement.Domain.UseCase.GetScheduleUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetTeacherDasboardUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetTeacherSchedulesUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetUnreadNotifActivityUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetViolationUseCase
 import com.example.schoolmanagement.Domain.UseCase.GiveGradeUseCase
 import com.example.schoolmanagement.Domain.UseCase.LoginUC
 import com.example.schoolmanagement.Domain.UseCase.SubmitAttendanceUC
@@ -60,6 +63,7 @@ import com.example.schoolmanagement.Domain.UseCase.LogoutUseCase
 import com.example.schoolmanagement.Domain.UseCase.MarkAllNotificationUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostAnnouncmentUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostHomeWorkUseCase
+import com.example.schoolmanagement.Domain.UseCase.PostViolationUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitHomeworkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitMaterialUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitPermitUseCase
@@ -87,6 +91,7 @@ import com.example.schoolmanagement.ViewModel.ScheduleGuruViewModel
 import com.example.schoolmanagement.ViewModel.ScheduleViewModel
 import com.example.schoolmanagement.ViewModel.SignIn
 import com.example.schoolmanagement.ViewModel.UpdateUserViewModel
+import com.example.schoolmanagement.ViewModel.ViolationViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -112,6 +117,9 @@ val appModule = module {
     single <UpdateProfileRepository>{ UpdateProfileRepositoryImpl(get()) }
     single <AuthRepository>{ AuthRepositoryImpl(get()) }
     single <MaterialRepository>{ MaterialRepositoryImpl(get()) }
+    single <ViolationRepository>{ ViolationRepositoryImpl(get()) }
+
+
 
 //    // Network
 //    single {
@@ -165,6 +173,10 @@ val appModule = module {
     factoryOf(::SubmitMaterialUseCase)
     factoryOf(::GetMaterialUseCase)
     factoryOf(::GetMaterialsUseCase)
+    factoryOf(::GetViolationUseCase)
+    factoryOf(::PostViolationUseCase)
+
+
 
 
 
@@ -188,4 +200,5 @@ val appModule = module {
     viewModel { AdminTeacherViewModel(get()) }
     viewModel { MaterialViewModel(get()) }
     viewModel { MaterialTeacherViewModel(get(), get()) }
+    viewModel { ViolationViewModel(get(), get(), get()) }
 }
