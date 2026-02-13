@@ -1,6 +1,7 @@
 package com.example.schoolmanagement.Domain.Model
 
 data class UserDetails(
+    val id : Int,
     val email : String,
     val name : String,
     val role : String,

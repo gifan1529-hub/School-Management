@@ -20,6 +20,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.Star
@@ -135,6 +136,22 @@ fun SubmissionListScreen (
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
             )
+        },
+        floatingActionButton = {
+            androidx.compose.material3.FloatingActionButton(
+                onClick = {
+                    navController.navigate("discussion/$homeworkId")
+                },
+                containerColor = primaryBlue,
+                contentColor = Color.White,
+                shape = androidx.compose.foundation.shape.CircleShape
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Chat,
+                    contentDescription = "Diskusi",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
     ) { paddingValues ->
         Box(

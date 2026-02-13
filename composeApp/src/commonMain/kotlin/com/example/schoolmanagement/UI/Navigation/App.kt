@@ -32,6 +32,7 @@ import com.example.schoolmanagement.UI.Screen.Admin.KelolaUserScreen
 import com.example.schoolmanagement.UI.Screen.ScannerScreen
 import com.example.schoolmanagement.UI.Screen.SignIn
 import com.example.schoolmanagement.UI.Screen.AlertScreen
+import com.example.schoolmanagement.UI.Screen.DiscussionScreen
 import com.example.schoolmanagement.UI.Screen.EditProfileScreen
 import com.example.schoolmanagement.UI.Screen.FormAlert
 import com.example.schoolmanagement.UI.Screen.Student.DetailHomeWork
@@ -219,6 +220,10 @@ fun App(
                 composable("detailviolation/{violationId}") { backStackEntry ->
                     val id = backStackEntry.arguments?.getString("violationId")?.toInt() ?: 0
                     DetailPelanggaranScreen(navController, id)
+                }
+                composable("discussion/{id}") { backStackEntry ->
+                    val homeworkId = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+                    DiscussionScreen(navController, homeworkId)
                 }
             }
             CustomToast(

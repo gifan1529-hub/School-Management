@@ -5,6 +5,7 @@ import com.example.schoolmanagement.Data.Impl.AnnouncmentRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.AttendanceReportImpl
 import com.example.schoolmanagement.Data.Impl.AttendanceRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.AuthRepositoryImpl
+import com.example.schoolmanagement.Data.Impl.DiscussionRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.GradeRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.HomeWorkRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.MaterialRepositoryImpl
@@ -23,6 +24,7 @@ import com.example.schoolmanagement.Domain.Repository.AnnouncmentRepository
 import com.example.schoolmanagement.Domain.Repository.AttendanceReportRepository
 import com.example.schoolmanagement.Domain.Repository.AttendanceRepository
 import com.example.schoolmanagement.Domain.Repository.AuthRepository
+import com.example.schoolmanagement.Domain.Repository.DiscussionRepository
 import com.example.schoolmanagement.Domain.Repository.GradeRepository
 import com.example.schoolmanagement.Domain.Repository.HomeWorkRepository
 import com.example.schoolmanagement.Domain.Repository.MaterialRepository
@@ -44,6 +46,7 @@ import com.example.schoolmanagement.Domain.UseCase.GetAttendanceHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceReportUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceStatusUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceTrendUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetDiscussionUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetGradeSummaryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetMaterialUseCase
@@ -64,6 +67,7 @@ import com.example.schoolmanagement.Domain.UseCase.MarkAllNotificationUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostAnnouncmentUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.PostViolationUseCase
+import com.example.schoolmanagement.Domain.UseCase.SendDiscussionUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitHomeworkUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitMaterialUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitPermitUseCase
@@ -76,6 +80,7 @@ import com.example.schoolmanagement.ViewModel.AdminTeacherViewModel
 import com.example.schoolmanagement.ViewModel.AlertViewModel
 import com.example.schoolmanagement.ViewModel.AttendanceReportViewModel
 import com.example.schoolmanagement.ViewModel.AuthViewModel
+import com.example.schoolmanagement.ViewModel.DiscussionViewModel
 import com.example.schoolmanagement.ViewModel.GradeViewModel
 import com.example.schoolmanagement.ViewModel.HistoryViewModel
 import com.example.schoolmanagement.ViewModel.HomeAdminViewModel
@@ -118,6 +123,8 @@ val appModule = module {
     single <AuthRepository>{ AuthRepositoryImpl(get()) }
     single <MaterialRepository>{ MaterialRepositoryImpl(get()) }
     single <ViolationRepository>{ ViolationRepositoryImpl(get()) }
+    single <DiscussionRepository>{ DiscussionRepositoryImpl(get()) }
+
 
 
 
@@ -175,6 +182,8 @@ val appModule = module {
     factoryOf(::GetMaterialsUseCase)
     factoryOf(::GetViolationUseCase)
     factoryOf(::PostViolationUseCase)
+    factoryOf(::GetDiscussionUseCase)
+    factoryOf(::SendDiscussionUseCase)
 
 
 
@@ -201,4 +210,5 @@ val appModule = module {
     viewModel { MaterialViewModel(get()) }
     viewModel { MaterialTeacherViewModel(get(), get()) }
     viewModel { ViolationViewModel(get(), get(), get()) }
+    viewModel { DiscussionViewModel(get(), get(), get()) }
 }

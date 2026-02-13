@@ -17,8 +17,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Title
 import androidx.compose.material3.Button
@@ -50,7 +52,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.example.schoolmanagement.DI.readFileBytes
+import com.example.schoolmanagement.UI.Component.CustomToast
 import com.example.schoolmanagement.UI.Component.InfoCard
+import com.example.schoolmanagement.UI.Component.ToastType
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.HomeWorkViewModel
 import kotlinx.coroutines.launch
@@ -73,6 +77,11 @@ fun DetailHomeWork (
 
     val homeworkList by viewModel.homeworkList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val isSubmit by viewModel.isSubmitSuccess.collectAsState()
+
+    var showToast by remember { mutableStateOf(false) }
+    var toastMessage by remember { mutableStateOf("") }
+    var toastType by remember { mutableStateOf(ToastType.INFO) }
 
     val detail = remember(homeworkList, homeworkId) {
         homeworkList.find { it.id == homeworkId }
@@ -99,6 +108,14 @@ fun DetailHomeWork (
         }
     }
 
+    LaunchedEffect(isSubmit){
+        if (isSubmit) {
+            toastMessage = "Berhasil submit tugas"
+            toastType = ToastType.SUCCESS
+            showToast = true
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -110,6 +127,22 @@ fun DetailHomeWork (
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
             )
+        },
+        floatingActionButton = {
+            androidx.compose.material3.FloatingActionButton(
+                onClick = {
+                    navController.navigate("discussion/$homeworkId")
+                },
+                containerColor = primaryBlue,
+                contentColor = Color.White,
+                shape = androidx.compose.foundation.shape.CircleShape
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Chat,
+                    contentDescription = "Diskusi",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
     ) { paddingValues ->
         Box(
@@ -223,6 +256,12 @@ fun DetailHomeWork (
                     }
                 }
             }
+            CustomToast(
+                message = toastMessage,
+                type = toastType,
+                isVisible = showToast,
+                onDismiss = { showToast = false }
+            )
         }
     }
 }

@@ -461,4 +461,18 @@ class ApiService(private val client: HttpClient) {
             headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
         }.body()
     }
+
+    suspend fun getDiscussions(token: String, homeworkId: Int): DiscussionListResponse {
+        return client.get(ApiClient.getUrl("homework/$homeworkId/discussions")) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+        }.body()
+    }
+
+    suspend fun postDiscussion(token: String, homeworkId: Int, message: String): GenericResponse {
+        return client.post(ApiClient.getUrl("homework/$homeworkId/discussions")) {
+            contentType(ContentType.Application.Json)
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+            setBody(mapOf("message" to message))
+        }.body()
+    }
 }

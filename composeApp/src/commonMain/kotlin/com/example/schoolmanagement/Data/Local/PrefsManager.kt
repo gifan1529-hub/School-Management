@@ -118,9 +118,12 @@ class PrefsManager (
     suspend fun getUserData(): UserDetails? {
         val email = getUserEmail.first()
 
+        val id = dataStore.data.map { it[KEY_USER_ID] ?: 0 }.first()
+
         if (email == "User" || email.isBlank()) return null
 
         return UserDetails(
+            id = id,
             email = email,
             name = getUserName.first(),
             role = getUserRole.first(),
