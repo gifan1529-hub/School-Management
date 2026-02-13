@@ -39,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,6 +58,8 @@ fun MaterialScreen (
     val primaryBlue = Color(0xFF0066FF)
     val materials by viewModel.materials.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+
+    val uriHandler = LocalUriHandler.current
 
     Scaffold(
         topBar = {
@@ -106,7 +109,15 @@ fun MaterialScreen (
                                 }
                                 Spacer(Modifier.height(12.dp))
                                 Button(
-                                    onClick = { /* Logic Buka Browser/Download */ },
+                                    onClick = {
+                                        if (!item.content.isNullOrBlank()) {
+                                            try {
+                                                uriHandler.openUri(item.content)
+                                            } catch (e: Exception) {
+                                                println("DEBUG MATERI: Gagal buka link ${e.message}")
+                                            }
+                                        }
+                                    },
                                     modifier = Modifier.fillMaxWidth(),
                                     shape = RoundedCornerShape(10.dp),
                                     colors = ButtonDefaults.buttonColors(containerColor = primaryBlue)
