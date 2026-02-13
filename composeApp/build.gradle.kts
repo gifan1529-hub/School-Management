@@ -37,7 +37,7 @@ kotlin {
             implementation("com.google.firebase:firebase-messaging-ktx:24.0.0")
         }
         commonMain.dependencies {
-            val ktorVersion = "3.0.0"
+            val ktorVersion = "3.0.0" // 3.0.0
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -59,10 +59,10 @@ kotlin {
 
             // KTOR
             implementation("io.ktor:ktor-client-core:${ktorVersion}")
-            implementation("io.ktor:ktor-client-content-negotiation:${ktorVersion}")
-            implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
             implementation("io.ktor:ktor-client-logging:${ktorVersion}")
             implementation("io.ktor:ktor-client-encoding:${ktorVersion}")
+            implementation("io.ktor:ktor-client-content-negotiation:${ktorVersion}")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
 
             implementation("io.ktor:ktor-client-serialization:${ktorVersion}")
 
@@ -115,6 +115,14 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+    }
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "io.ktor") {
+            useVersion("3.0.0")
         }
     }
 }
