@@ -283,14 +283,14 @@ fun HomeScreenParent(
                             // Navigasi
                         }
                         ParentMenuCard("Attendance", Icons.Default.DateRange, primaryBlue, Modifier.weight(1f), Poppins) {
-                            // Navigasi
+                            navController.navigate("attendanceparent")
                         }
                     }
 
                     Spacer(Modifier.height(16.dp))
 
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        ParentMenuCard("Report Card", Icons.Default.AutoStories, Color(0xFF9C27B0), Modifier.weight(1f), Poppins) {
+                        ParentMenuCard("Homework", Icons.Default.AutoStories, Color(0xFF9C27B0), Modifier.weight(1f), Poppins) {
                             // Navigasi
                         }
                         ParentMenuCard("Progress", Icons.Default.TrendingUp, Color(0xFF4CAF50), Modifier.weight(1f), Poppins) {

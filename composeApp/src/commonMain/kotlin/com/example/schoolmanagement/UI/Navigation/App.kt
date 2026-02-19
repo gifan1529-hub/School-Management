@@ -38,6 +38,7 @@ import com.example.schoolmanagement.UI.Screen.AlertScreen
 import com.example.schoolmanagement.UI.Screen.DiscussionScreen
 import com.example.schoolmanagement.UI.Screen.EditProfileScreen
 import com.example.schoolmanagement.UI.Screen.FormAlert
+import com.example.schoolmanagement.UI.Screen.Parent.AttendanceParentScreen
 import com.example.schoolmanagement.UI.Screen.Parent.HomeScreenParent
 import com.example.schoolmanagement.UI.Screen.Student.DetailHomeWork
 import com.example.schoolmanagement.UI.Screen.Student.DetailNilaiScreen
@@ -228,6 +229,9 @@ fun App(
                 composable("discussion/{id}") { backStackEntry ->
                     val homeworkId = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
                     DiscussionScreen(navController, homeworkId)
+                }
+                composable ("attendanceparent"){
+                    AttendanceParentScreen(navController)
                 }
             }
             CustomToast(
