@@ -367,6 +367,7 @@ fun HomeScreenAdmin (
                     AttendanceTrendChart(data = trendData)
                 }
             }
+            Spacer(modifier = Modifier.height(170.dp))
         }
     }
 }
