@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.schoolmanagement.Data.Local.PrefsManager
 import com.example.schoolmanagement.Data.Remote.ApiService
+import com.example.schoolmanagement.Domain.Model.ParentDashboardData
 import com.example.schoolmanagement.Domain.Model.UserDetails
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceStatusUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetParentDashboardUseCase
 import com.example.schoolmanagement.Domain.UseCase.SubmitAttendanceUC
 import com.example.schoolmanagement.Domain.UseCase.getDetailUserUC
 import com.example.schoolmanagement.Domain.UseCase.LogoutUseCase
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import com.example.schoolmanagement.Utils.HandleException
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
@@ -27,8 +30,11 @@ class HomeViewModel (
     private val getAttendanceStatusUseCase: GetAttendanceStatusUseCase,
     private val getDetailUserUC: getDetailUserUC,
     private val submitAttendanceUC: SubmitAttendanceUC,
-    private val apiService: ApiService
+    private val getParentDashboardUC: GetParentDashboardUseCase,
 ): ViewModel() {
+    private val _parentDashboardData = MutableStateFlow<ParentDashboardData?>(null)
+    val parentDashboardData = _parentDashboardData.asStateFlow()
+
     private val _userDetails = MutableStateFlow<UserDetails?>(null)
     val userDetails: StateFlow<UserDetails?> = _userDetails
 
@@ -37,6 +43,9 @@ class HomeViewModel (
 
     private val _isLoadingAbsen = MutableStateFlow(false)
     val isLoadingAbsen: StateFlow<Boolean> = _isLoadingAbsen
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
     private val _logoutEvent = MutableStateFlow(false)
     val logoutEvent: StateFlow<Boolean> = _logoutEvent
@@ -92,8 +101,24 @@ class HomeViewModel (
 
     fun loadUserDetail() {
         viewModelScope.launch {
-            val details = getDetailUserUC.invoke()
-            _userDetails.value = details
+            _isLoading.value = true
+            try {
+                val details = getDetailUserUC.invoke()
+                _userDetails.value = details
+
+                if (details?.role?.lowercase() == "parent"){
+                    getParentDashboardUC().onSuccess { stats ->
+                        _parentDashboardData.value = stats
+                    }.onFailure { e ->
+                        val handled = exceptionHandler.handleException(e as Exception)
+                        println("DEBUG PARENT: Gagal ambil stats ${handled.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                println("DEBUG PARENT: Gagal ambil detail ${e.message}")
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 

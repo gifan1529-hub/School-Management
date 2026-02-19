@@ -67,7 +67,7 @@ fun SignIn(
     val poppins = getPoppinsFontFamily()
 
     var selectedRole by remember { mutableStateOf("Student") }
-    val roles = listOf("Teacher","Student","Admin")
+    val roles = listOf("Teacher","Student","Admin", "Parent")
 
     val uiState by viewModel.uiState.collectAsState()
 

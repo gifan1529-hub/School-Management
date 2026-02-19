@@ -475,4 +475,10 @@ class ApiService(private val client: HttpClient) {
             setBody(mapOf("message" to message))
         }.body()
     }
+
+    suspend fun getParentDashboard(token: String): ParentDashboardResponse {
+        return client.get(ApiClient.getUrl("parent/dashboard")) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+        }.body()
+    }
 }

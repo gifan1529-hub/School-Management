@@ -27,6 +27,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +37,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.schoolmanagement.UI.Component.CustomToast
+import com.example.schoolmanagement.UI.Component.ToastType
 import com.example.schoolmanagement.UI.Component.TugasItem
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.HomeWorkViewModel
@@ -46,6 +51,11 @@ fun TugasScreen (
 ) {
     val homeworkList by viewModel.homeworkList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val isSubmit by viewModel.isSubmitSuccess.collectAsState()
+
+    var showToast by remember { mutableStateOf(false) }
+    var toastMessage by remember { mutableStateOf("") }
+    var toastType by remember { mutableStateOf(ToastType.INFO) }
 
     val poppins = getPoppinsFontFamily()
 
@@ -53,6 +63,14 @@ fun TugasScreen (
 
     LaunchedEffect(Unit) {
         viewModel.loadHomeworks()
+    }
+
+    LaunchedEffect(isSubmit){
+        if (isSubmit) {
+            navController.previousBackStackEntry?.savedStateHandle?.set("toast_message", "Berhasil submit tugas")
+            navController.previousBackStackEntry?.savedStateHandle?.set("toast_type", ToastType.SUCCESS)
+//            navController.popBackStack()
+        }
     }
 
     Box(
@@ -146,5 +164,11 @@ fun TugasScreen (
                 }
             }
         }
+        CustomToast(
+            message = toastMessage,
+            type = toastType,
+            isVisible = showToast,
+            onDismiss = { showToast = false }
+        )
     }
 }

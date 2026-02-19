@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.schoolmanagement.Domain.Model.StudentMiniData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -117,7 +118,6 @@ class PrefsManager (
 
     suspend fun getUserData(): UserDetails? {
         val email = getUserEmail.first()
-
         val id = dataStore.data.map { it[KEY_USER_ID] ?: 0 }.first()
 
         if (email == "User" || email.isBlank()) return null

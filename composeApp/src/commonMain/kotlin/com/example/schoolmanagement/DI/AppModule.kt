@@ -9,6 +9,7 @@ import com.example.schoolmanagement.Data.Impl.DiscussionRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.GradeRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.HomeWorkRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.MaterialRepositoryImpl
+import com.example.schoolmanagement.Data.Impl.ParentRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.PermitRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.ScheduleRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.StatsRepositoryImpl
@@ -28,6 +29,7 @@ import com.example.schoolmanagement.Domain.Repository.DiscussionRepository
 import com.example.schoolmanagement.Domain.Repository.GradeRepository
 import com.example.schoolmanagement.Domain.Repository.HomeWorkRepository
 import com.example.schoolmanagement.Domain.Repository.MaterialRepository
+import com.example.schoolmanagement.Domain.Repository.ParentRepository
 import com.example.schoolmanagement.Domain.Repository.PermitRepository
 import com.example.schoolmanagement.Domain.Repository.ScheduleRepository
 import com.example.schoolmanagement.Domain.Repository.StatsRepository
@@ -52,6 +54,7 @@ import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetMaterialUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetMaterialsUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetMyGradesUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetParentDashboardUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetPermitHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetScheduleUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetTeacherDasboardUseCase
@@ -124,6 +127,7 @@ val appModule = module {
     single <MaterialRepository>{ MaterialRepositoryImpl(get()) }
     single <ViolationRepository>{ ViolationRepositoryImpl(get()) }
     single <DiscussionRepository>{ DiscussionRepositoryImpl(get(), get()) }
+    single <ParentRepository>{ ParentRepositoryImpl(get()) }
 
 
 
@@ -184,6 +188,7 @@ val appModule = module {
     factoryOf(::PostViolationUseCase)
     factoryOf(::GetDiscussionUseCase)
     factoryOf(::SendDiscussionUseCase)
+    factoryOf(::GetParentDashboardUseCase)
 
 
 

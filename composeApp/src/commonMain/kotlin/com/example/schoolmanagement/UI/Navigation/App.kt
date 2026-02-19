@@ -38,6 +38,7 @@ import com.example.schoolmanagement.UI.Screen.AlertScreen
 import com.example.schoolmanagement.UI.Screen.DiscussionScreen
 import com.example.schoolmanagement.UI.Screen.EditProfileScreen
 import com.example.schoolmanagement.UI.Screen.FormAlert
+import com.example.schoolmanagement.UI.Screen.Parent.HomeScreenParent
 import com.example.schoolmanagement.UI.Screen.Student.DetailHomeWork
 import com.example.schoolmanagement.UI.Screen.Student.DetailNilaiScreen
 import com.example.schoolmanagement.UI.Screen.Student.DetailPelanggaranScreen
@@ -276,6 +277,7 @@ fun MainPagerScreen (
                         "student" -> HomeScreen(navController)
                         "teacher" -> HomeScreenGuru(navController)
                         "admin" -> HomeScreenAdmin(navController)
+                        "parent" -> HomeScreenParent(navController)
                         else -> {
                             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                                 CircularProgressIndicator(color = Color(0xFF0066FF))
