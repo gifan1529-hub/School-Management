@@ -80,12 +80,12 @@ fun DiscussionScreen(
     }
 
     LaunchedEffect(homeworkId) {
-        viewModel.loadDiscussions(homeworkId, isSilent = false)
+        viewModel.observeChat(homeworkId)
 
-        while(true) {
-            delay(5000) // Cek pesan baru tiap 5 detik
-            viewModel.loadDiscussions(homeworkId, isSilent = true) // Cek selanjutnya diem-diem
-        }
+//        while(true) {
+//            delay(5000) // Cek pesan baru tiap 5 detik
+//            viewModel.loadDiscussions(homeworkId, isSilent = true) // Cek selanjutnya diem-diem
+//        }
     }
 
     Scaffold(

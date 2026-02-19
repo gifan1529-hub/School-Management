@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.schoolmanagement.Domain.Model.DiscussionData
+import com.example.schoolmanagement.formatToWib
 
 @Composable
 fun ChatBubble(chat: DiscussionData, isMe: Boolean, fontFamily: FontFamily) {
@@ -35,7 +36,7 @@ fun ChatBubble(chat: DiscussionData, isMe: Boolean, fontFamily: FontFamily) {
         // Nama pengirim, cuma muncul kalo bukan kita
         if (!isMe) {
             Text(
-                text = chat.user.name,
+                text = chat.name,
                 fontSize = 11.sp,
                 color = Color.Gray,
                 fontFamily = fontFamily,
@@ -57,7 +58,7 @@ fun ChatBubble(chat: DiscussionData, isMe: Boolean, fontFamily: FontFamily) {
                 )
                 // Waktu kirim (ambil jam & menit)
                 Text(
-                    text = chat.created_at.split("T").lastOrNull()?.take(5) ?: "",
+                    text = formatToWib(chat.created_at),
                     color = contentColor.copy(alpha = 0.7f),
                     fontSize = 10.sp,
                     modifier = Modifier.align(Alignment.End).padding(top = 4.dp)

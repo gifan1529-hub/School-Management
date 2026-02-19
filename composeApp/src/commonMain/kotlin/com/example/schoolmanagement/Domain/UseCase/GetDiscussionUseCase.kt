@@ -7,10 +7,12 @@ import kotlinx.coroutines.flow.first
 
 class GetDiscussionUseCase(
     private val repository: DiscussionRepository,
-    private val prefs: PrefsManager
+//    private val prefs: PrefsManager
 ) {
-    suspend operator fun invoke(homeworkId: Int): Result<List<DiscussionData>> {
-        val token = prefs.getAuthToken.first() ?: ""
-        return repository.getDiscussions(token, homeworkId)
-    }
+//    suspend operator fun invoke(homeworkId: Int): Result<List<DiscussionData>> {
+//        val token = prefs.getAuthToken.first() ?: ""
+//        return repository.getDiscussions(token, homeworkId)
+//    }
+
+    operator fun invoke(homeworkId: Int) = repository.observeDiscussions(homeworkId)
 }

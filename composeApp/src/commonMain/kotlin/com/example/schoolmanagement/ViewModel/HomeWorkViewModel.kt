@@ -137,14 +137,17 @@ class HomeWorkViewModel (
     ){
         viewModelScope.launch {
             _isLoading.value = true
+            _isSubmitSuccess.value = false
             try {
                 val result = submitHomeworkUseCase(homeworkId, fileBytes, fileName)
                 result.onSuccess {
                     _isSubmitSuccess.value = true
                     loadHomeworks()
+                    println("DEBUG SUBMIT: Berhasil mengunggah file")
                 }.onFailure { e ->
                     val handled = exceptionHandler.handleException(e as Exception)
                     _errorSubmitHomework.value = handled.message
+                    println("DEBUG SUBMIT: ${e.message}")
                 }
             } catch (e: Exception) {
                 _errorSubmitHomework.value = "Gagal mengunggah file"

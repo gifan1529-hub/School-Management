@@ -6,10 +6,10 @@ import kotlinx.coroutines.flow.first
 
 class SendDiscussionUseCase (
     private val repository: DiscussionRepository,
-    private val prefs: PrefsManager
+    // private val prefs: PrefsManager
 ) {
     suspend operator fun invoke(homeworkId: Int, message: String): Result<Boolean> {
-        val token = prefs.getAuthToken.first() ?: ""
-        return repository.sendDiscussion(token, homeworkId, message)
+        // val token = prefs.getAuthToken.first() ?: ""
+        return repository.sendDiscussions(homeworkId, message)
     }
 }

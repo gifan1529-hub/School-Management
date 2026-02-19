@@ -7,7 +7,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.Clock
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
+import kotlinx.datetime.Instant
 
 @OptIn(ExperimentalTime::class)
 fun getTodayDate(): String {
@@ -76,4 +76,20 @@ fun getTodayDateS(): String {
     val currentMoment = Clock.System.now()
     return currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
         .date.toString()
+}
+
+fun formatToWib(isoString: String): String {
+    return try {
+        val cleanIso = isoString.split(".").first().removeSuffix("Z") + "Z"
+        val instant = Instant.parse(cleanIso)
+
+        val dateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+
+        val hour = dateTime.hour.toString().padStart(2, '0')
+        val minute = dateTime.minute.toString().padStart(2, '0')
+
+        return "$hour:$minute"
+    } catch (e: Exception) {
+        isoString.split("T").lastOrNull()?.take(5) ?: ""
+    }
 }

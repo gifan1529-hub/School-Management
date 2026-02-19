@@ -123,7 +123,7 @@ val appModule = module {
     single <AuthRepository>{ AuthRepositoryImpl(get()) }
     single <MaterialRepository>{ MaterialRepositoryImpl(get()) }
     single <ViolationRepository>{ ViolationRepositoryImpl(get()) }
-    single <DiscussionRepository>{ DiscussionRepositoryImpl(get()) }
+    single <DiscussionRepository>{ DiscussionRepositoryImpl(get(), get()) }
 
 
 

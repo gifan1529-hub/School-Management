@@ -106,6 +106,10 @@ kotlin {
             // file picker
             implementation("com.darkrockstudios:mpfilepicker:3.1.0")
 
+            // Firebase Multiplatform
+            implementation("dev.gitlive:firebase-database:1.13.0")
+            implementation("dev.gitlive:firebase-common:1.13.0")
+
 //            // library toast
 //            implementation(libs.kmp.notifier)
         }
