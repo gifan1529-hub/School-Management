@@ -1,5 +1,6 @@
 package com.example.schoolmanagement.DI
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.copy
 import androidx.compose.foundation.gestures.snapping.SnapPosition.Center.position
 import androidx.compose.runtime.Composable
@@ -21,6 +22,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polygon
 
+@SuppressLint("ClickableViewAccessibility")
 @Composable
 actual fun MapView (
     modifier: Modifier,
@@ -49,6 +51,19 @@ actual fun MapView (
                 // Kontrol Zoom
                 setMultiTouchControls(true)
                 controller.setZoom(16.0)
+
+                // biar ga bentrok sama scroll
+                setOnTouchListener { view, event ->
+                    when (event.action) {
+                        android.view.MotionEvent.ACTION_DOWN -> {
+                            view.parent.requestDisallowInterceptTouchEvent(true)
+                        }
+                        android.view.MotionEvent.ACTION_UP -> {
+                            view.parent.requestDisallowInterceptTouchEvent(false)
+                        }
+                    }
+                    false
+                }
 
                 // Lokasi Anak
                 val childPoint = GeoPoint(latitude, longitude)
