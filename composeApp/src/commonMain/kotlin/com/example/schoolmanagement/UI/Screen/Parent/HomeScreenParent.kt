@@ -293,8 +293,8 @@ fun HomeScreenParent(
                         ParentMenuCard("Homework", Icons.Default.AutoStories, Color(0xFF9C27B0), Modifier.weight(1f), Poppins) {
                             navController.navigate("homeworkparent")
                         }
-                        ParentMenuCard("Progress", Icons.Default.TrendingUp, Color(0xFF4CAF50), Modifier.weight(1f), Poppins) {
-                            // Navigasi
+                        ParentMenuCard("Performance", Icons.Default.TrendingUp, Color(0xFF4CAF50), Modifier.weight(1f), Poppins) {
+                            navController.navigate("performance")
                         }
                     }
                 }

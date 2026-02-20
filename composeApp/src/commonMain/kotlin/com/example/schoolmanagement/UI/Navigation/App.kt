@@ -41,6 +41,7 @@ import com.example.schoolmanagement.UI.Screen.FormAlert
 import com.example.schoolmanagement.UI.Screen.Parent.AttendanceParentScreen
 import com.example.schoolmanagement.UI.Screen.Parent.HomeScreenParent
 import com.example.schoolmanagement.UI.Screen.Parent.HomeworkScreenParent
+import com.example.schoolmanagement.UI.Screen.Parent.ProgressScreen
 import com.example.schoolmanagement.UI.Screen.Parent.SafetyStudentScreen
 import com.example.schoolmanagement.UI.Screen.Student.DetailHomeWork
 import com.example.schoolmanagement.UI.Screen.Student.DetailNilaiScreen
@@ -240,6 +241,9 @@ fun App(
                 }
                 composable ("tracking"){
                     SafetyStudentScreen(navController)
+                }
+                composable("performance"){
+                    ProgressScreen(navController)
                 }
             }
             CustomToast(
