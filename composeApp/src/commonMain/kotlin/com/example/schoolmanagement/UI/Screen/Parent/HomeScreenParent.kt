@@ -280,7 +280,7 @@ fun HomeScreenParent(
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         ParentMenuCard(
                             "Student Safety", Icons.Default.LocationOn, Color.Red, Modifier.weight(1f), Poppins) {
-                            // Navigasi
+                            navController.navigate("tracking")
                         }
                         ParentMenuCard("Attendance", Icons.Default.DateRange, primaryBlue, Modifier.weight(1f), Poppins) {
                             navController.navigate("attendanceparent")

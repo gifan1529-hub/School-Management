@@ -35,6 +35,11 @@ kotlin {
             implementation("io.insert-koin:koin-android:4.0.0")
             implementation("io.ktor:ktor-client-okhttp:3.0.0")
             implementation("com.google.firebase:firebase-messaging-ktx:24.0.0")
+
+            // maps
+            implementation("com.google.maps.android:maps-compose:6.1.2")
+            implementation("com.google.android.gms:play-services-maps:19.0.0")
+            implementation("org.osmdroid:osmdroid-android:6.1.18")
         }
         commonMain.dependencies {
             val ktorVersion = "3.0.0" // 3.0.0
