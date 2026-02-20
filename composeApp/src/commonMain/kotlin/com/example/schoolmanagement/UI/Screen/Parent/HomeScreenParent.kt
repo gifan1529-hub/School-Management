@@ -291,7 +291,7 @@ fun HomeScreenParent(
 
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         ParentMenuCard("Homework", Icons.Default.AutoStories, Color(0xFF9C27B0), Modifier.weight(1f), Poppins) {
-                            // Navigasi
+                            navController.navigate("homeworkparent")
                         }
                         ParentMenuCard("Progress", Icons.Default.TrendingUp, Color(0xFF4CAF50), Modifier.weight(1f), Poppins) {
                             // Navigasi

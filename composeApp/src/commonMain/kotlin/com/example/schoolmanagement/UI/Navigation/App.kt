@@ -40,6 +40,7 @@ import com.example.schoolmanagement.UI.Screen.EditProfileScreen
 import com.example.schoolmanagement.UI.Screen.FormAlert
 import com.example.schoolmanagement.UI.Screen.Parent.AttendanceParentScreen
 import com.example.schoolmanagement.UI.Screen.Parent.HomeScreenParent
+import com.example.schoolmanagement.UI.Screen.Parent.HomeworkScreenParent
 import com.example.schoolmanagement.UI.Screen.Student.DetailHomeWork
 import com.example.schoolmanagement.UI.Screen.Student.DetailNilaiScreen
 import com.example.schoolmanagement.UI.Screen.Student.DetailPelanggaranScreen
@@ -232,6 +233,9 @@ fun App(
                 }
                 composable ("attendanceparent"){
                     AttendanceParentScreen(navController)
+                }
+                composable ("homeworkparent"){
+                    HomeworkScreenParent(navController)
                 }
             }
             CustomToast(
