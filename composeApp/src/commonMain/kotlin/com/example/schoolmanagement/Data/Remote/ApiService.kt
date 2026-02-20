@@ -491,4 +491,12 @@ class ApiService(private val client: HttpClient) {
             }
         }.body()
     }
+
+    suspend fun logout(token: String): GenericResponse{
+        return client.post(ApiClient.getUrl("logout")) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.trim()}")
+            }
+        }.body()
+    }
 }

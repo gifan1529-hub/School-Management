@@ -67,8 +67,10 @@ class ProfileViewModel (
 
     fun logout() {
         viewModelScope.launch {
-            logoutUC()
+            _isLoading.value = true
+            logoutUC.invoke()
             _logoutEvent.value = true
+            _isLoading.value = false
         }
     }
 

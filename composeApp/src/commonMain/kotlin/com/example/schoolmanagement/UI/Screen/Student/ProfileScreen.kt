@@ -36,6 +36,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -62,6 +63,7 @@ fun ProfileScreen (
     val userName by viewModel.userName.collectAsState()
     val userRole by viewModel.userRole.collectAsState()
     val userAddress by viewModel.userAddress.collectAsState()
+    val logoutEvent by viewModel.logoutEvent.collectAsState()
 
     val poppins = getPoppinsFontFamily()
 
@@ -70,6 +72,14 @@ fun ProfileScreen (
     val lightBlue = Color(0xFFE3F2FD)
     val lightGreen = Color(0xFFE8F5E9)
     val lightRed = Color(0xFFFFEBEE)
+
+    LaunchedEffect(logoutEvent) {
+        if (logoutEvent) {
+            navController.navigate("signin") {
+                popUpTo("home") { inclusive = true }
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -201,7 +211,6 @@ fun ProfileScreen (
                     .height(50.dp),
                 onClick = {
                     viewModel.logout()
-                    navController.navigate("signin")
                 }
             ) {
                 Box(

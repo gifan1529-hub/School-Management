@@ -127,7 +127,7 @@ val appModule = module {
     single<GradeRepository> { GradeRepositoryImpl(get()) }
     single<ActivityLogRepository> { ActivityLogRepositoryImpl(get()) }
     single<UpdateProfileRepository> { UpdateProfileRepositoryImpl(get()) }
-    single<AuthRepository> { AuthRepositoryImpl(get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     single<MaterialRepository> { MaterialRepositoryImpl(get()) }
     single<ViolationRepository> { ViolationRepositoryImpl(get()) }
     single<DiscussionRepository> { DiscussionRepositoryImpl(get(), get()) }
