@@ -481,4 +481,14 @@ class ApiService(private val client: HttpClient) {
             headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
         }.body()
     }
+
+    suspend fun getChildAttendance(token: String, month: Int, year: Int): ChildAttendanceResponse {
+        return client.get(ApiClient.getUrl("parent/attendance")) {
+            headers { append(HttpHeaders.Authorization, "Bearer ${token.trim()}") }
+            url {
+                parameters.append("month", month.toString())
+                parameters.append("year", year.toString())
+            }
+        }.body()
+    }
 }

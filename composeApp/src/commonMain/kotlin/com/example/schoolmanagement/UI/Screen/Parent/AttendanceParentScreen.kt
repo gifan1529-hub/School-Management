@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import com.example.schoolmanagement.UI.Component.AbsenceCard
 import com.example.schoolmanagement.UI.Component.CalendarGrid
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
+import com.example.schoolmanagement.ViewModel.AttendanceParentViewModel
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import kotlinx.datetime.*
@@ -33,21 +34,23 @@ import kotlinx.datetime.*
 @Composable
 fun AttendanceParentScreen(
     navController: NavHostController,
-    viewModel: HomeViewModel = koinViewModel()
+    viewModel: AttendanceParentViewModel = koinViewModel()
 ) {
     val poppins = getPoppinsFontFamily()
     val primaryBlue = Color(0xFF0066FF)
 
-    var currentMonth by remember { mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date) }
+    var currentMonth by remember {
+        mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
+    }
 
-    val attendanceHistory = emptyList<String>()
+    val attendanceData by viewModel.state.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
-    // dummy
-    val dummyAbsences = listOf(
-        "Wednesday, Oct 9" to "Full day absent",
-        "Friday, Oct 4" to "Full day absent",
-        "Monday, Oct 7" to "Full day absent"
-    )
+    val progress = attendanceData?.summary?.percentage?.replace("%", "")?.toFloatOrNull()?.div(100f) ?: 0f
+
+    LaunchedEffect(currentMonth) {
+        viewModel.loadAttendance(month = currentMonth.month, year =  currentMonth.year)
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -99,48 +102,57 @@ fun AttendanceParentScreen(
                     colors = CardDefaults.cardColors(containerColor = White),
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
-                    Column(modifier = Modifier.padding(20.dp)) {
-                        Row(
-                            Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                    if (isLoading && attendanceData == null) {
+                        Box(
+                            Modifier.fillMaxWidth().height(100.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Column {
-                                Text(
-                                    "This Month",
-                                    fontSize = 12.sp,
-                                    color = Gray,
-                                    fontFamily = poppins
-                                )
-                                Text(
-                                    "83%",
-                                    fontSize = 32.sp,
-                                    fontWeight = FontWeight.Black,
-                                    color = primaryBlue,
-                                    fontFamily = poppins
-                                )
-                            }
-                            Column(horizontalAlignment = Alignment.End) {
-                                Text(
-                                    "15 / 18 days",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = poppins
-                                )
-                                Text(
-                                    "Missed 3 days",
-                                    fontSize = 12.sp,
-                                    color = Red,
-                                    fontFamily = poppins
-                                )
-                            }
+                            CircularProgressIndicator(color = primaryBlue)
                         }
-                        Spacer(Modifier.height(16.dp))
-                        LinearProgressIndicator(
-                            progress = { 0.83f },
-                            modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
-                            color = primaryBlue,
-                            trackColor = LightGray.copy(0.3f)
-                        )
+                    } else {
+                        Column(modifier = Modifier.padding(20.dp)) {
+                            Row(
+                                Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Column {
+                                    Text(
+                                        "This Month",
+                                        fontSize = 12.sp,
+                                        color = Gray,
+                                        fontFamily = poppins
+                                    )
+                                    Text(
+                                        attendanceData?.summary?.percentage ?: "0%",
+                                        fontSize = 32.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = primaryBlue,
+                                        fontFamily = poppins
+                                    )
+                                }
+                                Column(horizontalAlignment = Alignment.End) {
+                                    Text(
+                                        "${attendanceData?.summary?.present_count ?: 0} / ${attendanceData?.summary?.total_school_days ?: 0} days",
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        fontFamily = poppins
+                                    )
+                                    Text(
+                                        "Missed ${attendanceData?.summary?.missed_count ?: 0} days",
+                                        fontSize = 12.sp,
+                                        color = Red,
+                                        fontFamily = poppins
+                                    )
+                                }
+                            }
+                            Spacer(Modifier.height(16.dp))
+                            LinearProgressIndicator(
+                                progress = { progress },
+                                modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
+                                color = primaryBlue,
+                                trackColor = LightGray.copy(0.3f)
+                            )
+                        }
                     }
                 }
 
@@ -164,7 +176,15 @@ fun AttendanceParentScreen(
                         Icon(Icons.Default.ChevronRight, null)
                     }
                 }
-                CalendarGrid(currentMonth, poppins, primaryBlue)
+
+            Box(modifier = Modifier.padding(horizontal = 4.dp).offset(y = (-10).dp)) {
+                CalendarGrid(
+                    date = currentMonth,
+                    font = poppins,
+                    primaryColor = primaryBlue,
+                    attendanceData = attendanceData?.calendar ?: emptyList()
+                )
+            }
 
                 Column(
                     modifier = Modifier
@@ -181,9 +201,17 @@ fun AttendanceParentScreen(
 
                     Spacer(Modifier.height(16.dp))
 
-                    dummyAbsences.forEach { (date, desc) ->
-                        AbsenceCard(date, desc, poppins)
-                        Spacer(Modifier.height(12.dp))
+                    if (attendanceData?.recent_absences?.isEmpty() == true) {
+                        Text("Tidak ada riwayat absen bulan ini", color = Color.Gray, fontSize = 12.sp)
+                    } else {
+                        attendanceData?.recent_absences?.forEach { absence ->
+                            AbsenceCard(
+                                date = absence.date_formatted,
+                                desc = absence.note,
+                                font = poppins
+                            )
+                            Spacer(Modifier.height(12.dp))
+                        }
                     }
                 }
             Spacer(Modifier.height(50.dp))

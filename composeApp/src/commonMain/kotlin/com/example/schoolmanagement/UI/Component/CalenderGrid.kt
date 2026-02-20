@@ -24,13 +24,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.schoolmanagement.Domain.Model.CalendarData
 import com.example.schoolmanagement.UI.Theme.getPoppinsFontFamily
 import com.example.schoolmanagement.ViewModel.HomeViewModel
 import kotlinx.datetime.*
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun CalendarGrid(date: LocalDate, font: FontFamily, primaryColor: Color) {
+fun CalendarGrid(
+    date: LocalDate,
+    font: FontFamily,
+    primaryColor: Color,
+    attendanceData: List<CalendarData> = emptyList()
+) {
     val daysInMonth = when (date.month) {
         Month.FEBRUARY -> if ((date.year % 4 == 0 && date.year % 100 != 0) || (date.year % 400 == 0)) 29 else 28
         Month.APRIL, Month.JUNE, Month.SEPTEMBER, Month.NOVEMBER -> 30
@@ -65,26 +71,28 @@ fun CalendarGrid(date: LocalDate, font: FontFamily, primaryColor: Color) {
             // Angka Tanggal
             items(daysInMonth) { i ->
                 val day = i + 1
-                val status = when {
-                    day % 5 == 0 -> "Absent"
-                    day % 2 == 0 -> "Present"
-                    else -> "None"
+                val currentFormattedDate = "${date.year}-${date.monthNumber.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}"
+                val dayRecord = attendanceData.find { it.date == currentFormattedDate }
+
+                val status = dayRecord?.status ?: "None"
+                val statusColor = when (dayRecord?.color) {
+                    "green" -> Color(0xFF2ECC71) // Present / Late
+                    "red" -> Color(0xFFE74C3C)   // Absent
+                    "blue" -> Color(0xFF3498DB)  // buat izin/sakit
+                    else -> Color.Transparent
                 }
 
                 Box(
                     modifier = Modifier.padding(4.dp).aspectRatio(1f).clip(RoundedCornerShape(8.dp))
-                        .background(
-                            when(status) {
-                                "Present" -> Color(0xFF2ECC71)
-                                "Absent" -> Color(0xFFE74C3C)
-                                else -> Color.Transparent
-                            }
-                        ),
+                        .padding(4.dp)
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(statusColor),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = day.toString(),
-                        color = if (status == "None") Color.LightGray else Color.White,
+                        color = if (statusColor == Color.Transparent) Color.LightGray else Color.White,
                         fontFamily = font,
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
@@ -99,6 +107,8 @@ fun CalendarGrid(date: LocalDate, font: FontFamily, primaryColor: Color) {
         ) { LegendItem(Color(0xFF2ECC71), "Present", poppins)
             Spacer(Modifier.width(16.dp))
             LegendItem(Color(0xFFE74C3C), "Absent", poppins)
+            Spacer(Modifier.width(16.dp))
+            LegendItem(Color(0xFF3498DB), "Izin / Sakit", poppins)
         }
     }
 }

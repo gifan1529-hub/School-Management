@@ -9,6 +9,7 @@ import com.example.schoolmanagement.Data.Impl.DiscussionRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.GradeRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.HomeWorkRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.MaterialRepositoryImpl
+import com.example.schoolmanagement.Data.Impl.ParentAttendanceRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.ParentRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.PermitRepositoryImpl
 import com.example.schoolmanagement.Data.Impl.ScheduleRepositoryImpl
@@ -29,6 +30,7 @@ import com.example.schoolmanagement.Domain.Repository.DiscussionRepository
 import com.example.schoolmanagement.Domain.Repository.GradeRepository
 import com.example.schoolmanagement.Domain.Repository.HomeWorkRepository
 import com.example.schoolmanagement.Domain.Repository.MaterialRepository
+import com.example.schoolmanagement.Domain.Repository.ParentAttendanceRepository
 import com.example.schoolmanagement.Domain.Repository.ParentRepository
 import com.example.schoolmanagement.Domain.Repository.PermitRepository
 import com.example.schoolmanagement.Domain.Repository.ScheduleRepository
@@ -48,6 +50,7 @@ import com.example.schoolmanagement.Domain.UseCase.GetAttendanceHistoryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceReportUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceStatusUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetAttendanceTrendUseCase
+import com.example.schoolmanagement.Domain.UseCase.GetChildAttendanceUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetDiscussionUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetGradeSummaryUseCase
 import com.example.schoolmanagement.Domain.UseCase.GetHomeWorkUseCase
@@ -81,6 +84,7 @@ import com.example.schoolmanagement.Domain.UseCase.UpdateUserUseCase
 import com.example.schoolmanagement.ViewModel.ActivityLogViewModel
 import com.example.schoolmanagement.ViewModel.AdminTeacherViewModel
 import com.example.schoolmanagement.ViewModel.AlertViewModel
+import com.example.schoolmanagement.ViewModel.AttendanceParentViewModel
 import com.example.schoolmanagement.ViewModel.AttendanceReportViewModel
 import com.example.schoolmanagement.ViewModel.AuthViewModel
 import com.example.schoolmanagement.ViewModel.DiscussionViewModel
@@ -112,24 +116,23 @@ val appModule = module {
     single { PrefsManager(get()) }
     single { ApiService(ApiClient.client) }
 
-    single <AttendanceRepository>{ AttendanceRepositoryImpl(get()) }
-    single <ScheduleRepository>{ ScheduleRepositoryImpl(get()) }
-    single <PermitRepository>{ PermitRepositoryImpl(get()) }
-    single <AnnouncmentRepository>{ AnnouncmentRepositoryImpl(get()) }
-    single <HomeWorkRepository>{ HomeWorkRepositoryImpl(get()) }
-    single <StatsRepository>{ StatsRepositoryImpl(get()) }
-    single <AttendanceReportRepository>{ AttendanceReportImpl(get()) }
-    single <UpdateUserRepository>{ UpdateUserRepositoryImpl(get()) }
-    single <GradeRepository>{ GradeRepositoryImpl(get()) }
-    single <ActivityLogRepository>{ ActivityLogRepositoryImpl(get()) }
-    single <UpdateProfileRepository>{ UpdateProfileRepositoryImpl(get()) }
-    single <AuthRepository>{ AuthRepositoryImpl(get()) }
-    single <MaterialRepository>{ MaterialRepositoryImpl(get()) }
-    single <ViolationRepository>{ ViolationRepositoryImpl(get()) }
-    single <DiscussionRepository>{ DiscussionRepositoryImpl(get(), get()) }
-    single <ParentRepository>{ ParentRepositoryImpl(get()) }
-
-
+    single<AttendanceRepository> { AttendanceRepositoryImpl(get()) }
+    single<ScheduleRepository> { ScheduleRepositoryImpl(get()) }
+    single<PermitRepository> { PermitRepositoryImpl(get()) }
+    single<AnnouncmentRepository> { AnnouncmentRepositoryImpl(get()) }
+    single<HomeWorkRepository> { HomeWorkRepositoryImpl(get()) }
+    single<StatsRepository> { StatsRepositoryImpl(get()) }
+    single<AttendanceReportRepository> { AttendanceReportImpl(get()) }
+    single<UpdateUserRepository> { UpdateUserRepositoryImpl(get()) }
+    single<GradeRepository> { GradeRepositoryImpl(get()) }
+    single<ActivityLogRepository> { ActivityLogRepositoryImpl(get()) }
+    single<UpdateProfileRepository> { UpdateProfileRepositoryImpl(get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get()) }
+    single<MaterialRepository> { MaterialRepositoryImpl(get()) }
+    single<ViolationRepository> { ViolationRepositoryImpl(get()) }
+    single<DiscussionRepository> { DiscussionRepositoryImpl(get(), get()) }
+    single<ParentRepository> { ParentRepositoryImpl(get()) }
+    single<ParentAttendanceRepository> { ParentAttendanceRepositoryImpl(get()) }
 
 
 //    // Network
@@ -189,6 +192,7 @@ val appModule = module {
     factoryOf(::GetDiscussionUseCase)
     factoryOf(::SendDiscussionUseCase)
     factoryOf(::GetParentDashboardUseCase)
+    factoryOf(::GetChildAttendanceUseCase)
 
 
 
@@ -196,7 +200,7 @@ val appModule = module {
 
     viewModel { MarkAttendanceViewModel(get()) }
     viewModel { HomeTeacherViewModel(get(), get(), get(), get(), get()) }
-    viewModel { SignIn(get(), get(), get(), get())  }
+    viewModel { SignIn(get(), get(), get(), get()) }
     viewModel { HomeViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { AuthViewModel(get()) }
     viewModel { ProfileViewModel(get(), get(), get()) }
@@ -204,7 +208,7 @@ val appModule = module {
     viewModel { HistoryViewModel(get()) }
     viewModel { ScheduleGuruViewModel(get()) }
     viewModel { PermitViewModel(get(), get(), get(), get(), get()) }
-    viewModel { AlertViewModel(get(), get())}
+    viewModel { AlertViewModel(get(), get()) }
     viewModel { HomeWorkViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { HomeAdminViewModel(get(), get()) }
     viewModel { AttendanceReportViewModel(get()) }
@@ -216,4 +220,5 @@ val appModule = module {
     viewModel { MaterialTeacherViewModel(get(), get()) }
     viewModel { ViolationViewModel(get(), get(), get()) }
     viewModel { DiscussionViewModel(get(), get(), get()) }
+    viewModel { AttendanceParentViewModel(get()) }
 }
